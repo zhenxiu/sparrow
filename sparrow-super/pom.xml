@@ -25,17 +25,17 @@
     <packaging>pom</packaging>
     <artifactId>sparrow-super</artifactId>
     <properties>
-        <sparrow_facade_version>1.0</sparrow_facade_version>
-        <sparrow_cg_version>1.0</sparrow_cg_version>
-        <sparrow_context_version>1.0</sparrow_context_version>
-        <sparrow_json_version>1.0</sparrow_json_version>
-        <sparrow_orm_version>1.0</sparrow_orm_version>
-        <sparrow_mvc_version>1.0</sparrow_mvc_version>
-        <sparrow_data_source_version>1.0</sparrow_data_source_version>
-        <sparrow_container_version>1.0</sparrow_container_version>
+        <sparrow_facade_version>1.0-SNAPSHOT</sparrow_facade_version>
+        <sparrow_cg_version>1.0-SNAPSHOT</sparrow_cg_version>
+        <sparrow_context_version>1.0-SNAPSHOT</sparrow_context_version>
+        <sparrow_json_version>1.0-SNAPSHOT</sparrow_json_version>
+        <sparrow_orm_version>1.0-SNAPSHOT</sparrow_orm_version>
+        <sparrow_mvc_version>1.0-SNAPSHOT</sparrow_mvc_version>
+        <sparrow_data_source_version>1.0-SNAPSHOT</sparrow_data_source_version>
+        <sparrow_container_version>1.0-SNAPSHOT</sparrow_container_version>
         <servlet_api_version>3.0.1</servlet_api_version>
         <cdi_api_version>1.2</cdi_api_version>
-        <sparrow_log>1.0</sparrow_log>
+        <sparrow_log>1.0-SNAPSHOT</sparrow_log>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
