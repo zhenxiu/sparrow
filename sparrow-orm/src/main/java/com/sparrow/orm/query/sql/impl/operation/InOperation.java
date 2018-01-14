@@ -44,10 +44,37 @@ public class InOperation implements RelationalOperation {
         return sb.toString();
     }
 
+    private String join(Object[] array) {
+        StringBuilder sb = new StringBuilder();
+        for (Object key : array) {
+            if (sb.length() > 0) {
+                sb.append(SYMBOL.COMMA);
+            }
+            if (key instanceof Number) {
+                sb.append(key);
+            } else {
+                sb.append('\'');
+                sb.append(key);
+                sb.append('\'');
+            }
+        }
+        return sb.toString();
+    }
+
     @Override public RelationOperationEntity operation(Criteria criteria) {
-        Iterable iterable = (Iterable) criteria.getCriteriaEntry().getValue();
+        Object iterable = criteria.getCriteriaEntry().getValue();
+        String in;
+        if (iterable instanceof String) {
+            in = iterable.toString();
+        } else if (iterable instanceof Object[]) {
+            in = this.join((Object[]) iterable);
+        } else if (iterable instanceof Iterable) {
+            in = this.join((Iterable) iterable);
+        } else {
+            throw new UnsupportedOperationException("unsupoort" + iterable);
+        }
         String column = EntityManager.get(criteria.getField().getAlias()).getColumnName(criteria.getField().getName());
-        String condition = (criteria.isAlias() ? criteria.getField().getAlias() + SYMBOL.DOT : "") + column + SYMBOL.BLANK + criteria.getCriteriaEntry().getKey().rendered() + "(" + this.join(iterable) + ")";
+        String condition = (criteria.isAlias() ? criteria.getField().getAlias() + SYMBOL.DOT : "") + column + SYMBOL.BLANK + criteria.getCriteriaEntry().getKey().rendered() + "(" + in + ")";
         return new RelationOperationEntity(condition, null);
     }
 }

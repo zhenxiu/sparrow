@@ -105,7 +105,13 @@ public class Criteria {
     }
 
     public Criteria in(Object... values) {
-        return in(toCollection(values));
+        this.criteriaEntry = new CriteriaEntry(ComparisonOperator.IN, values);
+        return this;
+    }
+
+    public Criteria in(String values) {
+        this.criteriaEntry = new CriteriaEntry(ComparisonOperator.IN, values);
+        return this;
     }
 
     public Criteria in(Iterable<?> values) {
@@ -113,12 +119,14 @@ public class Criteria {
         return this;
     }
 
-    private List<Object> toCollection(Object... values) {
-        return Arrays.asList(values);
+    public Criteria notIn(Object... values) {
+        this.criteriaEntry = new CriteriaEntry(ComparisonOperator.NOT_IN, values);
+        return this;
     }
 
-    public Criteria notIn(Object... values) {
-        return notIn(toCollection(values));
+    public Criteria notIn(String values) {
+        this.criteriaEntry = new CriteriaEntry(ComparisonOperator.NOT_IN, values);
+        return this;
     }
 
     public Criteria notIn(Iterable<?> values) {
