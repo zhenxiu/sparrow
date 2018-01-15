@@ -145,6 +145,25 @@ public enum ComparisonOperator {
         @Override public String rendered() {
             return "NOT LIKE";
         }
+    },
+
+    IS_NULL {
+        @Override public ComparisonOperator negated() {
+            return IS_NOT_NULL;
+        }
+
+        @Override public String rendered() {
+            return "is null";
+        }
+    },
+    IS_NOT_NULL {
+        @Override public ComparisonOperator negated() {
+            return IS_NULL;
+        }
+
+        @Override public String rendered() {
+            return "is not null";
+        }
     };
 
     public abstract ComparisonOperator negated();

@@ -18,6 +18,7 @@
 package com.sparrow.orm.query.sql.impl.criteria.processor;
 
 import com.sparrow.constant.magic.SYMBOL;
+import com.sparrow.enums.ComparisonOperator;
 import com.sparrow.orm.EntityManager;
 import com.sparrow.orm.Field;
 import com.sparrow.orm.Parameter;
@@ -33,8 +34,10 @@ import com.sparrow.orm.query.sql.OperationEntity;
 import com.sparrow.orm.query.sql.RelationOperationEntity;
 import com.sparrow.orm.query.sql.impl.operation.BinaryOperation;
 import com.sparrow.orm.query.sql.impl.operation.InOperation;
+import com.sparrow.orm.query.sql.impl.operation.IsNullOperation;
 import com.sparrow.orm.query.sql.impl.operation.WildcardOperation;
 import com.sparrow.utility.StringUtility;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,27 +77,36 @@ public class SqlCriteriaProcessorImpl implements CriteriaProcessor {
             StringBuilder whereClause = new StringBuilder();
             List<Parameter> parameters = new ArrayList<Parameter>();
             for (BooleanCriteria.CriteriaLinker linker : booleanCriteria.getCriteriaList()) {
+
                 Criteria criteria = linker.getCriteria();
                 RelationOperationEntity relationOperationEntity;
-                switch (criteria.getCriteriaEntry().getKey()) {
-                    case IN:
-                    case NOT_IN:
-                        relationOperationEntity = new InOperation().operation(criteria);
-                        break;
-                    case START_WITH:
-                        relationOperationEntity = new WildcardOperation("?%").operation(criteria);
-                        break;
-                    case END_WITH:
-                        relationOperationEntity = new WildcardOperation("%?").operation(criteria);
-                        break;
-                    case CONTAIN:
-                        relationOperationEntity = new WildcardOperation("%?%").operation(criteria);
-                        break;
-                    case NOT_CONTAIN:
-                        relationOperationEntity = new WildcardOperation("%?%").operation(criteria);
-                        break;
-                    default:
-                        relationOperationEntity = new BinaryOperation().operation(criteria);
+
+                if (criteria.getCriteriaEntry().getKey().equals(ComparisonOperator.IS_NULL) || criteria.getCriteriaEntry().getKey().equals(ComparisonOperator.IS_NOT_NULL)) {
+                    relationOperationEntity = new IsNullOperation().operation(criteria);
+                } else {
+                    if (!StringUtility.isNullOrEmpty(criteria.getCriteriaEntry().getValue())) {
+                        continue;
+                    }
+                    switch (criteria.getCriteriaEntry().getKey()) {
+                        case IN:
+                        case NOT_IN:
+                            relationOperationEntity = new InOperation().operation(criteria);
+                            break;
+                        case START_WITH:
+                            relationOperationEntity = new WildcardOperation("?%").operation(criteria);
+                            break;
+                        case END_WITH:
+                            relationOperationEntity = new WildcardOperation("%?").operation(criteria);
+                            break;
+                        case CONTAIN:
+                            relationOperationEntity = new WildcardOperation("%?%").operation(criteria);
+                            break;
+                        case NOT_CONTAIN:
+                            relationOperationEntity = new WildcardOperation("%?%").operation(criteria);
+                            break;
+                        default:
+                            relationOperationEntity = new BinaryOperation().operation(criteria);
+                    }
                 }
                 if (linker.getKey() != null) {
                     whereClause.append(linker.getKey().name());
