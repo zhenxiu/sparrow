@@ -148,7 +148,7 @@ public class ThreeDES {
 
         byte[] keyValue = key.getBytes();
         DESedeKeySpec keySpec = new DESedeKeySpec(keyValue);
-        SecretKey secretKey = SecretKeyFactory.getInstance(this.ALGORITHM)
+        SecretKey secretKey = SecretKeyFactory.getInstance(ALGORITHM)
             .generateSecret(keySpec);
         Cipher encrypter = Cipher.getInstance(cipherAlgorithm);
         if (!cipherAlgorithm.equals(CIPHER_ALGORITHM_ECB)) {

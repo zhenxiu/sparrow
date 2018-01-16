@@ -45,7 +45,7 @@ public class DecimalUtility {
 
     public static String toChineseString(BigDecimal num) {
         if (null == num) {
-            return "";
+            return SYMBOL.EMPTY;
         }
         String strNumberChinese = "零壹贰叁肆伍陆柒捌玖"; //0-9所对应的汉字
         String strWeightChinese = "万仟佰拾亿仟佰拾万仟佰拾元角分"; //数字位所对应的汉字

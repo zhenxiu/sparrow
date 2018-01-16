@@ -22,5 +22,5 @@ package com.sparrow.support;
  *
  * @author harry
  */
-public interface Entity extends Cloneable{
+public interface Entity{
 }

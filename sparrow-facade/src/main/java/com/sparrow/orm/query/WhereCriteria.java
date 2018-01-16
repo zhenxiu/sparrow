@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * @author harry
  */
-class WhereCriteria extends PagerSearch {
+public class WhereCriteria extends PagerSearch {
 
     private List<Object> tableSuffix = new ArrayList<Object>();
 

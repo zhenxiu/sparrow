@@ -33,7 +33,7 @@ public class Expression {
     private Field field;
 
     public String getAlias() {
-        return showAlias ? this.alias + "." : "";
+        return showAlias ? this.alias +SYMBOL.DOT: SYMBOL.EMPTY;
     }
 
     public Field getField() {
@@ -78,20 +78,20 @@ public class Expression {
 
         String result;
         if (comparisonOperator != null && clause != null && value != null) {
-            String alias = expression.showAlias ? expression.alias + "." : "";
-            result = alias + expression.field.getColumnName() + " ";
+            String alias = expression.showAlias ? expression.alias + SYMBOL.DOT : SYMBOL.EMPTY;
+            result = alias + expression.field.getColumnName() + SYMBOL.BLANK;
             if (!StringUtility.isNullOrEmpty(fieldPair.getSecond())) {
                 String operator = fieldPair.getSecond().substring(0, 1);
                 result = result + operator + fieldPair.getSecond().substring(1);
             }
             result = result + comparisonOperator.rendered();
             if (parameters != null) {
-                result = result + "?";
+                result = result + SYMBOL.QUESTION_MARK;
             } else {
                 if (StringUtility.isNullOrEmpty(value)) {
                     value = "''";
                 }
-                result = result + " " + value;
+                result = result + SYMBOL.BLANK + value;
             }
             clause.add(result);
         }

@@ -19,6 +19,8 @@ package com.sparrow.utility;
 
 import com.sparrow.constant.REGEX;
 
+import com.sparrow.constant.magic.ESCAPED;
+import com.sparrow.constant.magic.SYMBOL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -172,19 +174,19 @@ public class HtmlUtility {
         char[] array = html.toCharArray();
         StringBuilder sb = new StringBuilder();
         for (char c : array) {
-            String s = c + "";
+            String s = c + SYMBOL.EMPTY;
             switch (c) {
                 case '&':
-                    s = "&amp;";
+                    s = ESCAPED.AND;
                     break;
                 case '<':
-                    s = "&lt;";
+                    s = ESCAPED.LESS_THEN;
                     break;
                 case '>':
-                    s = "&gt;";
+                    s = ESCAPED.GREAT_THEN;
                     break;
-                case '\"':
-                    s = "&quot;";
+                case '"':
+                    s =ESCAPED.DOUBLE_QUOTES;
                     break;
                 //case ' ':
                 //    s = "&nbsp;";
@@ -197,11 +199,11 @@ public class HtmlUtility {
     }
 
     public static String decode(String html) {
-        html = html.replace("&amp;", "&");
-        html = html.replace("&lt;", "<");
-        html = html.replace("&gt;", ">");
-        html = html.replace("&quot;", "\"");
-        html = html.replace("&nbsp;", " ");
+        html = html.replace(ESCAPED.AND, SYMBOL.AND);
+        html = html.replace(ESCAPED.LESS_THEN,SYMBOL.LESS_THEN);
+        html = html.replace(ESCAPED.GREAT_THEN,SYMBOL.GREATER_THAN);
+        html = html.replace(ESCAPED.DOUBLE_QUOTES,SYMBOL.DOUBLE_QUOTES);
+        html = html.replace(ESCAPED.NO_BREAK_SPACE,SYMBOL.BLANK);
         return html;
     }
 }

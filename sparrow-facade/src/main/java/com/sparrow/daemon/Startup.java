@@ -25,9 +25,6 @@ import java.util.Map;
  * @author harry
  */
 public class Startup {
-    /**
-     * @param args 2014-4-12上午11:52:36 harry
-     */
     public static void main(String[] args) {
         ApplicationContext.getContainer().init();
 
