@@ -35,11 +35,11 @@ public class InOperation implements RelationalOperation {
             }
             if (key instanceof Number) {
                 sb.append(key);
-            } else {
-                sb.append('\'');
-                sb.append(key);
-                sb.append('\'');
+                continue;
             }
+            sb.append('\'');
+            sb.append(key);
+            sb.append('\'');
         }
         return sb.toString();
     }
@@ -52,11 +52,11 @@ public class InOperation implements RelationalOperation {
             }
             if (key instanceof Number) {
                 sb.append(key);
-            } else {
-                sb.append('\'');
-                sb.append(key);
-                sb.append('\'');
+                continue;
             }
+            sb.append('\'');
+            sb.append(key);
+            sb.append('\'');
         }
         return sb.toString();
     }
