@@ -64,11 +64,11 @@ public class InOperation implements RelationalOperation {
 
     public String safe(String value) {
         if (StringUtility.isNullOrEmpty(value)) {
-            value = "";
+            value = SYMBOL.EMPTY;
         } else {
             // mysql 转义字符
-            value = value.replace("'", "\\'");
-            value = value.replace("%", "\\%").replace("_", "\\_");
+            value = value.replace(SYMBOL.SINGLE_QUOTES, "\\'");
+            value = value.replace(SYMBOL.PERCENT, "\\%").replace(SYMBOL.UNDERLINE, "\\_");
         }
         return value;
     }
