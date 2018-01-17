@@ -21,11 +21,11 @@ import com.sparrow.constant.CONFIG;
 import com.sparrow.constant.USER;
 import com.sparrow.exception.CacheConnectionException;
 import com.sparrow.support.Login;
-import com.sparrow.support.redis.RedisReader;
-import com.sparrow.support.redis.RedisWriter;
+import com.sparrow.cache.impl.redis.RedisReader;
+import com.sparrow.cache.impl.redis.RedisWriter;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.JSUtility;
-import com.sparrow.utility.RedisPool;
+import com.sparrow.cache.impl.redis.RedisPool;
 import com.sparrow.utility.StringUtility;
 import redis.clients.jedis.ShardedJedis;
 

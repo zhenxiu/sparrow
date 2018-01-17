@@ -21,7 +21,7 @@ import com.sparrow.container.Container;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.support.latch.DistributedCountDownLatch;
 import com.sparrow.support.redis.impl.RedisDistributedCountDownLatch;
-import com.sparrow.utility.RedisPool;
+import com.sparrow.cache.impl.redis.RedisPool;
 
 /**
  * Created by TCLDUSER on 2018/1/11.

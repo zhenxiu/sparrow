@@ -17,11 +17,6 @@
 
 import com.sparrow.container.Container;
 import com.sparrow.core.spi.ApplicationContext;
-import com.sparrow.support.redis.RedisWriter;
-import com.sparrow.utility.RedisPool;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisCommands;
-import redis.clients.jedis.ShardedJedis;
 
 /**
  * Created by harry on 2015/5/26.
@@ -32,12 +27,12 @@ public class JedisPoolTest {
             try {
                 Container container = ApplicationContext.getContainer();
                 container.init();
-                RedisPool.getInstance().write(new RedisWriter() {
-                    @Override
-                    public void write(ShardedJedis jedis) {
-                        jedis.getAllShardInfo();
-                    }
-                });
+//                RedisPool.getInstance().write(new RedisWriter() {
+//                    @Override
+//                    public void write(ShardedJedis jedis) {
+//                        jedis.getAllShardInfo();
+//                    }
+//                });
                 System.out.println("ok");
             } catch (Exception e) {
                 e.printStackTrace();

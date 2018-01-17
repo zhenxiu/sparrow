@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.sparrow.support.redis;
+package com.sparrow.cache.impl.redis;
 
 import com.sparrow.exception.CacheConnectionException;
 import redis.clients.jedis.ShardedJedis;
@@ -23,6 +23,6 @@ import redis.clients.jedis.ShardedJedis;
 /**
  * @author harry
  */
-public interface RedisReader<T> {
+interface RedisReader<T> {
     T read(ShardedJedis jedis) throws CacheConnectionException;
 }

@@ -19,9 +19,9 @@ package com.sparrow.support.redis.impl;
 
 import com.sparrow.exception.CacheConnectionException;
 import com.sparrow.support.latch.DistributedCountDownLatch;
-import com.sparrow.support.redis.RedisReader;
-import com.sparrow.support.redis.RedisWriter;
-import com.sparrow.utility.RedisPool;
+import com.sparrow.cache.impl.redis.RedisReader;
+import com.sparrow.cache.impl.redis.RedisWriter;
+import com.sparrow.cache.impl.redis.RedisPool;
 import com.sparrow.utility.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

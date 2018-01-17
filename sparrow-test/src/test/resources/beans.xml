@@ -22,5 +22,5 @@
     <bean name="source" class="com.sparrow.facade.beans.Source" scope="prototype"/>
     <bean name="target" class="com.sparrow.facade.beans.Target" scope="prototype"/>
     <bean name="user" class="com.sparrow.json.User" scope="prototype"/>
-    <bean name="redisPool" class="com.sparrow.utility.RedisPool"/>
+    <bean name="redisPool" class="com.sparrow.cache.impl.redis.RedisPool"/>
 </beans>

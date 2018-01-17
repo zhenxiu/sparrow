@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package com.sparrow.utility;
+package com.sparrow.cache.impl.redis;
 
 import com.sparrow.constant.CONFIG;
 import com.sparrow.constant.CONSTANT;
 import com.sparrow.exception.CacheConnectionException;
-import com.sparrow.support.redis.RedisReader;
-import com.sparrow.support.redis.RedisWriter;
+import com.sparrow.utility.Config;
+import com.sparrow.utility.StringUtility;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

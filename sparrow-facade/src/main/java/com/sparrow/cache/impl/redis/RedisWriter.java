@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-package com.sparrow.support.redis;
+package com.sparrow.cache.impl.redis;
 
 import redis.clients.jedis.ShardedJedis;
 
 /**
  * @author harry
  */
-public interface RedisWriter {
+interface RedisWriter {
     void write(ShardedJedis jedis);
 }
