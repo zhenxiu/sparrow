@@ -32,10 +32,7 @@ import com.sparrow.orm.query.impl.SimpleCriteriaField;
 import com.sparrow.orm.query.sql.CriteriaProcessor;
 import com.sparrow.orm.query.sql.OperationEntity;
 import com.sparrow.orm.query.sql.RelationOperationEntity;
-import com.sparrow.orm.query.sql.impl.operation.BinaryOperation;
-import com.sparrow.orm.query.sql.impl.operation.InOperation;
-import com.sparrow.orm.query.sql.impl.operation.IsNullOperation;
-import com.sparrow.orm.query.sql.impl.operation.WildcardOperation;
+import com.sparrow.orm.query.sql.impl.operation.*;
 import com.sparrow.utility.StringUtility;
 
 import java.util.ArrayList;
@@ -84,7 +81,7 @@ public class SqlCriteriaProcessorImpl implements CriteriaProcessor {
                 if (criteria.getCriteriaEntry().getKey().equals(ComparisonOperator.IS_NULL) || criteria.getCriteriaEntry().getKey().equals(ComparisonOperator.IS_NOT_NULL)) {
                     relationOperationEntity = new IsNullOperation().operation(criteria);
                 } else {
-                    if (!StringUtility.isNullOrEmpty(criteria.getCriteriaEntry().getValue())) {
+                    if (StringUtility.isNullOrEmpty(criteria.getCriteriaEntry().getValue())) {
                         continue;
                     }
                     switch (criteria.getCriteriaEntry().getKey()) {
@@ -104,11 +101,15 @@ public class SqlCriteriaProcessorImpl implements CriteriaProcessor {
                         case NOT_CONTAIN:
                             relationOperationEntity = new WildcardOperation("%?%").operation(criteria);
                             break;
+                        case MOD:
+                            relationOperationEntity = new ModOperation().operation(criteria);
+                            break;
                         default:
                             relationOperationEntity = new BinaryOperation().operation(criteria);
                     }
                 }
-                if (linker.getKey() != null) {
+                if (linker.getKey() != null && whereClause.length() > 0) {
+                    whereClause.append(SYMBOL.BLANK);
                     whereClause.append(linker.getKey().name());
                 }
                 whereClause.append(SYMBOL.BLANK);
@@ -117,20 +118,23 @@ public class SqlCriteriaProcessorImpl implements CriteriaProcessor {
                     parameters.add(relationOperationEntity.getParameter());
                 }
             }
-            if (booleanCriteria.getCriteriaList().size() > 1) {
+            if (whereClause.length() > 1) {
                 whereClause.insert(0, SYMBOL.LEFT_PARENTHESIS);
                 whereClause.append(SYMBOL.RIGHT_PARENTHESIS);
+                operationEntity.add(new OperationEntity(whereClause, parameters));
             }
-            operationEntity.add(new OperationEntity(whereClause, parameters));
         }
 
         if (booleanCriteria.getBooleanCriteriaList() != null && booleanCriteria.getBooleanCriteriaList().size() > 0) {
             List<BooleanCriteria.BooleanCriteriaLinker> boolOperationEntityList = booleanCriteria.getBooleanCriteriaList();
             for (BooleanCriteria.BooleanCriteriaLinker linker : boolOperationEntityList) {
-                if (linker.getKey() != null) {
-                    operationEntity.getClause().append(linker.getKey().name());
+                OperationEntity oe = this.where(linker.getCriteria());
+                if (oe != null && !StringUtility.isNullOrEmpty(oe.getClause())) {
+                    if (linker.getKey() != null) {
+                        operationEntity.getClause().append(linker.getKey().name());
+                    }
+                    operationEntity.add(oe);
                 }
-                operationEntity.add(this.where(linker.getCriteria()));
             }
         }
         return operationEntity;

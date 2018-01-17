@@ -22,6 +22,7 @@ import com.sparrow.orm.EntityManager;
 import com.sparrow.orm.query.Criteria;
 import com.sparrow.orm.query.sql.RelationOperationEntity;
 import com.sparrow.orm.query.sql.RelationalOperation;
+import com.sparrow.utility.StringUtility;
 
 /**
  * @author harry
@@ -61,11 +62,23 @@ public class InOperation implements RelationalOperation {
         return sb.toString();
     }
 
-    @Override public RelationOperationEntity operation(Criteria criteria) {
+    public String safe(String value) {
+        if (StringUtility.isNullOrEmpty(value)) {
+            value = "";
+        } else {
+            // mysql 转义字符
+            value = value.replace("'", "\\'");
+            value = value.replace("%", "\\%").replace("_", "\\_");
+        }
+        return value;
+    }
+
+    @Override
+    public RelationOperationEntity operation(Criteria criteria) {
         Object iterable = criteria.getCriteriaEntry().getValue();
         String in;
         if (iterable instanceof String) {
-            in = iterable.toString();
+            in = this.safe(iterable.toString());
         } else if (iterable instanceof Object[]) {
             in = this.join((Object[]) iterable);
         } else if (iterable instanceof Iterable) {

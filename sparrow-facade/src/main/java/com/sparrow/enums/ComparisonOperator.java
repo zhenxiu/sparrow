@@ -164,6 +164,14 @@ public enum ComparisonOperator {
         @Override public String rendered() {
             return "is not null";
         }
+    },
+    MOD {
+        @Override public ComparisonOperator negated() {
+            return null;
+        }
+        @Override public String rendered() {
+            return "%";
+        }
     };
 
     public abstract ComparisonOperator negated();
