@@ -20,7 +20,7 @@ package com.sparrow.support.protocol.pager;
 /**
  * @author harry
  */
-class Pager {
+public class Pager {
     public Pager() {
     }
 

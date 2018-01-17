@@ -361,9 +361,8 @@ public class ImageUtility {
             result);
         if (imageMatcher.find()) {
             return imageMatcher.group(1);
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**

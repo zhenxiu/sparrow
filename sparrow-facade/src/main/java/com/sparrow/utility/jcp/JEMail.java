@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * @author harry
  */
 public class JEMail {
-    Logger logger = LoggerFactory.getLogger(JEMail.class);
+    private Logger logger = LoggerFactory.getLogger(JEMail.class);
     private String localAddress;
     private String host;
     private String from;

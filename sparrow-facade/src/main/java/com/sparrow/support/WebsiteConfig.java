@@ -60,20 +60,20 @@ public class WebsiteConfig implements Entity {
                 + "-" + CONFIG_KEY_DB.WEBSITE_CONFIG.BANNER_FLASH);
             this.logo = websiteConfigMap.get(CONFIG_KEY_DB.WEBSITE_CONFIG_PARENT + "-"
                 + CONFIG_KEY_DB.WEBSITE_CONFIG.LOGO);
-        } else {
-            String configPrefix = "web_config_";
-            this.title = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.TITLE.toLowerCase());
-            this.description = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.DESCRIPTION.toLowerCase());
-            this.keywords = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.KEYWORDS.toLowerCase());
-            this.contact = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.CONTACT.toLowerCase());
-            this.banner = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.BANNER.toLowerCase());
-            this.icp = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.ICP.toLowerCase());
-            this.bannerFlash = Config.getLanguageValue(configPrefix + StringUtility.humpToLower(CONFIG_KEY_DB.WEBSITE_CONFIG.BANNER_FLASH));
-            this.logo = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.LOGO.toLowerCase());
-            this.logo = StringUtility.replace(this.logo, CONSTANT.REPLACE_MAP);
-            this.banner = StringUtility.replace(this.banner, CONSTANT.REPLACE_MAP);
-            this.bannerFlash = StringUtility.replace(this.bannerFlash, CONSTANT.REPLACE_MAP);
+            return;
         }
+        String configPrefix = "web_config_";
+        this.title = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.TITLE.toLowerCase());
+        this.description = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.DESCRIPTION.toLowerCase());
+        this.keywords = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.KEYWORDS.toLowerCase());
+        this.contact = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.CONTACT.toLowerCase());
+        this.banner = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.BANNER.toLowerCase());
+        this.icp = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.ICP.toLowerCase());
+        this.bannerFlash = Config.getLanguageValue(configPrefix + StringUtility.humpToLower(CONFIG_KEY_DB.WEBSITE_CONFIG.BANNER_FLASH));
+        this.logo = Config.getLanguageValue(configPrefix + CONFIG_KEY_DB.WEBSITE_CONFIG.LOGO.toLowerCase());
+        this.logo = StringUtility.replace(this.logo, CONSTANT.REPLACE_MAP);
+        this.banner = StringUtility.replace(this.banner, CONSTANT.REPLACE_MAP);
+        this.bannerFlash = StringUtility.replace(this.bannerFlash, CONSTANT.REPLACE_MAP);
     }
 
     public String getTitle() {

@@ -58,54 +58,55 @@ public class Login implements Serializable {
             Config.getValue(CONFIG.LANGUAGE));
         this.avatar = Config.getValue(CONFIG.DEFAULT_USER_HEAD);
 
-        if (!StringUtility.isNullOrEmpty(permission)) {
-            try {
-                String searchPermission = "&permission=";
-                int permissionIndex = permission.lastIndexOf(searchPermission);
-                if (permissionIndex < 0) {
-                    return;
-                }
-                //id=%1$s&name=%2$s&login=%3$s&expireAt=%4$s&cent=%5$s&avatar=%6$s&deviceId=%7$s&activate=%8$s
-                String userInfo = permission.substring(0, permissionIndex);
-                String[] userInfoArray = userInfo.split("&");
-
-                Long expireAt = Long.valueOf(userInfoArray[3].substring("expireAt=".length()));
-                String dev = userInfoArray[6].substring("deviceId=".length());
-                //设备不一致
-                if (!dev.equals(deviceId)) {
-                    return;
-                }
-
-                //过期
-                if (System
-                    .currentTimeMillis() > expireAt) {
-                    return;
-                }
-
-                String signature = ThreeDES.getInstance().decrypt(
-                    Config.getValue(USER.PASSWORD_3DAS_SECRET_KEY),
-                    permission.substring(permissionIndex
-                        + searchPermission.length()));
-                String newSignature = Hmac.getInstance().getSHA1Base64(userInfo,
-                    Config.getValue(USER.PASSWORD_SHA1_SECRET_KEY));
-
-                //签名不一致
-                if (signature == null || !signature.equals(newSignature)) {
-                    return;
-                }
-                this.userId = Long.valueOf(userInfoArray[0].substring("id=".length()));
-                this.nickName = userInfoArray[1].substring("name="
-                    .length());
-                this.userName = userInfoArray[2].substring("login=".length());
-                this.cent = Long.valueOf(userInfoArray[4].substring("cent=".length()));
-                this.avatar = userInfoArray[5].substring("avatar="
-                    .length());
-                this.deviceId = dev;
-                this.expireAt = expireAt;
-                this.activate = userInfoArray[7].substring("activate="
-                    .length());
-            } catch (Exception ignore) {
+        if (StringUtility.isNullOrEmpty(permission)) {
+            return;
+        }
+        try {
+            String searchPermission = "&permission=";
+            int permissionIndex = permission.lastIndexOf(searchPermission);
+            if (permissionIndex < 0) {
+                return;
             }
+            //id=%1$s&name=%2$s&login=%3$s&expireAt=%4$s&cent=%5$s&avatar=%6$s&deviceId=%7$s&activate=%8$s
+            String userInfo = permission.substring(0, permissionIndex);
+            String[] userInfoArray = userInfo.split("&");
+
+            Long expireAt = Long.valueOf(userInfoArray[3].substring("expireAt=".length()));
+            String dev = userInfoArray[6].substring("deviceId=".length());
+            //设备不一致
+            if (!dev.equals(deviceId)) {
+                return;
+            }
+
+            //过期
+            if (System
+                .currentTimeMillis() > expireAt) {
+                return;
+            }
+
+            String signature = ThreeDES.getInstance().decrypt(
+                Config.getValue(USER.PASSWORD_3DAS_SECRET_KEY),
+                permission.substring(permissionIndex
+                    + searchPermission.length()));
+            String newSignature = Hmac.getInstance().getSHA1Base64(userInfo,
+                Config.getValue(USER.PASSWORD_SHA1_SECRET_KEY));
+
+            //签名不一致
+            if (signature == null || !signature.equals(newSignature)) {
+                return;
+            }
+            this.userId = Long.valueOf(userInfoArray[0].substring("id=".length()));
+            this.nickName = userInfoArray[1].substring("name="
+                .length());
+            this.userName = userInfoArray[2].substring("login=".length());
+            this.cent = Long.valueOf(userInfoArray[4].substring("cent=".length()));
+            this.avatar = userInfoArray[5].substring("avatar="
+                .length());
+            this.deviceId = dev;
+            this.expireAt = expireAt;
+            this.activate = userInfoArray[7].substring("activate="
+                .length());
+        } catch (Exception ignore) {
         }
     }
 

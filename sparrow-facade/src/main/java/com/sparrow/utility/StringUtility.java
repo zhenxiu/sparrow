@@ -136,7 +136,7 @@ public class StringUtility {
      */
     public static String subStringByByte(String str, int len, String elide) {
         if (str == null) {
-            return "";
+            return SYMBOL.EMPTY;
         }
         int strLen = length(str);
         if (len >= strLen || len < 1) {
@@ -253,7 +253,7 @@ public class StringUtility {
      */
     public static String setFirstByteLowerCase(String srcString) {
         if (srcString == null || srcString.length() == 0) {
-            return "";
+            return SYMBOL.EMPTY;
         }
         char[] s = srcString.toCharArray();
         int firstCase = s[0];
@@ -277,7 +277,7 @@ public class StringUtility {
      * @return
      */
     public static String getIndent(int indentCount) {
-        return generateSomeCharacter(indentCount, " ");
+        return generateSomeCharacter(indentCount,SYMBOL.BLANK);
     }
 
     /**
@@ -290,11 +290,7 @@ public class StringUtility {
     public static String generateSomeCharacter(int characterCount, String c) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < characterCount; i++) {
-            if (c == null) {
-                sb.append(SYMBOL.UNDERLINE);
-            } else {
-                sb.append(c);
-            }
+            sb.append(c==null?SYMBOL.UNDERLINE:c);
         }
         return sb.toString();
     }
@@ -392,14 +388,13 @@ public class StringUtility {
     public static boolean isInArray(Object[] array, Object item) {
         if (array == null || array.length == 0) {
             return false;
-        } else {
-            for (Object object : array) {
-                if (item.equals(object)) {
-                    return true;
-                }
-            }
-            return false;
         }
+        for (Object object : array) {
+            if (item.equals(object)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -486,7 +481,7 @@ public class StringUtility {
 
     public static String decodeForGet(String text) {
         try {
-            return new String(text.getBytes("ISO8859-1"), "UTF-8");
+            return new String(text.getBytes(CONSTANT.CHARSET_ISO_8859_1), CONSTANT.CHARSET_UTF_8);
         } catch (UnsupportedEncodingException e) {
             return null;
         }
@@ -617,17 +612,17 @@ public class StringUtility {
                 }
             }
             if (serialParameters.length() > 0) {
-                serialParameters.append("&");
+                serialParameters.append(SYMBOL.AND);
             }
             if (isEncode) {
                 try {
-                    serialParameters.append(key + "="
+                    serialParameters.append(key + SYMBOL.EQUAL
                         + URLEncoder.encode(v, CONSTANT.CHARSET_UTF_8));
                 } catch (UnsupportedEncodingException ignore) {
                 }
 
             } else {
-                serialParameters.append(key + "=" + v);
+                serialParameters.append(key + SYMBOL.EQUAL + v);
             }
         }
         return serialParameters.toString();
@@ -669,16 +664,17 @@ public class StringUtility {
         StringBuilder sb = new StringBuilder();
         for (TypeConvertor field : fieldList) {
             Object o = methodAccessor.get(entity, field.getName());
-            if (!StringUtility.isNullOrEmpty(o)) {
-                if (sb.length() > 0) {
-                    sb.append(SYMBOL.DOLLAR);
-                }
-                try {
-                    sb.append(StringUtility.setFirstByteLowerCase(field.getName())
-                        + SYMBOL.EQUAL
-                        + URLEncoder.encode(String.valueOf(o), CONSTANT.CHARSET_UTF_8));
-                } catch (UnsupportedEncodingException ignore) {
-                }
+            if (StringUtility.isNullOrEmpty(o)) {
+                continue;
+            }
+            if (sb.length() > 0) {
+                sb.append(SYMBOL.DOLLAR);
+            }
+            try {
+                sb.append(StringUtility.setFirstByteLowerCase(field.getName())
+                    + SYMBOL.EQUAL
+                    + URLEncoder.encode(String.valueOf(o), CONSTANT.CHARSET_UTF_8));
+            } catch (UnsupportedEncodingException ignore) {
             }
         }
         return sb.toString();
@@ -791,7 +787,7 @@ public class StringUtility {
         return format;
     }
 
-    public static String printStackTrace(String msg,Throwable t) {
+    public static String printStackTrace(String msg, Throwable t) {
         PrintWriter pw = null;
         try {
             StringWriter sw = new StringWriter();
