@@ -82,31 +82,15 @@ public class RedisPool {
         return redisPool;
     }
 
-    public boolean write(RedisWriter writer) {
-        if (!isOpen()) {
-            return false;
-        }
-        ShardedJedis jedis = null;
-        try {
-            jedis = this.pool.getResource();
-            writer.write(jedis);
-            this.pool.returnResource(jedis);
-            return true;
-        } catch (JedisConnectionException e) {
-            this.pool.returnBrokenResource(jedis);
-            logger.error(this.poolInfo + ":" + e.getMessage());
-            return false;
-        }
-    }
 
-    public <T> T read(RedisReader<T> reader) throws CacheConnectionException {
+    public <T> T execute(Executor<T> reader) throws CacheConnectionException {
         if (!this.isOpen()) {
             throw new CacheConnectionException("not support");
         }
         ShardedJedis jedis = null;
         try {
             jedis = this.pool.getResource();
-            T result = reader.read(jedis);
+            T result = reader.execute(jedis);
             this.pool.returnResource(jedis);
             return result;
         } catch (JedisConnectionException e) {

@@ -30,6 +30,10 @@ public class KEY_USER {
      * user profile
      */
     public static final KEY.Business USER_SIMPLE_INFO = new KEY.Business(SPARROW_MODULE.USER, "ENTITY", "USER");
+    /**
+     * 用户权限码
+     */
+    public static final KEY.Business PERMISSION = new KEY.Business(SPARROW_MODULE.USER, "PERMISSION");
 
     public static final String USER_PROPERTY_NAME = "userName";
     public static final String USER_PROPERTY_LOGIN_NAME = "userLoginName";
@@ -52,25 +56,25 @@ public class KEY_USER {
         {
             // 5分钟不能超10次 不顺延
             put(LOCK_PUBLISH.getKey(), new LockEntity(5 * 60, 10,
-                LOCK_PUBLISH.getKey(), false, false));
+                    LOCK_PUBLISH.getKey(), false, false));
             // 30分钟之内不超过5次//todo 上线前要修改
             put(LOCK_LOGIN, new LockEntity(30 * 60, 100000, LOCK_LOGIN,
-                true, false));
+                    true, false));
             // 24小时内登录一次加一次积分
             put(LOCK_LOGIN_CENT, new LockEntity(24 * 60 * 60, 1,
-                LOCK_LOGIN_CENT, false, false));
+                    LOCK_LOGIN_CENT, false, false));
             // 30分钟之内不超过5次
             put(LOCK_FIND_PASSWORD, new LockEntity(30 * 60, 5,
-                LOCK_FIND_PASSWORD, true, false));
+                    LOCK_FIND_PASSWORD, true, false));
             // 12小时内不超过20次
             put(LOCK_REGISTER, new LockEntity(12 * 60 * 60, 20,
-                LOCK_FIND_PASSWORD, false, false));
+                    LOCK_FIND_PASSWORD, false, false));
             // 1天内只允许1 次
             put(LOCK_DIG, new LockEntity(DATE_TIME_UNIT.DAY, 1,
-                LOCK_DIG));
+                    LOCK_DIG));
             // 1天只允许1次
             put(LOCK_LIKE, new LockEntity(DATE_TIME_UNIT.DAY, 1,
-                LOCK_LIKE));
+                    LOCK_LIKE));
         }
     };
 

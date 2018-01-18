@@ -17,7 +17,7 @@
 
 package com.sparrow.core.spi;
 
-import com.sparrow.container.Container;
+import com.sparrow.cache.CacheClient;
 import com.sparrow.json.Json;
 
 import javax.json.JsonException;
@@ -27,37 +27,37 @@ import java.util.ServiceLoader;
 /**
  * @author harry
  */
-public class JsonFactory {
-    private static final String DEFAULT_PROVIDER = "com.sparrow.json.impl.SparrowJsonImpl";
-    private volatile static Json json;
+public class CacheFactory {
+    private static final String DEFAULT_PROVIDER = "com.sparrow.cache.impl.redis.RedisCacheClient";
+    private volatile static CacheClient client;
 
-    public static Json getProvider() {
-        if (json != null) {
-            return json;
+    public static CacheClient getProvider() {
+        if (client != null) {
+            return client;
         }
-        synchronized (JsonFactory.class) {
-            if (json != null) {
-                return json;
+        synchronized (CacheFactory.class) {
+            if (client != null) {
+                return client;
             }
 
-            ServiceLoader<Json> loader = ServiceLoader.load(Json.class);
-            Iterator<Json> it = loader.iterator();
+            ServiceLoader<CacheClient> loader = ServiceLoader.load(CacheClient.class);
+            Iterator<CacheClient> it = loader.iterator();
             if (it.hasNext()) {
-                json = it.next();
-                return json;
+                client = it.next();
+                return client;
             }
 
             try {
                 Class<?> jsonClazz = Class.forName(DEFAULT_PROVIDER);
-                json = (Json) jsonClazz.newInstance();
-                return json;
+                client = (CacheClient) jsonClazz.newInstance();
+                return client;
             } catch (ClassNotFoundException x) {
                 throw new JsonException(
-                    "Provider " + DEFAULT_PROVIDER + " not found", x);
+                        "Provider " + DEFAULT_PROVIDER + " not found", x);
             } catch (Exception x) {
                 throw new JsonException(
-                    "Provider " + DEFAULT_PROVIDER + " could not be instantiated: " + x,
-                    x);
+                        "Provider " + DEFAULT_PROVIDER + " could not be instantiated: " + x,
+                        x);
             }
         }
     }

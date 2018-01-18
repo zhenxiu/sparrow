@@ -50,10 +50,7 @@ public class USER {
      */
     public static final String NICK_NAME = "nickName";
 
-    /**
-     * 用户权限码
-     */
-    public static final String PERMISSION = "permission";
+
     /**
      * 用户状态
      */
