@@ -29,7 +29,6 @@ public class CONFIG {
 
     public static final String INTERNATIONALIZATION = "internationalization";
     public static final String LANGUAGE = "language";
-    public static final String PERMISSION = "permission";
     public static final String ROOT_PATH = "root_path";
     public static final String DATASOURCE_KEY = "datasource_key";
 
