@@ -41,6 +41,7 @@
         <module>sparrow-super</module>
         <module>sparrow-test</module>
         <module>sparrow-log</module>
+        <module>sparrow-rocketmq-client</module>
     </modules>
     <build>
         <plugins>

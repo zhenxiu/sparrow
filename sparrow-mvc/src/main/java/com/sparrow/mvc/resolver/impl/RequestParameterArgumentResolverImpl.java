@@ -98,7 +98,7 @@ public class RequestParameterArgumentResolverImpl implements HandlerMethodArgume
     }
 
     @Override
-    public void aware(Container container) {
-        this.container = container;
+    public void aware(Container container, String beanName) {
+        this.container=container;
     }
 }

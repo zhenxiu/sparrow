@@ -35,23 +35,12 @@ public class ContextLoaderListener implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        Initializer initializer = ApplicationContext.getContainer().getBean(
-            SYS_OBJECT_NAME.INITIALIZER_SERVER);
-        if (initializer != null) {
-            initializer.destroy();
-        }
+
     }
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         ApplicationContext.getContainer().init();
-
-        Initializer initializer = ApplicationContext.getContainer().getBean(
-            SYS_OBJECT_NAME.INITIALIZER_SERVER);
-        if (initializer != null) {
-            initializer.init();
-        }
-
         String datasourceKey = Config.getValue(CONFIG.DATASOURCE_KEY);
         if (datasourceKey == null) {
             return;

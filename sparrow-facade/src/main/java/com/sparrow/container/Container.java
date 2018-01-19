@@ -52,7 +52,7 @@ public interface Container {
      * @param clazzName
      * @return
      */
-    Map<String, Method> getActionMethod(String clazzName);
+    Map<String, Method> getControllerMethod(String clazzName);
 
     /**
      * 获取bean 对象根据bean名称

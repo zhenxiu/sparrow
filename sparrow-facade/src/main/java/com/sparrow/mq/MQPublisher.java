@@ -17,11 +17,13 @@
 
 package com.sparrow.mq;
 
+import com.sparrow.container.ContainerAware;
+
 /**
  * created by harry on 2016/4/8.
  *
  * @author harry
  */
-public interface MQPublisher {
+public interface MQPublisher extends ContainerAware{
     void publish(MQEvent event) throws Throwable;
 }

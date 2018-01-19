@@ -19,6 +19,7 @@ package com.sparrow.utility;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -30,7 +31,6 @@ import java.util.jar.JarFile;
  * @author harry
  */
 public class ClassUtility {
-
     /**
      * @param c 接口
      * @return List<Class>    实现接口的所有类
@@ -44,7 +44,7 @@ public class ClassUtility {
         try {
             List<Class> allClass = getClasses(packageName);
             for (Class clazz : allClass) {
-                if (!c.isAssignableFrom(clazz)) {
+                if (!clazz.isAssignableFrom(c)) {
                     continue;
                 }
                 if (!c.equals(clazz)) {

@@ -17,10 +17,10 @@
 
 package com.sparrow.mq;
 
-import java.io.Serializable;
+import com.sparrow.support.Entity;
 
 /**
  * @author harry
  */
-public interface MQEvent extends Serializable {
+public interface MQEvent extends Entity {
 }

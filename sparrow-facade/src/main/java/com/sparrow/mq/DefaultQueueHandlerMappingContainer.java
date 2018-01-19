@@ -31,7 +31,7 @@ import java.util.*;
 public class DefaultQueueHandlerMappingContainer implements QueueHandlerMappingContainer {
     private Logger logger = LoggerFactory.getLogger(DefaultQueueHandlerMappingContainer.class);
 
-    DefaultQueueHandlerMappingContainer() {
+    public DefaultQueueHandlerMappingContainer() {
     }
 
     /**

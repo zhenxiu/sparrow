@@ -35,7 +35,9 @@
         <sparrow_container_version>1.0-SNAPSHOT</sparrow_container_version>
         <servlet_api_version>3.0.1</servlet_api_version>
         <cdi_api_version>1.2</cdi_api_version>
-        <sparrow_log>1.0-SNAPSHOT</sparrow_log>
+        <sparrow_log_version>1.0-SNAPSHOT</sparrow_log_version>
+        <sparrow_rocketmq_client_version>1.0-SNAPSHOT</sparrow_rocketmq_client_version>
+        <sparrow_redis_client_version>1.0-SNAPSHOT</sparrow_redis_client_version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 

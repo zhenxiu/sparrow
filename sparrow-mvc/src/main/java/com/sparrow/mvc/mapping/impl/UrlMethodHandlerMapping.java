@@ -86,7 +86,7 @@ public class UrlMethodHandlerMapping implements HandlerMapping {
                 invocableHandlerMethod.setValidateRequest(Boolean.valueOf(validateRequest));
                 invocableHandlerMethod.setLoginType(intLoginType);
                 String actionMethodName = actionElement.getAttribute("method");
-                Map<String, Method> actionMethodMap = container.getActionMethod(beanName);
+                Map<String, Method> actionMethodMap = container.getControllerMethod(beanName);
                 if (actionMethodMap == null) {
                     logger.warn(beanName + " is null");
                     continue;

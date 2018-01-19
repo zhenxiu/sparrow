@@ -30,7 +30,7 @@
 "http://www.sparrowzoo.com/dtds/beanFactory.dtd">
      $Id: ioc.dtd$
 -->
-    <!ELEMENT beans (bean+,import*)>
+    <!ELEMENT beans (import*,bean+)>
     <!ELEMENT bean (property*)>
     <!ELEMENT import (#PCDATA)>
     <!ELEMENT property (#PCDATA)>

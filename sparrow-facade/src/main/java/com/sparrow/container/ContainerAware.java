@@ -21,10 +21,12 @@ package com.sparrow.container;
  * @author harry
  */
 public interface ContainerAware {
+
     /**
      * 感知回调接口
      *
-     * @param container
+     * @param container 当前集合
+     * @param beanName  bean 名称
      */
-    void aware(Container container);
+    void aware(Container container, String beanName);
 }

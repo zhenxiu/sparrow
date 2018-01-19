@@ -21,10 +21,6 @@
 <beans>
     <import resource="sparrow_rocketmq_producer.xml"/>
     <import resource="sparrow_rocketmq_consumer.xml"/>
-
-    <bean name="initializer" class="com.sparrow.facade.initializer.SparrowContextInitializer"/>
-    <bean name="source" class="com.sparrow.facade.beans.Source" scope="prototype"/>
-    <bean name="target" class="com.sparrow.facade.beans.Target" scope="prototype"/>
-    <bean name="user" class="com.sparrow.json.User" scope="prototype"/>
-    <bean name="redisPool" class="com.sparrow.cache.impl.redis.RedisPool"/>
+    <bean name="helloEvent" class="com.sparrow.rocketmq.protocol.event.HelloEvent" scope="prototype"/>
+    <bean name="helloHandler" class="com.sparrow.rocketmq.protocol.handler.HelloWorldHandler"/>
 </beans>
