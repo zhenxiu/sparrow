@@ -247,7 +247,7 @@ public class ParseContext {
         return null;
     }
 
-    protected Generator4MethodAccessor getGenerator4MethodAccessor() {
+    private Generator4MethodAccessor getGenerator4MethodAccessor() {
         if (this.generator4MethodAccessor != null) {
             return this.generator4MethodAccessor;
         }
