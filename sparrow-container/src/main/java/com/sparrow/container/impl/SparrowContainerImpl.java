@@ -61,7 +61,7 @@ public class SparrowContainerImpl extends DocumentParser implements Container {
         // 如果没有依赖对象的单独节点
         String tagName = element.getTagName().trim();
         if (BEANS.equalsIgnoreCase(tagName)) {
-            this.loadChildren(element.getChildNodes());
+            this.parseChildElement(element.getChildNodes());
             return;
         }
         if (BEAN.equalsIgnoreCase(tagName)) {
@@ -71,7 +71,7 @@ public class SparrowContainerImpl extends DocumentParser implements Container {
             NodeList nodeList = element.getChildNodes();
             // 如果子节点>0则先加载子节点对象
             if (nodeList.getLength() > 0) {
-                loadChildren(nodeList);
+                parseChildElement(nodeList);
             }
             if (instance instanceof ContainerAware) {
                 ((ContainerAware) instance).aware(this, beanName);
@@ -97,7 +97,7 @@ public class SparrowContainerImpl extends DocumentParser implements Container {
         }
     }
 
-    private void loadChildren(NodeList nodeList) throws Exception {
+    private void parseChildElement(NodeList nodeList) throws Exception {
         Node n;
         for (int i = 0; i < nodeList.getLength(); i++) {
             n = nodeList.item(i);

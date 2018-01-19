@@ -2,10 +2,15 @@ package com.sparrow.container.impl;
 
 import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.container.BeanDefinition;
+import com.sparrow.container.ContainerAware;
 import com.sparrow.container.ParseContext;
 import com.sparrow.enums.CONTAINER;
 import com.sparrow.utility.StringUtility;
+import com.sparrow.utility.Xml;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.util.HashMap;
 
@@ -122,4 +127,5 @@ public class DocumentParser extends ParseContext{
             return null;
         }
     }
+
 }
