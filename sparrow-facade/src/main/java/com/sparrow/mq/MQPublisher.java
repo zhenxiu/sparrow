@@ -17,6 +17,7 @@
 
 package com.sparrow.mq;
 
+import com.sparrow.constant.cache.KEY;
 import com.sparrow.container.ContainerAware;
 
 /**
@@ -25,5 +26,7 @@ import com.sparrow.container.ContainerAware;
  * @author harry
  */
 public interface MQPublisher extends ContainerAware{
+    void publish(MQEvent event,KEY idempotent) throws Throwable;
     void publish(MQEvent event) throws Throwable;
+
 }

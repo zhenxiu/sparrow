@@ -6,4 +6,5 @@ package com.sparrow.mq;
 public class MQ_CLIENT {
     public static final String CLASS_NAME="CLASS_NAME";
     public static final String INSTANCE_NAME="SPARROW-MQ-INSTANCE";
+    public static final String IDEMPOTENT_KEY="IDEMPOTENT_KEY";
 }

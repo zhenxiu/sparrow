@@ -23,4 +23,5 @@ import com.sparrow.support.Entity;
  * @author harry
  */
 public interface MQEvent extends Entity {
+
 }

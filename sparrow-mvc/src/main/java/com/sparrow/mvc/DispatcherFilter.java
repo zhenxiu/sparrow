@@ -87,6 +87,7 @@ public class DispatcherFilter implements Filter {
 
     private Container container;
 
+    private CookieUtility cookieUtility;
     @Override
     public void destroy() {
     }
@@ -268,10 +269,10 @@ public class DispatcherFilter implements Filter {
         request.setAttribute(CONFIG_KEY_LANGUAGE.WEBSITE_NAME, configWebsiteName);
 
         if (configWebsiteName != null) {
-            String currentWebsiteName = CookieUtility.get(request.getCookies(),
+            String currentWebsiteName = cookieUtility.get(request.getCookies(),
                 CONFIG_KEY_LANGUAGE.WEBSITE_NAME);
             if (!configWebsiteName.equals(currentWebsiteName)) {
-                CookieUtility.set(response, CONFIG_KEY_LANGUAGE.WEBSITE_NAME,
+                cookieUtility.set(response, CONFIG_KEY_LANGUAGE.WEBSITE_NAME,
                     configWebsiteName, DIGIT.ALL);
             }
         }
@@ -313,7 +314,7 @@ public class DispatcherFilter implements Filter {
         }
 
         String actionName = handlerExecutionChain.getActionName();
-        Login user = CookieUtility.getUser(httpRequest);
+        Login user = this.cookieUtility.getUser(httpRequest);
         httpRequest.setAttribute(USER.ID, user.getUserId());
         httpRequest.setAttribute(USER.LOGIN_NAME, user.getUserName());
         if (handlerExecutionChain.getLoginType() == LOGIN_TYPE.NO_LOGIN.ordinal()) {
@@ -380,7 +381,7 @@ public class DispatcherFilter implements Filter {
         String forumCode = httpRequest.getParameter("forumCode");
 
         if (!privilegeService.accessible(
-            CookieUtility.getUser(httpRequest).getUserId(), actionName,
+            cookieUtility.getUser(httpRequest).getUserId(), actionName,
             forumCode)) {
             httpResponse.getWriter().write(CONSTANT.ACCESS_DENIED);
             this.sparrowServletUtility.moveAttribute(httpRequest);
@@ -419,6 +420,11 @@ public class DispatcherFilter implements Filter {
     public void init(FilterConfig config) throws ServletException {
         this.config = config;
         this.container = ApplicationContext.getContainer();
+        String cookieUtilityKey=config.getInitParameter("cookieUtility");
+        if(StringUtility.isNullOrEmpty(cookieUtilityKey)){
+            cookieUtilityKey="cookieUtility";
+        }
+        this.cookieUtility=this.container.getBean(cookieUtilityKey);
         this.initStrategies();
     }
 

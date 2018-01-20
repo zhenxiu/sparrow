@@ -15,7 +15,7 @@ import java.util.Map;
  * Created by harry on 2018/1/18.
  */
 public class RedisCacheClient implements CacheClient {
-    private RedisPool redisPool=RedisPool.getInstance();
+    private RedisPool redisPool;
 
     private Json jsonProvider = JsonFactory.getProvider();
 
@@ -33,7 +33,6 @@ public class RedisCacheClient implements CacheClient {
         });
     }
 
-
     @Override
     public <T> Map<String, T> hashGetAll(final KEY key, final Class clazz) throws CacheConnectionException {
         return redisPool.execute(new Executor<Map<String, T>>() {
@@ -43,7 +42,7 @@ public class RedisCacheClient implements CacheClient {
                 Map<String, T> result = new HashMap<String, T>();
                 Map<String, String> map = jedis.hgetAll(key.key());
                 for (String k : map.keySet()) {
-                    if(StringUtility.isNullOrEmpty(map.get(k))){
+                    if (StringUtility.isNullOrEmpty(map.get(k))) {
                         continue;
                     }
                     T t = (T) json.parse(map.get(k), clazz);
@@ -97,7 +96,6 @@ public class RedisCacheClient implements CacheClient {
             }
         });
     }
-
 
     @Override
     public Long getSetSize(final KEY key) throws CacheConnectionException {
@@ -172,7 +170,17 @@ public class RedisCacheClient implements CacheClient {
         return redisPool.execute(new Executor<Long>() {
             @Override
             public Long execute(ShardedJedis jedis) {
-                return jedis.lrem(key.key(),1L, value.toString());
+                return jedis.lrem(key.key(), 1L, value.toString());
+            }
+        });
+    }
+
+    @Override
+    public Long removeFromSet(final KEY key, final Object value) throws CacheConnectionException {
+        return redisPool.execute(new Executor<Long>() {
+            @Override
+            public Long execute(ShardedJedis jedis) {
+                return jedis.srem(key.key(), value.toString());
             }
         });
     }
@@ -204,7 +212,6 @@ public class RedisCacheClient implements CacheClient {
             }
         });
     }
-
 
     @Override
     public Long expire(final KEY key, final Integer expire) throws CacheConnectionException {
@@ -290,7 +297,6 @@ public class RedisCacheClient implements CacheClient {
         });
     }
 
-
     @Override
     public Long append(final KEY key, final Object value) throws CacheConnectionException {
         return redisPool.execute(new Executor<Long>() {
@@ -310,7 +316,6 @@ public class RedisCacheClient implements CacheClient {
             }
         });
     }
-
 
     @Override
     public Long decrease(final KEY key, final Long count) throws CacheConnectionException {

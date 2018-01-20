@@ -1,16 +1,24 @@
 package com.sparrow.rocketmq.impl;
 
+import com.sparrow.cache.CacheClient;
+import com.sparrow.constant.cache.KEY;
 import com.sparrow.container.Container;
+import com.sparrow.core.spi.CacheFactory;
+import com.sparrow.exception.CacheConnectionException;
 import com.sparrow.mq.MQEvent;
+import com.sparrow.mq.MQMessageSendException;
 import com.sparrow.mq.MQPublisher;
 import com.sparrow.mq.MQ_CLIENT;
 import com.sparrow.rocketmq.MessageConverter;
+import com.sparrow.support.redis.impl.RedisDistributedCountDownLatch;
+import org.apache.rocketmq.client.exception.MQBrokerException;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
 import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,15 +29,16 @@ import java.util.UUID;
  * Created by harry on 2017/6/14.
  */
 public class SparrowRocketMQPublisher implements MQPublisher {
-    private static Logger logger= LoggerFactory.getLogger(SparrowRocketMQPublisher.class);
+    protected static Logger logger = LoggerFactory.getLogger(SparrowRocketMQPublisher.class);
     private String nameServerAddress;
     private String group;
     private String topic;
     private String tag;
+    private CacheClient cacheClient = CacheFactory.getProvider();
 
     private MQProducer producer;
     private MessageConverter messageConverter;
-    private Integer retryTimesWhenSendAsyncFailed;
+    private Integer retryTimesWhenSendAsyncFailed = 5;
 
     public String getNameServerAddress() {
         return nameServerAddress;
@@ -71,7 +80,6 @@ public class SparrowRocketMQPublisher implements MQPublisher {
         this.messageConverter = messageConverter;
     }
 
-
     public Integer getRetryTimesWhenSendAsyncFailed() {
         return retryTimesWhenSendAsyncFailed;
     }
@@ -80,14 +88,50 @@ public class SparrowRocketMQPublisher implements MQPublisher {
         this.retryTimesWhenSendAsyncFailed = retryTimesWhenSendAsyncFailed;
     }
 
+    public void after(MQEvent event, KEY idempotent, String msgKey) {
+        if (idempotent == null) {
+            return;
+        }
+        RedisDistributedCountDownLatch redisDistributedCountDownLatch = new RedisDistributedCountDownLatch(cacheClient, idempotent);
+        redisDistributedCountDownLatch.product(msgKey);
+    }
+
     @Override
-    public void publish(MQEvent event) throws Throwable {
+    public void publish(MQEvent event) {
+        this.publish(event, null);
+    }
+
+    @Override
+    public void publish(MQEvent event, KEY idempotent) {
+
+
         Message msg = this.messageConverter.createMessage(topic, tag, event);
         String key = UUID.randomUUID().toString();
         msg.setKeys(Collections.singletonList(key));
-        SendResult sendResult = producer.send(msg);
-        if (!sendResult.getSendStatus().equals(SendStatus.SEND_OK)) {
-            throw new Throwable(sendResult.toString());
+        if (idempotent != null) {
+            msg.getProperties().put(MQ_CLIENT.IDEMPOTENT_KEY,idempotent.key());
+        }
+        logger.info("event {} ,key {},msgKey {}", event, idempotent, key);
+        SendResult sendResult = null;
+        int retryTimes = 0;
+        while (retryTimes < retryTimesWhenSendAsyncFailed) {
+            retryTimes++;
+            if (retryTimes > 2) {
+                logger.warn("event {} retry times {}", event, retryTimes);
+            }
+            try {
+                sendResult = producer.send(msg);
+                if (!sendResult.getSendStatus().equals(SendStatus.SEND_OK)) {
+                    throw new MQMessageSendException(sendResult.toString());
+                }
+                this.after(event, idempotent, key);
+                break;
+            } catch (Throwable e) {
+                logger.warn(e.getClass().getSimpleName() + " retry", e);
+                if (retryTimes == retryTimesWhenSendAsyncFailed - 1) {
+                    throw new MQMessageSendException("client exception", e);
+                }
+            }
         }
     }
 
@@ -95,10 +139,6 @@ public class SparrowRocketMQPublisher implements MQPublisher {
         DefaultMQProducer producer = new DefaultMQProducer(group);
         producer.setNamesrvAddr(nameServerAddress);
         producer.setInstanceName(MQ_CLIENT.INSTANCE_NAME);
-        if (this.retryTimesWhenSendAsyncFailed!=null&&this.retryTimesWhenSendAsyncFailed > 0) {
-            producer.setRetryTimesWhenSendAsyncFailed(retryTimesWhenSendAsyncFailed);
-            producer.setRetryTimesWhenSendFailed(retryTimesWhenSendAsyncFailed);
-        }
         producer.setCreateTopicKey(this.getTopic());
 
         int maxMessageSize = 1024000;
@@ -112,7 +152,7 @@ public class SparrowRocketMQPublisher implements MQPublisher {
         try {
             this.start();
         } catch (MQClientException e) {
-           logger.error("mq client exception",e);
+            logger.error("mq client exception", e);
         }
     }
 }

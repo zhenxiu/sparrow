@@ -25,11 +25,48 @@ import com.sparrow.constant.cache.KEY;
  */
 public class KeyTest {
     public static void main(String[] args) {
-        KEY.Business userLogin = new KEY.Business(SPARROW_MODULE.CODE, "ID", "NAME", "PAIR");
+        KEY.Business codeIdNamePair = new KEY.Business(SPARROW_MODULE.CODE, "ID", "NAME", "PAIR");
         KEY.Business userRegister = new KEY.Business(SPARROW_MODULE.USER, "REGISTER");
+        KEY.Business user = new KEY.Business(SPARROW_MODULE.USER);
 
-        System.out.println(new KEY.Builder().business(userLogin).build().key());
-        System.out.println(new KEY.Builder().business(userLogin).businessId(1, 2).build().key());
-        System.out.println(new KEY.Builder().business(userRegister).businessId(1, 2).build().key());
+        KEY codeIdNamePairKey= new KEY.Builder().business(codeIdNamePair).build();
+        KEY userRegisterKey=new KEY.Builder().business(userRegister).businessId(1, 2).build();
+        KEY userKey=new KEY.Builder().business(userRegister).businessId(1, 2).build();
+
+        System.out.println("key---");
+        System.out.println(codeIdNamePairKey.key());
+        System.out.println(userRegisterKey.key());
+        System.out.println(userKey.key());
+
+        System.out.println("business---");
+        System.out.println(codeIdNamePairKey.getBusiness());
+        System.out.println(userRegisterKey.getBusiness());
+        System.out.println(userKey.getBusiness());
+
+        System.out.println("module ---");
+        System.out.println(codeIdNamePairKey.getModule());
+        System.out.println(userRegisterKey.getModule());
+        System.out.println(userKey.getModule());
+
+        System.out.println("key business---");
+        System.out.println(KEY.parse(codeIdNamePairKey.key()).getBusiness());
+        System.out.println(KEY.parse(userRegisterKey.key()).getBusiness());
+        System.out.println(KEY.parse(userKey.key()).getBusiness());
+
+        System.out.println("key key---");
+        System.out.println(KEY.parse(codeIdNamePairKey.key()).key());
+        System.out.println(KEY.parse(userRegisterKey.key()).key());
+        System.out.println(KEY.parse(userKey.key()).key());
+
+        System.out.println("key module---");
+        System.out.println(KEY.parse(codeIdNamePairKey.key()).getModule());
+        System.out.println(KEY.parse(userRegisterKey.key()).getModule());
+        System.out.println(KEY.parse(userKey.key()).getModule());
+
+
+
+
+
+
     }
 }

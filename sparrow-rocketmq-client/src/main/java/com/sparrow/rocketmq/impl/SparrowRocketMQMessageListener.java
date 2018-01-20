@@ -1,7 +1,10 @@
 package com.sparrow.rocketmq.impl;
 
+import com.sparrow.cache.CacheClient;
+import com.sparrow.constant.cache.KEY;
 import com.sparrow.mq.*;
 import com.sparrow.rocketmq.MessageConverter;
+import com.sparrow.support.redis.impl.RedisDistributedCountDownLatch;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
@@ -23,6 +26,7 @@ public class SparrowRocketMQMessageListener implements MessageListenerConcurrent
 
     private QueueHandlerMappingContainer queueHandlerMappingContainer = MQContainerProvider.getContainer();
     private MessageConverter messageConverter;
+    private CacheClient cacheClient;
 
     public void setQueueHandlerMappingContainer(QueueHandlerMappingContainer queueHandlerMappingContainer) {
         this.queueHandlerMappingContainer = queueHandlerMappingContainer;
@@ -36,8 +40,14 @@ public class SparrowRocketMQMessageListener implements MessageListenerConcurrent
         logger.info("starting sparrow consume {},keys {}...",event,keys);
     }
 
-    protected void after(MQEvent event,String keys) {
+    protected void after(MQEvent event,String idempotentKey,String keys) {
         logger.info("ending sparrow consume {},keys {} ...",event,keys);
+        if (idempotentKey == null) {
+            return;
+        }
+        KEY idempotent=KEY.parse(idempotentKey);
+        RedisDistributedCountDownLatch redisDistributedCountDownLatch = new RedisDistributedCountDownLatch(cacheClient, idempotent);
+        redisDistributedCountDownLatch.consume(keys);
     }
 
     @Override
@@ -53,7 +63,7 @@ public class SparrowRocketMQMessageListener implements MessageListenerConcurrent
                 MQEvent event = messageConverter.fromMessage(message);
                 this.before(event,message.getKeys());
                 handler.handler(event);
-                this.after(event,message.getKeys());
+                this.after(event,message.getProperties().get(MQ_CLIENT.IDEMPOTENT_KEY),message.getKeys());
             } catch (Throwable e) {
                 logger.error("message error", e);
             }

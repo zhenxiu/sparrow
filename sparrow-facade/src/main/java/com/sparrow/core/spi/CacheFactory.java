@@ -39,9 +39,9 @@ public class CacheFactory {
             if (client != null) {
                 return client;
             }
-
             ServiceLoader<CacheClient> loader = ServiceLoader.load(CacheClient.class);
             Iterator<CacheClient> it = loader.iterator();
+
             if (it.hasNext()) {
                 client = it.next();
                 return client;
@@ -53,11 +53,11 @@ public class CacheFactory {
                 return client;
             } catch (ClassNotFoundException x) {
                 throw new JsonException(
-                        "Provider " + DEFAULT_PROVIDER + " not found", x);
+                    "Provider " + DEFAULT_PROVIDER + " not found", x);
             } catch (Exception x) {
                 throw new JsonException(
-                        "Provider " + DEFAULT_PROVIDER + " could not be instantiated: " + x,
-                        x);
+                    "Provider " + DEFAULT_PROVIDER + " could not be instantiated: " + x,
+                    x);
             }
         }
     }

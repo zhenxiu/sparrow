@@ -1,5 +1,7 @@
 package com.sparrow.rocketmq.spring;
 
+import com.sparrow.constant.cache.KEY;
+import com.sparrow.constant.cache.key.KEY_CMS;
 import com.sparrow.mq.MQPublisher;
 import com.sparrow.rocketmq.protocol.event.HelloEvent;
 import org.junit.Test;
@@ -21,10 +23,11 @@ public class PublisherTest {
     @Test
     public void publish() {
         HelloEvent helloEvent = new HelloEvent();
+        KEY key=new KEY.Builder().business(KEY_CMS.CMS_ALL_CRAWL).businessId(1).build();
         helloEvent.setMessage("msg");
         try {
             while (true){
-                mqPublisher.publish(helloEvent);
+                mqPublisher.publish(helloEvent,key);
             }
         } catch (Throwable throwable) {
             throwable.printStackTrace();

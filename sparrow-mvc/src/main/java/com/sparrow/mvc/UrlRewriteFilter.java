@@ -18,7 +18,9 @@
 package com.sparrow.mvc;
 
 import com.sparrow.constant.magic.DIGIT;
+import com.sparrow.container.Container;
 import com.sparrow.core.StrategyFactory;
+import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.support.HttpContext;
 import com.sparrow.support.UrlRewriteEntity;
 import com.sparrow.constant.*;
@@ -52,6 +54,9 @@ public class UrlRewriteFilter extends SparrowServletContainer implements Filter 
 
     private Logger logger = LoggerFactory.getLogger(UrlRewriteFilter.class);
     private FilterConfig config;
+
+    private CookieUtility cookieUtility;
+    private Container container;
 
     public FilterConfig getConfig() {
         return config;
@@ -170,7 +175,7 @@ public class UrlRewriteFilter extends SparrowServletContainer implements Filter 
                         - htmlFile.lastModified() > 1000 * cacheTime;
                 }
                 // 用户是否在线
-                boolean isOnline = !CookieUtility
+                boolean isOnline = !cookieUtility
                     .getUser(httpRequest).getUserId()
                     .equals(USER.VISITOR_ID);
                 // 静态文件已经过期或用户在线。则要读动态文件
@@ -224,5 +229,11 @@ public class UrlRewriteFilter extends SparrowServletContainer implements Filter 
     public void init(FilterConfig config) throws ServletException {
         this.initRewriteConfig();
         this.config = config;
+        this.container = ApplicationContext.getContainer();
+        String cookieUtilityKey=config.getInitParameter("cookieUtility");
+        if(StringUtility.isNullOrEmpty(cookieUtilityKey)){
+            cookieUtilityKey="cookieUtility";
+        }
+        this.cookieUtility=this.container.getBean(cookieUtilityKey);
     }
 }

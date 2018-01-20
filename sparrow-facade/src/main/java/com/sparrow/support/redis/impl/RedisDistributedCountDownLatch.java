@@ -31,20 +31,22 @@ import org.slf4j.LoggerFactory;
  */
 public class RedisDistributedCountDownLatch implements DistributedCountDownLatch {
     private static Logger logger = LoggerFactory.getLogger(RedisDistributedCountDownLatch.class);
-    private KEY productKey;
+    private KEY idempotent;
+    private CacheClient cacheClient;
 
-    public RedisDistributedCountDownLatch(KEY productKey) {
-        this.productKey = productKey;
+    public RedisDistributedCountDownLatch(CacheClient cacheClient,KEY idempotent) {
+        this.cacheClient=cacheClient;
+        this.idempotent = idempotent;
     }
 
     @Override
     public void consume(final String key) {
-        if (StringUtility.isNullOrEmpty(this.productKey)) {
+        if (this.idempotent==null) {
             throw new UnsupportedOperationException("product key is null");
         }
         while (true) {
             try {
-                CacheFactory.getProvider().removeFromList(this.productKey, key);
+             cacheClient.removeFromList(this.idempotent, key);
                 return;
             } catch (CacheConnectionException e) {
                 logger.error("monitor consume connection break ", e);
@@ -54,12 +56,12 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
 
     @Override
     public void product(final String key) {
-        if (StringUtility.isNullOrEmpty(this.productKey)) {
+        if (this.idempotent==null) {
             throw new UnsupportedOperationException("product key is null");
         }
         while (true) {
             try {
-                CacheFactory.getProvider().addToList(this.productKey, key);
+                cacheClient.addToSet(this.idempotent, key);
                 return;
             } catch (CacheConnectionException e) {
                 logger.error("monitor product connection break ", e);
@@ -69,20 +71,20 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
 
     @Override
     public boolean isFinish() {
-        if (StringUtility.isNullOrEmpty(this.productKey)) {
+        if (StringUtility.isNullOrEmpty(this.idempotent)) {
             throw new UnsupportedOperationException("product key is null");
         }
         Long productCount = null;
         try {
             final CacheClient cacheClient = CacheFactory.getProvider();
-            productCount = cacheClient.getSetSize(this.productKey);
+            productCount = cacheClient.getSetSize(this.idempotent);
             Boolean match = productCount==0;
-            logger.info("product key{}:count{},match {}", RedisDistributedCountDownLatch.this.productKey,
+            logger.info("product key{}:count{},match {}", RedisDistributedCountDownLatch.this.isFinish(),
                     productCount,
                     match);
             if (match) {
                 while (true) {
-                    Long success = cacheClient.expireAt(this.productKey, -1L);
+                    Long success = cacheClient.expireAt(this.idempotent, -1L);
                     if (success>0) {
                         return true;
                     }

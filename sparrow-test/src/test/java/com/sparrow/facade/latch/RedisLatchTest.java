@@ -17,6 +17,8 @@
 
 package com.sparrow.facade.latch;
 
+import com.sparrow.cache.CacheClient;
+import com.sparrow.cache.impl.redis.RedisCacheClient;
 import com.sparrow.constant.SPARROW_MODULE;
 import com.sparrow.constant.cache.KEY;
 import com.sparrow.container.Container;
@@ -33,10 +35,11 @@ public class RedisLatchTest {
     public static void main(String[] args) {
         Container container = ApplicationContext.getContainer();
         container.init();
+        CacheClient cacheClient=new RedisCacheClient();
 
         KEY.Business code = new KEY.Business(SPARROW_MODULE.CODE, "ID", "NAME", "PAIR");
         KEY product=new KEY.Builder().business(code).businessId("1").build();
-        final DistributedCountDownLatch distributedCountDownLatch = new RedisDistributedCountDownLatch(product);
+        final DistributedCountDownLatch distributedCountDownLatch = new RedisDistributedCountDownLatch(cacheClient,product);
         distributedCountDownLatch.product("1");
         distributedCountDownLatch.product("2");
         distributedCountDownLatch.consume("1");

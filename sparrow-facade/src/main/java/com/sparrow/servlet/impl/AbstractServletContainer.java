@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractServletContainer implements ServletContainer {
     private static Logger logger = LoggerFactory.getLogger(AbstractServletContainer.class);
     private ServletUtility servletUtility = ServletUtility.getInstance();
+    private CookieUtility cookieUtility;
 
     @Override
     public String getActionKey() {
@@ -50,12 +51,12 @@ public abstract class AbstractServletContainer implements ServletContainer {
 
     @Override
     public Long getCurrentUserId() {
-        return CookieUtility.getUser(this.getRequest()).getUserId();
+        return cookieUtility.getUser(this.getRequest()).getUserId();
     }
 
     @Override
     public String getCurrentUserName() {
-        return CookieUtility.getUser(this.getRequest()).getUserName();
+        return cookieUtility.getUser(this.getRequest()).getUserName();
     }
 
     @Override
@@ -113,12 +114,12 @@ public abstract class AbstractServletContainer implements ServletContainer {
 
     @Override
     public void cookie(String key, String value, Integer expireDays) {
-        CookieUtility.set(this.getResponse(), key, value, expireDays);
+        cookieUtility.set(this.getResponse(), key, value, expireDays);
     }
 
     @Override
     public void rootCookie(String key, String value, Integer expireDays) {
-        CookieUtility.setRoot(this.getResponse(), key, value, expireDays);
+        cookieUtility.setRoot(this.getResponse(), key, value, expireDays);
     }
 
     @Override

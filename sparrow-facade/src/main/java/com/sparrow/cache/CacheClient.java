@@ -36,6 +36,8 @@ public interface CacheClient {
 
     Long removeFromList(KEY key, Object value) throws CacheConnectionException;
 
+    Long removeFromSet(KEY key, Object value) throws CacheConnectionException;
+
     Long addToList(KEY key, String... value) throws CacheConnectionException;
 
     Integer addToList(KEY key, Iterable<Object> values) throws CacheConnectionException;

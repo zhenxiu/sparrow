@@ -17,6 +17,7 @@
 
 package com.sparrow.support.web;
 
+import com.sparrow.cache.CacheClient;
 import com.sparrow.cache.impl.redis.RedisPool;
 import com.sparrow.constant.CONFIG;
 import com.sparrow.constant.cache.KEY;
@@ -40,19 +41,25 @@ import javax.servlet.http.HttpServletResponse;
 public class CookieUtility {
     private static Logger logger = LoggerFactory.getLogger(CookieUtility.class);
 
-    public static void set(HttpServletResponse response, String key,
-                           String value, int days) {
+    private CacheClient cacheClient;
+
+    public void setCacheClient(CacheClient cacheClient) {
+        this.cacheClient = cacheClient;
+    }
+
+    public void set(HttpServletResponse response, String key,
+        String value, int days) {
         set(response, key, value, days, null);
     }
 
-    public static void setRoot(HttpServletResponse response, String key,
-                               String value, int days) {
+    public void setRoot(HttpServletResponse response, String key,
+        String value, int days) {
         String domain = Config.getValue(CONFIG.ROOT_DOMAIN);
         set(response, key, value, days, domain);
     }
 
-    public static void set(HttpServletResponse response, String key,
-                           String value, int days, String domain) {
+    public void set(HttpServletResponse response, String key,
+        String value, int days, String domain) {
         if (StringUtility.isNullOrEmpty(domain)) {
             domain = Config.getValue(CONFIG.DOMAIN);
         }
@@ -65,7 +72,7 @@ public class CookieUtility {
         response.addCookie(cookie);
     }
 
-    public static String get(Cookie[] cookies, String key) {
+    public String get(Cookie[] cookies, String key) {
         if (cookies == null || cookies.length == 0) {
             return null;
         } else {
@@ -78,33 +85,30 @@ public class CookieUtility {
         return null;
     }
 
-    public static Login getUser(HttpServletRequest request) {
+    public Login getUser(HttpServletRequest request) {
         final String sessionId = request.getSession().getId();
         String permission;
         KEY permissionKey = new KEY.Builder().business(KEY_USER.PERMISSION).businessId(sessionId).build();
         //如果支持redis
-        if (RedisPool.getInstance().isOpen()) {
-            try {
-                permission = CacheFactory.getProvider().get(permissionKey);
-            } catch (CacheConnectionException e) {
+
+        try {
+            if(cacheClient!=null) {
+                permission = cacheClient.get(permissionKey);
+            }
+            else {
                 permission = (String) request.getSession().getAttribute(permissionKey.getBusiness());
             }
-        } else {
+        } catch (CacheConnectionException e) {
             permission = (String) request.getSession().getAttribute(permissionKey.getBusiness());
         }
 
         if (StringUtility.isNullOrEmpty(permission)) {
-
-            permission = CookieUtility.get(request.getCookies(), permissionKey.getBusiness());
-            if (!StringUtility.isNullOrEmpty(permission)) {
-                if (RedisPool.getInstance().isOpen()) {
-                    try {
-                        CacheFactory.getProvider().setExpire(permissionKey, 60 * 60, permission);
-                    } catch (CacheConnectionException ignore) {
-                        logger.error("cookie connectin break", ignore);
-                    }
-                } else {
-                    request.getSession().setAttribute(permissionKey.getBusiness(), permission);
+            permission = this.get(request.getCookies(), permissionKey.getBusiness());
+            if (!StringUtility.isNullOrEmpty(permission) && cacheClient != null) {
+                try {
+                    cacheClient.setExpire(permissionKey, 60 * 60, permission);
+                } catch (CacheConnectionException ignore) {
+                    logger.error("cookie connectin break", ignore);
                 }
             }
         }
