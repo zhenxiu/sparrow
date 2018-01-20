@@ -99,6 +99,8 @@ public class SparrowRocketMQPublisher implements MQPublisher {
             producer.setRetryTimesWhenSendAsyncFailed(retryTimesWhenSendAsyncFailed);
             producer.setRetryTimesWhenSendFailed(retryTimesWhenSendAsyncFailed);
         }
+        producer.setCreateTopicKey(this.getTopic());
+
         int maxMessageSize = 1024000;
         producer.setMaxMessageSize(maxMessageSize);
         this.producer = producer;

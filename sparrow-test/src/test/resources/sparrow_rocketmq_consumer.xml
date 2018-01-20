@@ -13,8 +13,8 @@
     </bean>
 
     <bean name="mqConsumer" class="com.sparrow.rocketmq.impl.RocketMQConsumer">
-        <property name="groupName" value="consumer-group"/>
-        <property name="topicConfig" value="TopicTest:TagA|topic2:tag1,tag2"/>
+        <property name="groupName" value="sparrow-consumer-group"/>
+        <property name="topicConfig" value="sparrow-topic:sparrow"/>
         <property name="messageListener" ref="rocketMQMessageListener"/>
         <property name="nameServerAddress" value="127.0.0.1:9876"/>
     </bean>

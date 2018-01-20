@@ -32,7 +32,9 @@ public class RocketMQConsumer implements ContainerAware{
 
     private MessageListenerConcurrently messageListener;
 
-    private List<TopicTagPair> topicConfig;
+    private List<TopicTagPair> topicConfigList;
+
+    private String topicConfig;
 
     private String messageModel = "CLUSTERING";
 
@@ -77,7 +79,22 @@ public class RocketMQConsumer implements ContainerAware{
      * @param topicConfig
      */
     public void setTopicConfig(String topicConfig) {
-        this.topicConfig = new ArrayList<TopicTagPair>();
+       this.topicConfig=topicConfig;
+    }
+
+    public void setTopicConfig(List<TopicTagPair> topicTagPairList) {
+        this.topicConfigList = topicTagPairList;
+    }
+
+    public void setMessageModel(String messageModel) {
+        this.messageModel = messageModel;
+    }
+
+    public List<TopicTagPair> getTopicConfigList() {
+        if(this.topicConfigList!=null){
+          return   this.topicConfigList;
+        }
+        this.topicConfigList = new ArrayList<TopicTagPair>();
         if (!topicConfig.contains(SYMBOL.COLON)) {
             throw new UnknownFormatConversionException("format error for example topic1:tag1,tag1,tag3|topic2:tag1,tag2,tag3");
         }
@@ -88,20 +105,14 @@ public class RocketMQConsumer implements ContainerAware{
             topicTagPair.setTopic(topicTagsPair.getFirst());
             String[] tagArray = topicTagsPair.getSecond().split(",");
             topicTagPair.setTags(Arrays.asList(tagArray));
-            this.topicConfig.add(topicTagPair);
+            this.topicConfigList.add(topicTagPair);
         }
-    }
-
-    public void setTopicConfig(List<TopicTagPair> topicConfig) {
-        this.topicConfig = topicConfig;
-    }
-
-    public void setMessageModel(String messageModel) {
-        this.messageModel = messageModel;
+        return topicConfigList;
     }
 
     public void setConsumeFromLastOffset(String consumeFromLastOffset) {
         this.consumeFromLastOffset = consumeFromLastOffset;
+
     }
 
     public String getNameServerAddress() {
@@ -166,7 +177,7 @@ public class RocketMQConsumer implements ContainerAware{
             defaultMQPushConsumer.setConsumeMessageBatchMaxSize(1);
             setConsumeThread(defaultMQPushConsumer);
             //订阅多个topic
-            for (TopicTagPair topicTagPair : topicConfig) {
+            for (TopicTagPair topicTagPair : this.getTopicConfigList()) {
                 defaultMQPushConsumer.subscribe(topicTagPair.getTopic(), StringUtility.join(topicTagPair.getTags(), SYMBOL.VERTICAL_LINE));
             }
             defaultMQPushConsumer.setInstanceName(getInstanceName() + SYMBOL.UNDERLINE + groupName);

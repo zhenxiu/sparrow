@@ -11,9 +11,9 @@
 
     <bean name="mqPublisher" class="com.sparrow.rocketmq.impl.SparrowRocketMQPublisher">
         <property name="messageConverter" ref="messageConverter"/>
-        <property name="topic" value="TopicTest"/>
-        <property name="group" value="please_rename_unique_group_name"/>
+        <property name="topic" value="sparrow-topic"/>
+        <property name="group" value="sparrow-sender"/>
         <property name="nameServerAddress" value="127.0.0.1:9876"/>
-        <property name="tag" value="TagA"/>
+        <property name="tag" value="sparrow"/>
     </bean>
 </beans>

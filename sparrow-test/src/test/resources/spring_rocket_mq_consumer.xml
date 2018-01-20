@@ -19,10 +19,10 @@
 
     <bean id="mqConsumer" class="com.sparrow.rocketmq.spring.SpringRocketMQConsumer">
         <property name="groupName" value="consumer-group"/>
-        <property name="topicConfig">
+        <property name="topicConfigList">
             <list>
                 <bean class="com.sparrow.rocketmq.impl.TopicTagPair">
-                    <property name="topic" value="topic_test"/>
+                    <property name="topic" value="sparrow-topic"/>
                     <property name="tags">
                         <list>
                             <value>tag</value>
