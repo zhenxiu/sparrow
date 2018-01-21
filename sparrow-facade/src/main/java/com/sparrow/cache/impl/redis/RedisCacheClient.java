@@ -5,7 +5,10 @@ import com.sparrow.constant.cache.KEY;
 import com.sparrow.core.spi.JsonFactory;
 import com.sparrow.exception.CacheConnectionException;
 import com.sparrow.json.Json;
+import com.sparrow.support.Entity;
 import com.sparrow.utility.StringUtility;
+import java.util.ArrayList;
+import java.util.List;
 import redis.clients.jedis.ShardedJedis;
 
 import java.util.HashMap;
@@ -264,6 +267,16 @@ public class RedisCacheClient implements CacheClient {
     }
 
     @Override
+    public String set(final KEY key, final Entity value) throws CacheConnectionException {
+        return redisPool.execute(new Executor<String>() {
+            @Override
+            public String execute(ShardedJedis jedis) {
+                return jedis.set(key.key(), jsonProvider.toString(value));
+            }
+        });
+    }
+
+    @Override
     public String set(final KEY key, final Object value) throws CacheConnectionException {
         return redisPool.execute(new Executor<String>() {
             @Override
@@ -297,6 +310,31 @@ public class RedisCacheClient implements CacheClient {
         });
     }
 
+    @Override
+    public <T> List<T> getAllOfList(final KEY key, final Class clazz) throws CacheConnectionException {
+        return redisPool.execute(new Executor<List<T>>() {
+            @Override
+            public List<T> execute(ShardedJedis jedis) throws CacheConnectionException {
+                Long size= jedis.llen(key.key());
+                List<String> list= jedis.lrange(key.key(),0,size-1);
+                List<T> tList=new ArrayList<T>(size.intValue());
+                for(String s:list){
+                    tList.add((T)jsonProvider.parse(s, clazz));
+                }
+                return tList;
+            }
+        });
+    }
+    @Override
+    public  List<String> getAllOfList(final KEY key) throws CacheConnectionException {
+        return redisPool.execute(new Executor<List<String>>() {
+            @Override
+            public List<String> execute(ShardedJedis jedis) throws CacheConnectionException {
+                Long size= jedis.llen(key.key());
+                return jedis.lrange(key.key(),0,size-1);
+            }
+        });
+    }
     @Override
     public Long setIfNotExist(final KEY key, final Object value) throws CacheConnectionException {
         return redisPool.execute(new Executor<Long>() {

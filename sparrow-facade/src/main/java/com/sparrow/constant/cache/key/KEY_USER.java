@@ -20,8 +20,7 @@ package com.sparrow.constant.cache.key;
 import com.sparrow.constant.SPARROW_MODULE;
 import com.sparrow.constant.cache.KEY;
 import com.sparrow.enums.DATE_TIME_UNIT;
-import com.sparrow.utility.LockEntity;
-
+import com.sparrow.utility.LockConfig;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,19 +34,7 @@ public class KEY_USER {
      */
     public static final KEY.Business PERMISSION = new KEY.Business(SPARROW_MODULE.USER, "PERMISSION");
 
-    public static final String USER_PROPERTY_NAME = "userName";
-    public static final String USER_PROPERTY_LOGIN_NAME = "userLoginName";
-    public static final String USER_PROPERTY_CENT = "cent";
-    public static final String USER_PROPERTY_HEAD_IMG = "headImg";
-    public static final String USER_PROPERTY_REGISTER_TIME = "registerTime";
-    public static final String USER_PROPERTY_LAST_LOGIN_TIME = "lastLoginTime";
-    public static final String USER_PROPERTY_SEX = "sex";
-    public static final String USER_PROPERTY_SIGNATURE = "signature";
-    public static final String USER_PROPERTY_ACTIVATE = "activate";
-    public static final String USER_PROPERTY_ACTIVATE_TIME = "activateTime";
-    public static final String USER_PROPERTY_EMAIL = "email";
-
-    public static final Map<String, LockEntity> LOCK_CONFIG = new HashMap<String, LockEntity>() {
+    public static final Map<KEY.Business, LockConfig> LOCK_CONFIG = new HashMap<KEY.Business, LockConfig>() {
         /**
          *
          */
@@ -55,26 +42,20 @@ public class KEY_USER {
 
         {
             // 5分钟不能超10次 不顺延
-            put(LOCK_PUBLISH.getKey(), new LockEntity(5 * 60, 10,
-                    LOCK_PUBLISH.getKey(), false, false));
+            put(LOCK_PUBLISH, LockConfig.getRelativeLock(5 * 60, 10, false, false));
             // 30分钟之内不超过5次//todo 上线前要修改
-            put(LOCK_LOGIN, new LockEntity(30 * 60, 100000, LOCK_LOGIN,
+            put(LOCK_LOGIN, LockConfig.getRelativeLock(30 * 60, 100000,
                     true, false));
             // 24小时内登录一次加一次积分
-            put(LOCK_LOGIN_CENT, new LockEntity(24 * 60 * 60, 1,
-                    LOCK_LOGIN_CENT, false, false));
+            put(LOCK_LOGIN_CENT, LockConfig.getRelativeLock(24 * 60 * 60, 1, false, false));
             // 30分钟之内不超过5次
-            put(LOCK_FIND_PASSWORD, new LockEntity(30 * 60, 5,
-                    LOCK_FIND_PASSWORD, true, false));
+            put(LOCK_FIND_PASSWORD, LockConfig.getRelativeLock(30 * 60, 5,true, false));
             // 12小时内不超过20次
-            put(LOCK_REGISTER, new LockEntity(12 * 60 * 60, 20,
-                    LOCK_FIND_PASSWORD, false, false));
+            put(LOCK_REGISTER, LockConfig.getRelativeLock(12 * 60 * 60, 20, false, false));
             // 1天内只允许1 次
-            put(LOCK_DIG, new LockEntity(DATE_TIME_UNIT.DAY, 1,
-                    LOCK_DIG));
+            put(LOCK_DIG, LockConfig.getAbsoluteLock(DATE_TIME_UNIT.DAY, 1));
             // 1天只允许1次
-            put(LOCK_LIKE, new LockEntity(DATE_TIME_UNIT.DAY, 1,
-                    LOCK_LIKE));
+            put(LOCK_LIKE,  LockConfig.getAbsoluteLock(DATE_TIME_UNIT.DAY, 1));
         }
     };
 
@@ -93,34 +74,34 @@ public class KEY_USER {
     /**
      * user find password lock
      */
-    public static final String LOCK_FIND_PASSWORD = "LOCK.FIND.PASSWORD:%1$s";
+    public static final KEY.Business LOCK_FIND_PASSWORD =new KEY.Business(SPARROW_MODULE.USER,"LOCK","FIND","PASSWORD");
     /**
      * user login times lock
      */
-    public static final String LOCK_LOGIN = "LOCK.LOGIN:%1$s";
+    public static final KEY.Business LOCK_LOGIN = new KEY.Business(SPARROW_MODULE.USER,"LOCK","LOGIN");
     /**
      * user cent lock
      */
-    public static final String LOCK_LOGIN_CENT = "LOCK.LOGIN.CENT:%1$s";
+    public static final KEY.Business LOCK_LOGIN_CENT = new KEY.Business(SPARROW_MODULE.USER,"LOCK","LOGIN","CENT");
     /**
      * user register lock
      */
-    public static final String LOCK_REGISTER = "LOCK.REGISTER:%1$s";
+    public static final KEY.Business LOCK_REGISTER =new KEY.Business(SPARROW_MODULE.USER,"LOCK","REGISTER");
     /**
      * user dig lock
      */
-    public static final String LOCK_DIG = "LOCK.DIG:%1$s";
+    public static final KEY.Business LOCK_DIG =new KEY.Business(SPARROW_MODULE.USER,"LOCK","DIG");
     /**
      * user like lock
      */
-    public static final String LOCK_LIKE = "LOCK.LIKE:%1$s";
+    public static final KEY.Business LOCK_LIKE =new KEY.Business(SPARROW_MODULE.USER,"LOCK","LIKE");
 
     /**
      * user cent sort
      */
-    public static final String SORT_CENT = "SORT:USER.CENT";
+    public static final KEY.Business SORT_CENT =new KEY.Business(SPARROW_MODULE.USER,"SORT","CENT");
     /**
      * lastest login and high cent
      */
-    public static final String SORT_POPULARITY = "SORT:POPULARITY";
+    public static final KEY.Business SORT_POPULARITY = new KEY.Business(SPARROW_MODULE.USER,"SORT","POPULARITY");
 }

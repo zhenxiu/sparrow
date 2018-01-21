@@ -3,6 +3,8 @@ package com.sparrow.cache;
 import com.sparrow.constant.cache.KEY;
 import com.sparrow.exception.CacheConnectionException;
 
+import com.sparrow.support.Entity;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,11 +54,17 @@ public interface CacheClient {
 
     String setExpire(KEY key, Integer seconds, Object value) throws CacheConnectionException;
 
+    String set(KEY key, Entity value) throws CacheConnectionException;
+
     String set(KEY key, Object value) throws CacheConnectionException;
 
     String get(KEY key) throws CacheConnectionException;
 
     <T> T get(KEY key, Class clazz) throws CacheConnectionException;
+
+    <T> List<T> getAllOfList(KEY key, Class clazz) throws CacheConnectionException;
+
+    List<String> getAllOfList(KEY key) throws CacheConnectionException;
 
     Long setIfNotExist(KEY key, Object value) throws CacheConnectionException;
 

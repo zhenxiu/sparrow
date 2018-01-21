@@ -193,7 +193,7 @@ public class DateTimeUtility {
 
         Map<DATE_TIME_UNIT, Integer> defaultValue = new HashMap<DATE_TIME_UNIT, Integer>();
 
-        defaultValue.put(DATE_TIME_UNIT.MONTH, DIGIT.ZERO);
+        defaultValue.put(DATE_TIME_UNIT.MONTH, DIGIT.ONE);
         defaultValue.put(DATE_TIME_UNIT.DAY, DIGIT.ONE);
         defaultValue.put(DATE_TIME_UNIT.HOUR, DIGIT.ZERO);
         defaultValue.put(DATE_TIME_UNIT.MINUTE, DIGIT.ZERO);
@@ -231,8 +231,8 @@ public class DateTimeUtility {
      * @param timeseg2
      * @return
      */
-    public static boolean isTntersect(List<Long> timeseg1, List<Long> timeseg2) {
-        return timeseg1.get(DIGIT.ONE) >= timeseg2.get(DIGIT.ZERO)
-            && timeseg2.get(DIGIT.ONE) >= timeseg1.get(DIGIT.ZERO);
+    public static boolean isTntersect(Pair<Long,Long> timeseg1, Pair<Long,Long> timeseg2) {
+        return timeseg1.getFirst()>= timeseg2.getFirst()
+            && timeseg2.getSecond() >= timeseg1.getSecond();
     }
 }
