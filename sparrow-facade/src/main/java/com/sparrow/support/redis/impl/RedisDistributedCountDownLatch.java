@@ -33,9 +33,9 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
     private KEY monitor;
     private CacheClient cacheClient;
 
-    public RedisDistributedCountDownLatch(CacheClient cacheClient,KEY idempotent) {
+    public RedisDistributedCountDownLatch(CacheClient cacheClient,KEY monitorKey) {
         this.cacheClient=cacheClient;
-        this.monitor = idempotent;
+        this.monitor = monitorKey;
     }
 
     @Override
@@ -105,5 +105,10 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
             } catch (InterruptedException ignore) {
             }
         }
+    }
+
+    @Override
+    public boolean monitor() {
+       return this.monitor(2);
     }
 }

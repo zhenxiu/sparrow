@@ -82,9 +82,6 @@ public class RocketMQConsumer implements ContainerAware{
        this.topicConfig=topicConfig;
     }
 
-    public void setTopicConfig(List<TopicTagPair> topicTagPairList) {
-        this.topicConfigList = topicTagPairList;
-    }
 
     public void setMessageModel(String messageModel) {
         this.messageModel = messageModel;
@@ -207,5 +204,9 @@ public class RocketMQConsumer implements ContainerAware{
     @Override
     public void aware(Container container, String beanName) {
         this.start();
+    }
+
+    public void setTopicConfigList(List<TopicTagPair> topicConfigList) {
+        this.topicConfigList = topicConfigList;
     }
 }

@@ -26,5 +26,11 @@
     <bean name="source" class="com.sparrow.facade.beans.Source" scope="prototype"/>
     <bean name="target" class="com.sparrow.facade.beans.Target" scope="prototype"/>
     <bean name="user" class="com.sparrow.json.User" scope="prototype"/>
-    <bean name="redisPool" class="com.sparrow.cache.impl.redis.RedisPool"/>
+    <bean name="redisPool" class="com.sparrow.cache.impl.redis.RedisPool">
+        <property name="urls" value="127.0.0.1:6379"/>
+    </bean>
+
+    <bean name="cacheClient" class="com.sparrow.cache.impl.redis.RedisCacheClient">
+        <property name="redisPool" ref="redisPool"/>
+    </bean>
 </beans>

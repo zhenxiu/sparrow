@@ -77,7 +77,7 @@ public class SparrowRocketMQMessageListener implements MessageListenerConcurrent
                 if(!this.before(event,monitor,message.getKeys())){
                     return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
                 }
-                handler.handler(event);
+                handler.handle(event);
                 this.after(event,monitor,message.getKeys());
             } catch (Throwable e) {
                 logger.error("message error", e);

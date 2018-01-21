@@ -25,5 +25,5 @@ import com.sparrow.container.ContainerAware;
  * @author harry
  */
 public interface MQHandler<T extends MQEvent> extends ContainerAware {
-    void handler(T t) throws Throwable;
+    void handle(T t) throws Throwable;
 }

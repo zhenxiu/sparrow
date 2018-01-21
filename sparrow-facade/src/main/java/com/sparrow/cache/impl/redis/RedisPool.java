@@ -17,43 +17,36 @@
 
 package com.sparrow.cache.impl.redis;
 
-import com.sparrow.constant.CONFIG;
-import com.sparrow.constant.CONSTANT;
+import com.sparrow.constant.magic.SYMBOL;
+import com.sparrow.container.Container;
+import com.sparrow.container.ContainerAware;
+import com.sparrow.core.Pair;
 import com.sparrow.exception.CacheConnectionException;
-import com.sparrow.utility.Config;
-import com.sparrow.utility.StringUtility;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.*;
+import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.JedisShardInfo;
+import redis.clients.jedis.ShardedJedis;
+import redis.clients.jedis.ShardedJedisPool;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.util.Hashing;
 import redis.clients.util.Sharded;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author harry
  */
-public class RedisPool {
+public class RedisPool implements ContainerAware {
     private Logger logger = LoggerFactory.getLogger(RedisPool.class);
     private ShardedJedisPool pool = null;
 
-    private String host;
-    private String port;
+    private String urls;
     private Integer maxActive = 100;
     private Integer maxIdle = 50;
     private Integer maxWait = 50000;
     private Boolean testOnBorrow = true;
-
-    public void setHost(String host) {
-        this.host = host;
-    }
-
-    public void setPort(String port) {
-        this.port = port;
-    }
 
     public void setMaxActive(Integer maxActive) {
         this.maxActive = maxActive;
@@ -71,12 +64,14 @@ public class RedisPool {
         this.testOnBorrow = testOnBorrow;
     }
 
+    public void setUrls(String urls) {
+        this.urls = urls;
+    }
+
     public String getInfo() {
         StringBuilder poolInfo = new StringBuilder();
-        poolInfo.append(",host:");
-        poolInfo.append(host);
-        poolInfo.append(",port:");
-        poolInfo.append(port);
+        poolInfo.append(",url:");
+        poolInfo.append(urls);
         poolInfo.append("maxActive:");
         poolInfo.append(maxActive);
         poolInfo.append("maxIdle:");
@@ -89,30 +84,6 @@ public class RedisPool {
     }
 
     public RedisPool() {
-        JedisPoolConfig config = new JedisPoolConfig();
-        // 最大活动链接
-        config.setMaxActive(this.maxActive);
-        config.setMaxIdle(this.maxIdle);
-        config.setMaxWait(this.maxWait);//超时时间
-        config.setTestOnBorrow(this.testOnBorrow);
-
-        // 超过时则报错 阻塞 或增加链接数
-        config.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_FAIL);
-        String host = Config.getValue(CONFIG.REDIS_HOST);
-        if (StringUtility.isNullOrEmpty(host)) {
-            host = CONSTANT.LOCALHOST_IP;
-        }
-
-        String port = Config.getValue(CONFIG.REDIS_PORT);
-        if (StringUtility.isNullOrEmpty(port)) {
-            port = String.valueOf(Protocol.DEFAULT_PORT);
-        }
-
-        List<JedisShardInfo> jdsInfoList = new ArrayList<JedisShardInfo>(1);
-        JedisShardInfo infoA = new JedisShardInfo(host, port);
-        jdsInfoList.add(infoA);
-        pool = new ShardedJedisPool(config, jdsInfoList, Hashing.MURMUR_HASH,
-            Sharded.DEFAULT_KEY_TAG_PATTERN);
     }
 
     public <T> T execute(Executor<T> reader) throws CacheConnectionException {
@@ -124,8 +95,29 @@ public class RedisPool {
             return result;
         } catch (JedisConnectionException e) {
             this.pool.returnBrokenResource(jedis);
-            logger.error(this.getInfo() + ":" + e.getMessage());
+            logger.error(this.getInfo() + SYMBOL.COLON + e.getMessage());
             throw new CacheConnectionException(e.getMessage());
         }
+    }
+
+    @Override public void aware(Container container, String beanName) {
+        JedisPoolConfig config = new JedisPoolConfig();
+        // 最大活动链接
+        config.setMaxActive(this.maxActive);
+        config.setMaxIdle(this.maxIdle);
+        config.setMaxWait(this.maxWait);//超时时间
+        config.setTestOnBorrow(this.testOnBorrow);
+
+        // 超过时则报错 阻塞 或增加链接数
+        config.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_FAIL);
+        String[] urlArray = this.urls.split(SYMBOL.COMMA);
+        List<JedisShardInfo> jdsInfoList = new ArrayList<JedisShardInfo>(urlArray.length);
+        for (String url : urlArray) {
+            Pair<String, String> urlPortPair = Pair.split(url, SYMBOL.COLON);
+            JedisShardInfo infoA = new JedisShardInfo(urlPortPair.getFirst(), urlPortPair.getSecond());
+            jdsInfoList.add(infoA);
+        }
+        pool = new ShardedJedisPool(config, jdsInfoList, Hashing.MURMUR_HASH,
+            Sharded.DEFAULT_KEY_TAG_PATTERN);
     }
 }
