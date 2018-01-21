@@ -25,13 +25,12 @@ public class DocumentParser extends ParseContext{
         String value = element.getAttribute(VALUE);
         Element parentElement = (Element) element.getParentNode();
         String parentBeanName = parentElement.getAttribute(NAME);
-        String placeHolderKey = parentElement.getAttribute(PLACE_HOLDER_KEY);
         String scope = parentElement.getAttribute(SCOPE)
                 .trim().toLowerCase();
         // 如果当前对象的父对象是单例
         // 则注入该对象
         if (SINGLETON.equals(scope) || SYMBOL.EMPTY.equals(scope)) {
-            setSingletonProperty(propertyName, refBeanName, value, parentBeanName, placeHolderKey);
+            setSingletonProperty(propertyName, refBeanName, value, parentBeanName);
             return;
         }
 
@@ -48,12 +47,11 @@ public class DocumentParser extends ParseContext{
     }
 
 
-    private void setSingletonProperty(String propertyName, String refBeanName, String value, String parentBeanName,
-                                      String placeHolderKey) throws Exception {
+    private void setSingletonProperty(String propertyName, String refBeanName, String value, String parentBeanName) throws Exception {
         Object parent = this.getBean(parentBeanName);
         if (StringUtility.isNullOrEmpty(refBeanName)) {
             this.setValue(parent, propertyName,
-                    value, placeHolderKey);
+                    value);
             return;
         }
 

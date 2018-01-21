@@ -7,6 +7,7 @@ import com.sparrow.container.impl.SparrowContainerImpl;
 import com.sparrow.core.TypeConvertor;
 import com.sparrow.exception.DuplicateActionMethodException;
 import com.sparrow.utility.StringUtility;
+import java.lang.reflect.InvocationTargetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +30,6 @@ public class ParseContext {
     protected static final String VALUE = "value";
     protected static final String REF = "ref";
     protected static final String SCOPE = "scope";
-    protected static final String PLACE_HOLDER_KEY = "place-holder-key";
     protected static final String CLASS_NAME = "class";
     protected static final String BEAN = "bean";
     protected static final String IMPORT = "import";
@@ -175,22 +175,9 @@ public class ParseContext {
      * @param currentObject  对象
      * @param propertyName   依赖
      * @param value          value
-     * @param placeHolderKey place hold key
-     * @throws Exception
+     *  placeHolderKey place hold key 由maven pom 管理
      */
-    protected  <T> void setValue(T currentObject, String propertyName, String value, String placeHolderKey)
-            throws Exception {
-
-        if (value.startsWith(SYMBOL.DOLLAR + SYMBOL.BIG_LEFT_PARENTHESIS) && value.endsWith(SYMBOL.BIG_RIGHT_PARENTHESIS)) {
-            String key = value.replace(SYMBOL.DOLLAR + SYMBOL.BIG_LEFT_PARENTHESIS, SYMBOL.EMPTY);
-            key = key.replace(SYMBOL.BIG_RIGHT_PARENTHESIS, SYMBOL.EMPTY);
-            Properties properties = new Properties();
-            try {
-                properties.load(SparrowContainerImpl.class.getResourceAsStream(SYMBOL.SLASH + placeHolderKey + ".properties"));
-            } catch (IOException ignore) {
-            }
-            value = properties.getProperty(key);
-        }
+    protected  <T> void setValue(T currentObject, String propertyName, String value) throws InvocationTargetException, IllegalAccessException {
         // set方法
         String setBeanMethod = StringUtility.getSetMethodNameByField(propertyName);
         Class<?> currentClass = currentObject.getClass();
@@ -204,8 +191,12 @@ public class ParseContext {
                 method = currentClass.getMethod(setBeanMethod, Integer.class);
                 method.invoke(currentClass, Integer.valueOf(value));
             } catch (NoSuchMethodException e2) {
-                logger.error("no such method " + setBeanMethod, e2);
-                throw e2;
+                try {
+                    method = currentClass.getMethod(setBeanMethod, Boolean.class);
+                    method.invoke(currentClass, Boolean.valueOf(value));
+                } catch (NoSuchMethodException e1) {
+                   logger.error("no method",e1);
+                }
             }
         }
     }

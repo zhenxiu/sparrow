@@ -18,22 +18,19 @@
 package com.sparrow.support.web;
 
 import com.sparrow.cache.CacheClient;
-import com.sparrow.cache.impl.redis.RedisPool;
 import com.sparrow.constant.CONFIG;
 import com.sparrow.constant.cache.KEY;
 import com.sparrow.constant.cache.key.KEY_USER;
-import com.sparrow.core.spi.CacheFactory;
 import com.sparrow.exception.CacheConnectionException;
 import com.sparrow.support.Login;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.JSUtility;
 import com.sparrow.utility.StringUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author harry

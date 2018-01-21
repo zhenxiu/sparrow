@@ -2,17 +2,22 @@ package com.sparrow.rocketmq.impl;
 
 import com.sparrow.cache.CacheClient;
 import com.sparrow.constant.cache.KEY;
-import com.sparrow.mq.*;
+import com.sparrow.exception.CacheConnectionException;
+import com.sparrow.mq.MQContainerProvider;
+import com.sparrow.mq.MQEvent;
+import com.sparrow.mq.MQHandler;
+import com.sparrow.mq.MQ_CLIENT;
+import com.sparrow.mq.QueueHandlerMappingContainer;
 import com.sparrow.rocketmq.MessageConverter;
 import com.sparrow.support.redis.impl.RedisDistributedCountDownLatch;
+import com.sparrow.utility.StringUtility;
+import java.util.List;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyContext;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
 import org.apache.rocketmq.client.consumer.listener.MessageListenerConcurrently;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * Created by harry on 2017/6/14.
@@ -36,17 +41,24 @@ public class SparrowRocketMQMessageListener implements MessageListenerConcurrent
         this.messageConverter = messageConverter;
     }
 
-    protected void before(MQEvent event,String keys) {
-        logger.info("starting sparrow consume {},keys {}...",event,keys);
+    protected boolean before(MQEvent event,KEY monitor, String keys) {
+        logger.info("starting sparrow consume {},monitor {}, keys {}...",event,monitor,keys);
+        if (monitor==null) {
+            return true;
+        }
+        try {
+            return !cacheClient.existInSet(monitor,keys);
+        } catch (CacheConnectionException e) {
+            return true;
+        }
     }
 
-    protected void after(MQEvent event,String idempotentKey,String keys) {
-        logger.info("ending sparrow consume {},keys {} ...",event,keys);
-        if (idempotentKey == null) {
+    protected void after(MQEvent event,KEY monitor,String keys) {
+        logger.info("ending sparrow consume {},monitor {},keys {} ...",event,monitor,keys);
+        if (StringUtility.isNullOrEmpty(monitor)) {
             return;
         }
-        KEY idempotent=KEY.parse(idempotentKey);
-        RedisDistributedCountDownLatch redisDistributedCountDownLatch = new RedisDistributedCountDownLatch(cacheClient, idempotent);
+        RedisDistributedCountDownLatch redisDistributedCountDownLatch = new RedisDistributedCountDownLatch(cacheClient, monitor);
         redisDistributedCountDownLatch.consume(keys);
     }
 
@@ -61,9 +73,12 @@ public class SparrowRocketMQMessageListener implements MessageListenerConcurrent
             MQHandler handler = queueHandlerMappingContainer.get(type);
             try {
                 MQEvent event = messageConverter.fromMessage(message);
-                this.before(event,message.getKeys());
+                KEY monitor=KEY.parse(message.getProperties().get(MQ_CLIENT.MONITOR_KEY));
+                if(!this.before(event,monitor,message.getKeys())){
+                    return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                }
                 handler.handler(event);
-                this.after(event,message.getProperties().get(MQ_CLIENT.IDEMPOTENT_KEY),message.getKeys());
+                this.after(event,monitor,message.getKeys());
             } catch (Throwable e) {
                 logger.error("message error", e);
             }

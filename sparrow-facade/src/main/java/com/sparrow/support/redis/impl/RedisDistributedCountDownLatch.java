@@ -19,7 +19,6 @@ package com.sparrow.support.redis.impl;
 
 import com.sparrow.cache.CacheClient;
 import com.sparrow.constant.cache.KEY;
-import com.sparrow.core.spi.CacheFactory;
 import com.sparrow.exception.CacheConnectionException;
 import com.sparrow.support.latch.DistributedCountDownLatch;
 import com.sparrow.utility.StringUtility;
@@ -31,22 +30,22 @@ import org.slf4j.LoggerFactory;
  */
 public class RedisDistributedCountDownLatch implements DistributedCountDownLatch {
     private static Logger logger = LoggerFactory.getLogger(RedisDistributedCountDownLatch.class);
-    private KEY idempotent;
+    private KEY monitor;
     private CacheClient cacheClient;
 
     public RedisDistributedCountDownLatch(CacheClient cacheClient,KEY idempotent) {
         this.cacheClient=cacheClient;
-        this.idempotent = idempotent;
+        this.monitor = idempotent;
     }
 
     @Override
     public void consume(final String key) {
-        if (this.idempotent==null) {
+        if (this.monitor ==null) {
             throw new UnsupportedOperationException("product key is null");
         }
         while (true) {
             try {
-             cacheClient.removeFromList(this.idempotent, key);
+             cacheClient.removeFromSet(this.monitor, key);
                 return;
             } catch (CacheConnectionException e) {
                 logger.error("monitor consume connection break ", e);
@@ -56,12 +55,12 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
 
     @Override
     public void product(final String key) {
-        if (this.idempotent==null) {
+        if (this.monitor ==null) {
             throw new UnsupportedOperationException("product key is null");
         }
         while (true) {
             try {
-                cacheClient.addToSet(this.idempotent, key);
+                cacheClient.addToSet(this.monitor, key);
                 return;
             } catch (CacheConnectionException e) {
                 logger.error("monitor product connection break ", e);
@@ -71,20 +70,19 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
 
     @Override
     public boolean isFinish() {
-        if (StringUtility.isNullOrEmpty(this.idempotent)) {
+        if (StringUtility.isNullOrEmpty(this.monitor)) {
             throw new UnsupportedOperationException("product key is null");
         }
         Long productCount = null;
         try {
-            final CacheClient cacheClient = CacheFactory.getProvider();
-            productCount = cacheClient.getSetSize(this.idempotent);
+            productCount = cacheClient.getSetSize(this.monitor);
             Boolean match = productCount==0;
             logger.info("product key{}:count{},match {}", RedisDistributedCountDownLatch.this.isFinish(),
                     productCount,
                     match);
             if (match) {
                 while (true) {
-                    Long success = cacheClient.expireAt(this.idempotent, -1L);
+                    Long success = cacheClient.expireAt(this.monitor, -1L);
                     if (success>0) {
                         return true;
                     }

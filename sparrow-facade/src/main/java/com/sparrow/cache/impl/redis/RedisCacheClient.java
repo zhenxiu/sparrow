@@ -186,6 +186,16 @@ public class RedisCacheClient implements CacheClient {
     }
 
     @Override
+    public Boolean existInSet(final KEY key, final Object value) throws CacheConnectionException {
+        return redisPool.execute(new Executor<Boolean>() {
+            @Override
+            public Boolean execute(ShardedJedis jedis) {
+                return jedis.sismember(key.key(), value.toString());
+            }
+        });
+    }
+
+    @Override
     public Long addToList(final KEY key, final String... value) throws CacheConnectionException {
         return redisPool.execute(new Executor<Long>() {
             @Override

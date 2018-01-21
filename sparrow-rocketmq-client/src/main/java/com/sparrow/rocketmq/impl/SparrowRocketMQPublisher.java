@@ -3,27 +3,22 @@ package com.sparrow.rocketmq.impl;
 import com.sparrow.cache.CacheClient;
 import com.sparrow.constant.cache.KEY;
 import com.sparrow.container.Container;
-import com.sparrow.core.spi.CacheFactory;
-import com.sparrow.exception.CacheConnectionException;
 import com.sparrow.mq.MQEvent;
 import com.sparrow.mq.MQMessageSendException;
 import com.sparrow.mq.MQPublisher;
 import com.sparrow.mq.MQ_CLIENT;
 import com.sparrow.rocketmq.MessageConverter;
 import com.sparrow.support.redis.impl.RedisDistributedCountDownLatch;
-import org.apache.rocketmq.client.exception.MQBrokerException;
+import java.util.Collections;
+import java.util.UUID;
 import org.apache.rocketmq.client.exception.MQClientException;
 import org.apache.rocketmq.client.producer.DefaultMQProducer;
 import org.apache.rocketmq.client.producer.MQProducer;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.SendStatus;
 import org.apache.rocketmq.common.message.Message;
-import org.apache.rocketmq.remoting.exception.RemotingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collections;
-import java.util.UUID;
 
 /**
  * Created by harry on 2017/6/14.
@@ -34,11 +29,15 @@ public class SparrowRocketMQPublisher implements MQPublisher {
     private String group;
     private String topic;
     private String tag;
-    private CacheClient cacheClient = CacheFactory.getProvider();
+    private CacheClient cacheClient;
 
     private MQProducer producer;
     private MessageConverter messageConverter;
     private Integer retryTimesWhenSendAsyncFailed = 5;
+
+    public void setCacheClient(CacheClient cacheClient) {
+        this.cacheClient = cacheClient;
+    }
 
     public String getNameServerAddress() {
         return nameServerAddress;
@@ -88,11 +87,11 @@ public class SparrowRocketMQPublisher implements MQPublisher {
         this.retryTimesWhenSendAsyncFailed = retryTimesWhenSendAsyncFailed;
     }
 
-    public void after(MQEvent event, KEY idempotent, String msgKey) {
-        if (idempotent == null) {
+    public void after(MQEvent event, KEY monitor, String msgKey) {
+        if (monitor == null) {
             return;
         }
-        RedisDistributedCountDownLatch redisDistributedCountDownLatch = new RedisDistributedCountDownLatch(cacheClient, idempotent);
+        RedisDistributedCountDownLatch redisDistributedCountDownLatch = new RedisDistributedCountDownLatch(cacheClient, monitor);
         redisDistributedCountDownLatch.product(msgKey);
     }
 
@@ -102,16 +101,16 @@ public class SparrowRocketMQPublisher implements MQPublisher {
     }
 
     @Override
-    public void publish(MQEvent event, KEY idempotent) {
+    public void publish(MQEvent event, KEY monitor) {
 
 
         Message msg = this.messageConverter.createMessage(topic, tag, event);
         String key = UUID.randomUUID().toString();
         msg.setKeys(Collections.singletonList(key));
-        if (idempotent != null) {
-            msg.getProperties().put(MQ_CLIENT.IDEMPOTENT_KEY,idempotent.key());
+        if (monitor != null) {
+            msg.getProperties().put(MQ_CLIENT.MONITOR_KEY,monitor.key());
         }
-        logger.info("event {} ,key {},msgKey {}", event, idempotent, key);
+        logger.info("event {} ,key {},msgKey {}", event, monitor, key);
         SendResult sendResult = null;
         int retryTimes = 0;
         while (retryTimes < retryTimesWhenSendAsyncFailed) {
@@ -124,7 +123,7 @@ public class SparrowRocketMQPublisher implements MQPublisher {
                 if (!sendResult.getSendStatus().equals(SendStatus.SEND_OK)) {
                     throw new MQMessageSendException(sendResult.toString());
                 }
-                this.after(event, idempotent, key);
+                this.after(event, monitor, key);
                 break;
             } catch (Throwable e) {
                 logger.warn(e.getClass().getSimpleName() + " retry", e);

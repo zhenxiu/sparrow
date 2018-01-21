@@ -42,6 +42,9 @@ public class KEY {
     }
 
     public static KEY parse(String key){
+        if(StringUtility.isNullOrEmpty(key)){
+            return null;
+        }
         KEY k=new KEY();
         Pair<String,String> businessWithId=Pair.split(key,SYMBOL.COLON);
         k.businessId=businessWithId.getSecond();
