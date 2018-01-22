@@ -2,16 +2,17 @@ package com.sparrow.cache.impl.redis;
 
 import com.sparrow.cache.CacheClient;
 import com.sparrow.constant.cache.KEY;
+import com.sparrow.core.TypeConverter;
 import com.sparrow.core.spi.JsonFactory;
 import com.sparrow.exception.CacheConnectionException;
 import com.sparrow.json.Json;
 import com.sparrow.support.Entity;
 import com.sparrow.utility.StringUtility;
-import java.util.ArrayList;
-import java.util.List;
 import redis.clients.jedis.ShardedJedis;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,28 +29,30 @@ public class RedisCacheClient implements CacheClient {
 
     @Override
     public Map<String, String> hashGetAll(final KEY key) throws CacheConnectionException {
-        return redisPool.execute(new Executor<Map<String, String>>() {
-            @Override
-            public Map<String, String> execute(ShardedJedis jedis) throws CacheConnectionException {
-                return jedis.hgetAll(key.key());
-            }
-        });
+        return this.hashGetAll(key, String.class, String.class);
     }
 
     @Override
-    public <T> Map<String, T> hashGetAll(final KEY key, final Class clazz) throws CacheConnectionException {
-        return redisPool.execute(new Executor<Map<String, T>>() {
+    public <K, T> Map<K, T> hashGetAll(final KEY key, final Class keyClazz, final Class clazz) throws CacheConnectionException {
+        return redisPool.execute(new Executor<Map<K, T>>() {
             @Override
-            public Map<String, T> execute(ShardedJedis jedis) throws CacheConnectionException {
+            public Map<K, T> execute(ShardedJedis jedis) throws CacheConnectionException {
                 Json json = JsonFactory.getProvider();
-                Map<String, T> result = new HashMap<String, T>();
+                Map<K, T> result = new HashMap<K, T>();
                 Map<String, String> map = jedis.hgetAll(key.key());
+                TypeConverter typeConverter = new TypeConverter(clazz);
+                TypeConverter keyTypeConverter = new TypeConverter(keyClazz);
                 for (String k : map.keySet()) {
                     if (StringUtility.isNullOrEmpty(map.get(k))) {
                         continue;
                     }
-                    T t = (T) json.parse(map.get(k), clazz);
-                    result.put(k, t);
+                    T t = null;
+                    if (Entity.class.isAssignableFrom(clazz)) {
+                        t = (T) json.parse(map.get(k), clazz);
+                    } else {
+                        t = (T) typeConverter.convert(map.get(k));
+                    }
+                    result.put((K) keyTypeConverter.convert(k), t);
                 }
                 return result;
             }
@@ -85,7 +88,11 @@ public class RedisCacheClient implements CacheClient {
                 if (StringUtility.isNullOrEmpty(value)) {
                     return null;
                 }
-                return (T) JsonFactory.getProvider().parse(value, clazz);
+                if (Entity.class.isAssignableFrom(clazz)) {
+                    return (T) JsonFactory.getProvider().parse(value, clazz);
+                }
+                TypeConverter typeConverter = new TypeConverter(clazz);
+                return (T) typeConverter.convert(value);
             }
         });
     }
@@ -305,9 +312,18 @@ public class RedisCacheClient implements CacheClient {
                 if (StringUtility.isNullOrEmpty(json)) {
                     return null;
                 }
-                return (T) jsonProvider.parse(json, clazz);
+                if (Entity.class.isAssignableFrom(clazz)) {
+                    return (T) jsonProvider.parse(json, clazz);
+                }
+                TypeConverter typeConverter = new TypeConverter(clazz);
+                return (T) typeConverter.convert(json);
             }
         });
+    }
+
+    @Override
+    public List<String> getAllOfList(final KEY key) throws CacheConnectionException {
+        return this.getAllOfList(key, String.class);
     }
 
     @Override
@@ -315,26 +331,22 @@ public class RedisCacheClient implements CacheClient {
         return redisPool.execute(new Executor<List<T>>() {
             @Override
             public List<T> execute(ShardedJedis jedis) throws CacheConnectionException {
-                Long size= jedis.llen(key.key());
-                List<String> list= jedis.lrange(key.key(),0,size-1);
-                List<T> tList=new ArrayList<T>(size.intValue());
-                for(String s:list){
-                    tList.add((T)jsonProvider.parse(s, clazz));
+                Long size = jedis.llen(key.key());
+                List<String> list = jedis.lrange(key.key(), 0, size - 1);
+                List<T> tList = new ArrayList<T>(size.intValue());
+                TypeConverter typeConverter = new TypeConverter(null, clazz);
+                for (String s : list) {
+                    if (Entity.class.isAssignableFrom(clazz)) {
+                        tList.add((T) jsonProvider.parse(s, clazz));
+                        continue;
+                    }
+                    tList.add((T) typeConverter.convert(s));
                 }
                 return tList;
             }
         });
     }
-    @Override
-    public  List<String> getAllOfList(final KEY key) throws CacheConnectionException {
-        return redisPool.execute(new Executor<List<String>>() {
-            @Override
-            public List<String> execute(ShardedJedis jedis) throws CacheConnectionException {
-                Long size= jedis.llen(key.key());
-                return jedis.lrange(key.key(),0,size-1);
-            }
-        });
-    }
+
     @Override
     public Long setIfNotExist(final KEY key, final Object value) throws CacheConnectionException {
         return redisPool.execute(new Executor<Long>() {

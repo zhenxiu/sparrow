@@ -44,7 +44,7 @@ public class ClassUtility {
         try {
             List<Class> allClass = getClasses(packageName);
             for (Class clazz : allClass) {
-                if (!clazz.isAssignableFrom(c)) {
+                if (!c.isAssignableFrom(clazz)) {
                     continue;
                 }
                 if (!c.equals(clazz)) {

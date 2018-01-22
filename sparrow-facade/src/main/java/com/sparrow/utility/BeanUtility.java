@@ -19,7 +19,7 @@ package com.sparrow.utility;
 
 import com.sparrow.cg.MethodAccessor;
 import com.sparrow.container.Container;
-import com.sparrow.core.TypeConvertor;
+import com.sparrow.core.TypeConverter;
 import com.sparrow.core.spi.ApplicationContext;
 
 import java.util.List;
@@ -35,9 +35,9 @@ public class BeanUtility {
         MethodAccessor sourceMethodAccessor = container.getProxyBean(source.getClass());
         MethodAccessor targetMethodAccessor = container.getProxyBean(target.getClass());
 
-        List<TypeConvertor> targetFieldList = container.getFieldList(target.getClass());
+        List<TypeConverter> targetFieldList = container.getFieldList(target.getClass());
 
-        for (TypeConvertor targetField : targetFieldList) {
+        for (TypeConverter targetField : targetFieldList) {
             if (ignoreProperties != null && StringUtility.existInArray(ignoreProperties, targetField.getName())) {
                 continue;
             }

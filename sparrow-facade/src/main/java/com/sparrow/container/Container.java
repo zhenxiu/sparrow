@@ -18,7 +18,7 @@
 package com.sparrow.container;
 
 import com.sparrow.cg.MethodAccessor;
-import com.sparrow.core.TypeConvertor;
+import com.sparrow.core.TypeConverter;
 import com.sparrow.enums.CONTAINER;
 
 import java.lang.reflect.Method;
@@ -44,7 +44,7 @@ public interface Container {
      * @param clazz
      * @return
      */
-    List<TypeConvertor> getFieldList(Class clazz);
+    List<TypeConverter> getFieldList(Class clazz);
 
     /**
      * 获取action method

@@ -21,7 +21,7 @@ import com.sparrow.cg.MethodAccessor;
 import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.container.Container;
 import com.sparrow.container.ContainerAware;
-import com.sparrow.core.TypeConvertor;
+import com.sparrow.core.TypeConverter;
 import com.sparrow.mvc.ServletInvocableHandlerMethod;
 import com.sparrow.mvc.resolver.HandlerMethodArgumentResolver;
 import com.sparrow.support.Entity;
@@ -60,8 +60,8 @@ public class RequestParameterArgumentResolverImpl implements HandlerMethodArgume
             MethodAccessor methodAccessor = container
                 .getProxyBean(methodParameter.getParameterType());
 
-            List<TypeConvertor> methods = container.getFieldList(methodParameter.getParameterType());
-            for (TypeConvertor field : methods) {
+            List<TypeConverter> methods = container.getFieldList(methodParameter.getParameterType());
+            for (TypeConverter field : methods) {
                 String parameterName4Request = StringUtility.setFirstByteLowerCase(field.getName());
                 parameter = request
                     .getParameter(parameterName4Request);
@@ -94,7 +94,7 @@ public class RequestParameterArgumentResolverImpl implements HandlerMethodArgume
             }
             return parameters;
         }
-        return new TypeConvertor(parameterName, methodParameter.getParameterType()).convert(request.getParameter(parameterName));
+        return new TypeConverter(parameterName, methodParameter.getParameterType()).convert(request.getParameter(parameterName));
     }
 
     @Override

@@ -23,7 +23,7 @@ import com.sparrow.constant.CONSTANT;
 import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.container.Container;
 import com.sparrow.core.spi.ApplicationContext;
-import com.sparrow.core.TypeConvertor;
+import com.sparrow.core.TypeConverter;
 import com.sparrow.core.Pair;
 import com.sparrow.cg.MethodAccessor;
 import com.sparrow.cryptogram.ThreeDES;
@@ -659,10 +659,10 @@ public class StringUtility {
 
     public static String getParameter(Entity entity) {
         Container container = ApplicationContext.getContainer();
-        List<TypeConvertor> fieldList = container.getFieldList(entity.getClass());
+        List<TypeConverter> fieldList = container.getFieldList(entity.getClass());
         MethodAccessor methodAccessor = container.getProxyBean(entity.getClass());
         StringBuilder sb = new StringBuilder();
-        for (TypeConvertor field : fieldList) {
+        for (TypeConverter field : fieldList) {
             Object o = methodAccessor.get(entity, field.getName());
             if (StringUtility.isNullOrEmpty(o)) {
                 continue;

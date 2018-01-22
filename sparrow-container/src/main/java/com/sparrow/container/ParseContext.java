@@ -3,15 +3,13 @@ package com.sparrow.container;
 import com.sparrow.cg.Generator4MethodAccessor;
 import com.sparrow.cg.MethodAccessor;
 import com.sparrow.constant.magic.SYMBOL;
-import com.sparrow.container.impl.SparrowContainerImpl;
-import com.sparrow.core.TypeConvertor;
+import com.sparrow.core.TypeConverter;
 import com.sparrow.exception.DuplicateActionMethodException;
 import com.sparrow.utility.StringUtility;
 import java.lang.reflect.InvocationTargetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -54,7 +52,7 @@ public class ParseContext {
     /**
      * 实体的field 访问方法缓存
      */
-    protected final Map<String, List<TypeConvertor>> fieldCache = new ConcurrentHashMap<String, List<TypeConvertor>>();
+    protected final Map<String, List<TypeConverter>> fieldCache = new ConcurrentHashMap<String, List<TypeConverter>>();
     /**
      * controller实体对象的操作方法缓存
      */
@@ -289,12 +287,12 @@ public class ParseContext {
         this.proxyBeanCache.put(beanClass.getSimpleName(), methodAccessor);
         // 初始化bean 的get set 方法
         // 初始化bean 的get set 方法
-        List<TypeConvertor> typeConverterList = new ArrayList<TypeConvertor>();
+        List<TypeConverter> typeConverterList = new ArrayList<TypeConverter>();
         Method[] methods = beanClass.getDeclaredMethods();
         for (Method method : methods) {
             String methodName = method.getName();
             if (methodName.startsWith("get")) {
-                typeConverterList.add(new TypeConvertor(StringUtility.getFieldByGetMethod(methodName), method.getReturnType()));
+                typeConverterList.add(new TypeConverter(StringUtility.getFieldByGetMethod(methodName), method.getReturnType()));
             }
         }
         this.fieldCache.put(clazzName, typeConverterList);

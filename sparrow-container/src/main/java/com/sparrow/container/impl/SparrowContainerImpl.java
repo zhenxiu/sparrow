@@ -24,7 +24,7 @@ import com.sparrow.constant.SYS_OBJECT_NAME;
 import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.container.Container;
 import com.sparrow.container.ContainerAware;
-import com.sparrow.core.TypeConvertor;
+import com.sparrow.core.TypeConverter;
 import com.sparrow.enums.CONTAINER;
 import com.sparrow.support.Initializer;
 import com.sparrow.support.Login;
@@ -115,7 +115,7 @@ public class SparrowContainerImpl extends DocumentParser implements Container {
     }
 
     @Override
-    public List<TypeConvertor> getFieldList(Class clazz) {
+    public List<TypeConverter> getFieldList(Class clazz) {
         String clazzName = clazz.getSimpleName();
         return fieldCache.get(clazzName);
     }

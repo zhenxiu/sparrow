@@ -27,8 +27,8 @@ import java.sql.Timestamp;
 /**
  * @author harry
  */
-public class TypeConvertor {
-    public TypeConvertor() {
+public class TypeConverter {
+    public TypeConverter() {
     }
 
     protected String name;
@@ -42,14 +42,18 @@ public class TypeConvertor {
      * @param value
      * @param type
      */
-    public TypeConvertor(String name, String value, Class type) {
+    public TypeConverter(String name, String value, Class type) {
         this.name = name;
         this.value = value;
         this.type = type;
     }
 
-    public TypeConvertor(String name, Class type) {
+    public TypeConverter(String name, Class type) {
         this(name, null, type);
+    }
+
+    public TypeConverter(Class type) {
+        this(null, null, type);
     }
 
     public String getName() {
@@ -70,14 +74,15 @@ public class TypeConvertor {
             return null;
         }
         try {
+            if (this.getType() == String.class) {
+                return value;
+            }
+
             if (this.getType() == int.class || this.getType() == Integer.class) {
                 return Integer.valueOf(value);
             }
             if (this.getType() == long.class || this.getType() == Long.class) {
                 return Long.valueOf(value);
-            }
-            if (this.getType() == String.class) {
-                return value;
             }
             if (this.getType() == Date.class) {
                 return Date.valueOf(value);
@@ -92,7 +97,7 @@ public class TypeConvertor {
                 boolean b = false;
                 if (!StringUtility.isNullOrEmpty(value)) {
                     if (String.valueOf(STATUS_RECORD.ENABLE
-                        .ordinal()).equals(value) || Boolean.TRUE.toString().equalsIgnoreCase(value)) {
+                            .ordinal()).equals(value) || Boolean.TRUE.toString().equalsIgnoreCase(value)) {
                         b = true;
                     }
                 }

@@ -26,7 +26,9 @@ public class KEY_USER_COUNT {
      * 用户count
      */
     public static final KEY.Business COUNT = new KEY.Business(SPARROW_MODULE.COUNT, "USER");
-    public static final KEY.Business PUBLISHED = new KEY.Business(SPARROW_MODULE.COUNT, "PUBLISHED");
-    public static final KEY.Business ATTENTION = new KEY.Business(SPARROW_MODULE.COUNT, "ATTENTION");
-    public static final KEY.Business FANS = new KEY.Business(SPARROW_MODULE.COUNT, "FANS");
+
+    
+    public static final String USER_COUNT_FIELD_PUBLISHED = "PUBLISHED";
+    public static final String USER_COUNT_FIELD_ATTENTION = "ATTENTION";
+    public static final String USER_COUNT_FIELD_FANS = "FANS";
 }

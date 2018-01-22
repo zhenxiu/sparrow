@@ -12,9 +12,10 @@ import java.util.Map;
  * @date 2018/1/18
  */
 public interface CacheClient {
-    Map<String,String> hashGetAll(KEY key) throws CacheConnectionException;
 
-    <T> Map<String, T> hashGetAll(KEY key, Class clazz) throws CacheConnectionException;
+    Map<String, String> hashGetAll(KEY key) throws CacheConnectionException;
+
+    <K,T> Map<K, T> hashGetAll(KEY key,Class keyClazz, Class dataClazz) throws CacheConnectionException;
 
     Long getHashSize(KEY key) throws CacheConnectionException;
 
@@ -62,9 +63,9 @@ public interface CacheClient {
 
     <T> T get(KEY key, Class clazz) throws CacheConnectionException;
 
-    <T> List<T> getAllOfList(KEY key, Class clazz) throws CacheConnectionException;
-
     List<String> getAllOfList(KEY key) throws CacheConnectionException;
+
+    <T> List<T> getAllOfList(KEY key, Class clazz) throws CacheConnectionException;
 
     Long setIfNotExist(KEY key, Object value) throws CacheConnectionException;
 

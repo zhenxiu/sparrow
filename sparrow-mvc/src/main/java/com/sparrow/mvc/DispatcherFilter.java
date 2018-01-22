@@ -69,7 +69,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DispatcherFilter implements Filter {
 
-    Logger logger = LoggerFactory.getLogger(DispatcherFilter.class);
+    private static Logger logger = LoggerFactory.getLogger(DispatcherFilter.class);
 
     private ServletUtility servletUtility = ServletUtility.getInstance();
 
