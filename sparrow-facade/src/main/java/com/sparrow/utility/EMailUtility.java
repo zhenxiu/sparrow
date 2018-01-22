@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.sparrow.utility.jcp;
+package com.sparrow.utility;
 
 import java.util.Collections;
 import java.util.Properties;
@@ -30,15 +30,14 @@ import javax.mail.internet.MimeMessage;
 
 import com.sparrow.constant.*;
 import com.sparrow.exception.BusinessException;
-import com.sparrow.utility.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author harry
  */
-public class JEMail {
-    private Logger logger = LoggerFactory.getLogger(JEMail.class);
+public class EMailUtility {
+    private Logger logger = LoggerFactory.getLogger(EMailUtility.class);
     private String localAddress;
     private String host;
     private String from;

@@ -208,16 +208,4 @@ public class DateTimeUtility {
         }
         return calendar.getTimeInMillis();
     }
-
-    /**
-     * 判断两个时间段否有交集
-     *
-     * @param timeseg1
-     * @param timeseg2
-     * @return
-     */
-    public static boolean isTntersect(Pair<Long,Long> timeseg1, Pair<Long,Long> timeseg2) {
-        return timeseg1.getFirst()>= timeseg2.getFirst()
-            && timeseg2.getSecond() >= timeseg1.getSecond();
-    }
 }
