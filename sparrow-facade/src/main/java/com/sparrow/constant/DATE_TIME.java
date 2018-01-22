@@ -17,9 +17,14 @@
 
 package com.sparrow.constant;
 
+import com.sparrow.constant.magic.DIGIT;
+import com.sparrow.enums.DATE_TIME_UNIT;
+
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -75,7 +80,7 @@ public class DATE_TIME {
      * min unix timestamp
      */
     public static final Timestamp MIN_UNIX_TIMESTAMP = Timestamp
-        .valueOf("1970-01-01 08:00:00");
+            .valueOf("1970-01-01 08:00:00");
 
 
     public static final Timestamp MAX_UNIX_TIMESTAMP = Timestamp.valueOf("9999-12-31 23:59:59");
@@ -94,6 +99,27 @@ public class DATE_TIME {
             put("年前", 100);
         }
     };
+
+    public static Map<DATE_TIME_UNIT, Integer> DEFAULT_FIRST_VALUE = new HashMap<DATE_TIME_UNIT, Integer>() {
+        {
+
+            DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.MONTH, DIGIT.ONE);
+            DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.DAY, DIGIT.ONE);
+            DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.HOUR, DIGIT.ZERO);
+            DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.MINUTE, DIGIT.ZERO);
+            DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.SECOND, DIGIT.ZERO);
+        }
+    };
+
+    public static Map<DATE_TIME_UNIT, Integer> DATE_TIME_UNIT_CALENDER_CONVERTER = new HashMap<DATE_TIME_UNIT, Integer>(){
+        {
+            DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.MONTH,Calendar.MONTH);
+            DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.DAY,Calendar.DATE);
+            DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.HOUR,Calendar.HOUR_OF_DAY);
+            DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.MINUTE,Calendar.MINUTE);
+            DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.SECOND,Calendar.SECOND);
+            DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.YEAR,Calendar.YEAR);
+    }};
 
     public class MILLIS_UNIT {
         /**

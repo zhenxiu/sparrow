@@ -47,17 +47,28 @@ public class DecimalUtility {
         if (null == num) {
             return SYMBOL.EMPTY;
         }
-        String strNumberChinese = "零壹贰叁肆伍陆柒捌玖"; //0-9所对应的汉字
-        String strWeightChinese = "万仟佰拾亿仟佰拾万仟佰拾元角分"; //数字位所对应的汉字
-        String strBit = ""; //从原num值中取出的值
-        String strNumbers = ""; //数字的字符串形式
-        String strChinese = ""; //人民币大写金额形式
-        int i; //循环变量
-        int j; //num的值乘以100的字符串长度
-        String ch1 = ""; //数字的汉语读法
-        String ch2 = ""; //数字位的汉字读法
-        int nzero = 0; //用来计算连续的零值是几个
-        int temp; //从原num值中取出的值
+        //0-9所对应的汉字
+        String strNumberChinese = "零壹贰叁肆伍陆柒捌玖";
+        //数字位所对应的汉字
+        String strWeightChinese = "万仟佰拾亿仟佰拾万仟佰拾元角分";
+        //从原num值中取出的值
+        String strBit = "";
+        //数字的字符串形式
+        String strNumbers = "";
+        //人民币大写金额形式
+        String strChinese = "";
+        //循环变量
+        int i;
+        //num的值乘以100的字符串长度
+        int j;
+        //数字的汉语读法
+        String ch1 = "";
+        //数字位的汉字读法
+        String ch2 = "";
+        //用来计算连续的零值是几个
+        int nzero = 0;
+        //从原num值中取出的值
+        int temp;
 
         //将num取绝对值并四舍五入取2位小数
         num = num.abs().setScale(2, BigDecimal.ROUND_HALF_UP);

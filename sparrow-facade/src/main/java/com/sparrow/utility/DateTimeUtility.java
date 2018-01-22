@@ -19,6 +19,7 @@ package com.sparrow.utility;
 
 import com.sparrow.constant.DATE_TIME;
 import com.sparrow.constant.magic.DIGIT;
+import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.core.Pair;
 import com.sparrow.enums.DATE_TIME_UNIT;
 import java.text.DateFormat;
@@ -165,17 +166,17 @@ public class DateTimeUtility {
     public static String getBeforeFormatTime(Date timestamp) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(timestamp);
-        long timesplit = (System.currentTimeMillis() - cal.getTimeInMillis()) / 1000;
-        Iterator<String> keyit = DATE_TIME.BEFORE_FORMAT.keySet().iterator();
+        long timeSplit = (System.currentTimeMillis() - cal.getTimeInMillis()) / 1000;
+        Iterator<String> keyIt = DATE_TIME.BEFORE_FORMAT.keySet().iterator();
         Stack<String> result = new Stack<String>();
-        String beforeFormat = "";
+        String beforeFormat = SYMBOL.EMPTY;
         do {
-            String key = keyit.next();
+            String key = keyIt.next();
             Integer value = DATE_TIME.BEFORE_FORMAT.get(key);
-            result.push(timesplit % value + key);
-            timesplit = timesplit / value;
+            result.push(timeSplit % value + key);
+            timeSplit = timeSplit / value;
         }
-        while (timesplit > DIGIT.ZERO);
+        while (timeSplit > DIGIT.ZERO);
         if (!result.isEmpty()) {
             beforeFormat = result.pop();
         }
@@ -191,34 +192,18 @@ public class DateTimeUtility {
      */
     public static long getLimitTime(DATE_TIME_UNIT unit, int split) {
 
-        Map<DATE_TIME_UNIT, Integer> defaultValue = new HashMap<DATE_TIME_UNIT, Integer>();
 
-        defaultValue.put(DATE_TIME_UNIT.MONTH, DIGIT.ONE);
-        defaultValue.put(DATE_TIME_UNIT.DAY, DIGIT.ONE);
-        defaultValue.put(DATE_TIME_UNIT.HOUR, DIGIT.ZERO);
-        defaultValue.put(DATE_TIME_UNIT.MINUTE, DIGIT.ZERO);
-        defaultValue.put(DATE_TIME_UNIT.SECOND, DIGIT.ZERO);
-
-        Map<DATE_TIME_UNIT, Integer> map = new HashMap<DATE_TIME_UNIT, Integer>();
-        map.put(DATE_TIME_UNIT.MONTH, Calendar.MONTH);
-        map.put(DATE_TIME_UNIT.DAY, Calendar.DATE);
-        map.put(DATE_TIME_UNIT.HOUR, Calendar.HOUR_OF_DAY);
-        map.put(DATE_TIME_UNIT.MINUTE, Calendar.MINUTE);
-        map.put(DATE_TIME_UNIT.SECOND, Calendar.SECOND);
-        map.put(DATE_TIME_UNIT.YEAR, Calendar.YEAR);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         if (split > DIGIT.ZERO) {
-            calendar.add(map.get(unit), split);
+            calendar.add(DATE_TIME.DATE_TIME_UNIT_CALENDER_CONVERTER.get(unit), split);
         }
         calendar.set(Calendar.MILLISECOND, DIGIT.ZERO);
-        Iterator<DATE_TIME_UNIT> it = defaultValue.keySet().iterator();
 
-        while (it.hasNext()) {
-            DATE_TIME_UNIT u = it.next();
+        for (DATE_TIME_UNIT u : DATE_TIME.DEFAULT_FIRST_VALUE.keySet()) {
             if (u.ordinal() < unit.ordinal()) {
-                calendar.set(map.get(u), defaultValue.get(u));
+                calendar.set(DATE_TIME.DATE_TIME_UNIT_CALENDER_CONVERTER.get(u), DATE_TIME.DEFAULT_FIRST_VALUE.get(u));
             }
         }
         return calendar.getTimeInMillis();
