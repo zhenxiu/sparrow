@@ -56,6 +56,13 @@ public class Segment {
         this.end = end;
     }
 
+    public boolean equals(Segment segment){
+        if(this.start.getPoint().compareTo(segment.start.getPoint())!=0){
+            return false;
+        }
+        return this.end.getPoint().compareTo(segment.end.getPoint())==0;
+    }
+
     public Segment intersection(Segment segment) {
         if (segment.getEnd().getPoint().compareTo(segment.getStart().getPoint()) < 0) {
             throw new IllegalArgumentException("segment.end < segment.start");
@@ -69,6 +76,22 @@ public class Segment {
         }
         return null;
     }
+
+
+    public Segment union(Segment segment) {
+        if (segment.getEnd().getPoint().compareTo(segment.getStart().getPoint()) < 0) {
+            throw new IllegalArgumentException("segment.end < segment.start");
+        }
+        //取小的起始节点
+        Point start=this.start.getPoint().compareTo(segment.start.getPoint())<0?this.start:segment.start;
+        //取大的截止节点
+        Point end=this.end.getPoint().compareTo(segment.end.getPoint())>0?this.end:segment.end;
+        if(start.getPoint().compareTo(end.getPoint())<=0){
+            return new Segment(start,end);
+        }
+        return null;
+    }
+
 
     @Override
     public String toString() {

@@ -23,14 +23,18 @@ public class SegmentIntersectionTest {
 
         s1=new Segment(new Date("2018/01/05"),new Date("2018/01/10"));
         s2=new Segment(new Date("2018/01/04"),new Date("2018/01/12"));
-        System.out.println(s1.intersection(s2));
+        System.out.println(s1.union(s2));
 
         s1=new Segment(5,10);
         s2=new Segment(4,7);
-        System.out.println(s1.intersection(s2));
+        System.out.println(s1.union(s2));
 
-        s1=new Segment(5,10);
+        s1=new Segment(8,12);
         s2=new Segment(8,12);
-        System.out.println(s1.intersection(s2));
+        System.out.println(s1.union(s2));
+
+        //s1=new Segment(new Date("2018/01/01"),new Date("2018/01/10"));
+        //s2=new Segment(new Date("2018/01/05"),new Date("2018/01/10"));
+        System.out.println(s1.equals(s2));
     }
 }
