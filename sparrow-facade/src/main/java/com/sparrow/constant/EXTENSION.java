@@ -34,4 +34,19 @@ public class EXTENSION {
     public static final String JSON = ".json";
     public static final String JSP = ".jsp";
     public static final String HTML = ".html";
+
+
+    public static final String EXCEL2003_WITHOUT_DOT = "xls";
+    public static final String EXCEL2007_WITHOUT_DOT = "xlsx";
+    public static final String JPG_WITHOUT_DOT = "jpg";
+    public static final String JPEG_WITHOUT_DOT = "jpeg";
+    public static final String GIF_WITHOUT_DOT = "gif";
+    public static final String PNG_WITHOUT_DOT = "png";
+    public static final String WORD2003_WITHOUT_DOT = "doc";
+    public static final String WORD2007_WITHOUT_DOT = "docx";
+    public static final String PDF_WITHOUT_DOT = "pdf";
+    public static final String DO_WITHOUT_DOT = "do";
+    public static final String JSON_WITHOUT_DOT = "json";
+    public static final String JSP_WITHOUT_DOT = "jsp";
+    public static final String HTML_WITHOUT_DOT = "html";
 }

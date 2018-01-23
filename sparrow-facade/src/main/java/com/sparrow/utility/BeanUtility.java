@@ -34,9 +34,7 @@ public class BeanUtility {
         Container container = ApplicationContext.getContainer();
         MethodAccessor sourceMethodAccessor = container.getProxyBean(source.getClass());
         MethodAccessor targetMethodAccessor = container.getProxyBean(target.getClass());
-
         List<TypeConverter> targetFieldList = container.getFieldList(target.getClass());
-
         for (TypeConverter targetField : targetFieldList) {
             if (ignoreProperties != null && StringUtility.existInArray(ignoreProperties, targetField.getName())) {
                 continue;

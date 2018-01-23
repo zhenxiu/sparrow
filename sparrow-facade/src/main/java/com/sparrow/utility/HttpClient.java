@@ -333,30 +333,30 @@ public class HttpClient {
                 charset = CONSTANT.CHARSET_UTF_8;
             }
             String html = get(url, charset);
-            if (!html.trim().startsWith(FILE.ERROR_STATIC_HTML)) {
-                String descDirectoryPath = htmlFileName.substring(0,
-                    htmlFileName.lastIndexOf('/') + 1);
-                File descDirectory = new File(descDirectoryPath);
-                if (!descDirectory.exists()) {
-                    descDirectory.mkdirs();
-                }
-                FileOutputStream fos = new FileOutputStream(htmlFileName, false);
-                FileLock fl = fos.getChannel().tryLock();
-                OutputStreamWriter os = new OutputStreamWriter(fos, charset);
-                BufferedWriter bw = new BufferedWriter(os);
-                if (fl != null && fl.isValid()) {
-                    bw.write(html);
-                    fl.release();
-                }
-                bw.flush();
-                os.flush();
-                fos.flush();
-                bw.close();
-                fos.close();
-                os.close();
-            } else {
+            if (html.trim().startsWith(FILE.ERROR_STATIC_HTML)) {
                 logger.warn(FILE.ERROR_STATIC_HTML + url);
+                return false;
             }
+            String descDirectoryPath = htmlFileName.substring(0,
+                htmlFileName.lastIndexOf('/') + 1);
+            File descDirectory = new File(descDirectoryPath);
+            if (!descDirectory.exists()) {
+                descDirectory.mkdirs();
+            }
+            FileOutputStream fos = new FileOutputStream(htmlFileName, false);
+            FileLock fl = fos.getChannel().tryLock();
+            OutputStreamWriter os = new OutputStreamWriter(fos, charset);
+            BufferedWriter bw = new BufferedWriter(os);
+            if (fl != null && fl.isValid()) {
+                bw.write(html);
+                fl.release();
+            }
+            bw.flush();
+            os.flush();
+            fos.flush();
+            bw.close();
+            fos.close();
+            os.close();
             return true;
         } catch (Exception e) {
             logger.error("downloadPage error", e);

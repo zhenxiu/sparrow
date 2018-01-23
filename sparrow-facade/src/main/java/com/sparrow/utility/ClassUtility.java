@@ -17,6 +17,8 @@
 
 package com.sparrow.utility;
 
+import com.sparrow.constant.CONSTANT;
+import com.sparrow.constant.magic.SYMBOL;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -63,13 +65,13 @@ public class ClassUtility {
     public static List<Class> getClasses(
         String packageName) throws ClassNotFoundException, IOException, URISyntaxException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        String path = packageName.replace(".", "/");
+        String path = packageName.replace(SYMBOL.DOT, SYMBOL.SLASH);
         Enumeration<URL> resources = classLoader.getResources(path);
         ArrayList<Class> classes = new ArrayList<Class>();
         while (resources.hasMoreElements()) {
             URL resource = resources.nextElement();
             if ("file".equalsIgnoreCase(resource.getProtocol())) {
-                File directory = new File(URLDecoder.decode(resource.getFile(), "UTF-8"));
+                File directory = new File(URLDecoder.decode(resource.getFile(), CONSTANT.CHARSET_UTF_8));
                 classes.addAll(findClass(directory, packageName));
             } else if ("jar".equalsIgnoreCase(resource.getProtocol())) {
                 classes.addAll(findClass(((JarURLConnection) resource.openConnection())
@@ -86,7 +88,7 @@ public class ClassUtility {
         while (entrys.hasMoreElements()) {
             JarEntry jarEntry = entrys.nextElement();
             if (jarEntry.getName().startsWith(packagePath) && jarEntry.getName().endsWith(".class")) {
-                Class implClass = Class.forName(jarEntry.getName().replace("/", ".").substring(0, jarEntry.getName().indexOf(".")));
+                Class implClass = Class.forName(jarEntry.getName().replace(SYMBOL.SLASH, SYMBOL.DOT).substring(0, jarEntry.getName().indexOf(SYMBOL.DOT)));
                 if (!implClass.isInterface()) {
                     classes.add(implClass);
                 }
@@ -101,9 +103,9 @@ public class ClassUtility {
         if (directory != null && directory.exists()) {
             for (File file : directory.listFiles()) {
                 if (file.isDirectory()) {
-                    classes.addAll(findClass(file, packageName + "." + file.getName()));
+                    classes.addAll(findClass(file, packageName + SYMBOL.DOT + file.getName()));
                 } else if (file.getName().endsWith(".class")) {
-                    classes.add(Class.forName(packageName + "." + file.getName().substring(0, file.getName().length() - 6)));
+                    classes.add(Class.forName(packageName + SYMBOL.DOT + file.getName().substring(0, file.getName().length() - 6)));
                 }
             }
         }

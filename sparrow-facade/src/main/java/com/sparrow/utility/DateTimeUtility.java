@@ -200,7 +200,7 @@ public class DateTimeUtility {
      */
     public static long ceiling(Calendar calendar, DATE_TIME_UNIT unit) {
         if (unit.equals(DATE_TIME_UNIT.WEEK)) {
-            throw new UnsupportedOperationException("WEEK");
+            throw new UnsupportedOperationException("WEEK date celling");
         }
         calendar.add(DATE_TIME.DATE_TIME_UNIT_CALENDER_CONVERTER.get(unit), 1);
         floor(calendar, unit);
@@ -215,7 +215,7 @@ public class DateTimeUtility {
      */
     public static long floor(Calendar calendar, DATE_TIME_UNIT unit) {
         if (unit.equals(DATE_TIME_UNIT.WEEK)) {
-            throw new UnsupportedOperationException("WEEK");
+            throw new UnsupportedOperationException("WEEK date floor");
         }
         for (DATE_TIME_UNIT u : DATE_TIME.DEFAULT_FIRST_VALUE.keySet()) {
             if (u.ordinal() >= unit.ordinal()) {

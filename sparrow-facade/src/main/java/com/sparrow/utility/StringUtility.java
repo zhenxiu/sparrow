@@ -39,26 +39,27 @@ import java.util.*;
 public class StringUtility {
 
     public static String newUuid() {
-        return UUID.randomUUID().toString().replace("-", "");
+        return UUID.randomUUID().toString().replace(SYMBOL.HORIZON_LINE, SYMBOL.EMPTY);
     }
 
     /**
      * @param array
-     * @param key KEY
+     * @param key
      * @return
      */
     public static boolean existInArray(Object[] array, Object key) {
         if (array == null || array.length == 0) {
             return false;
         }
-        boolean isExist = false;
         for (Object s : array) {
-            if (s.toString().trim().equals(key.toString().trim())) {
-                isExist = true;
-                break;
+            if (s == null) {
+                continue;
+            }
+            if (s.toString().trim().equalsIgnoreCase(key.toString().trim())) {
+                return true;
             }
         }
-        return isExist;
+        return false;
     }
 
     public static boolean existInArray(String array, String key) {
@@ -199,11 +200,11 @@ public class StringUtility {
     /**
      * 通过set方法获取字段名称
      *
-     * @param getMethod
+     * @param setMethod
      * @return
      */
-    public static String getFieldBySetMethod(String getMethod) {
-        return getMethod.substring("set".length());
+    public static String getFieldBySetMethod(String setMethod) {
+        return getFieldByGetMethod(setMethod);
     }
 
     /**
@@ -277,7 +278,7 @@ public class StringUtility {
      * @return
      */
     public static String getIndent(int indentCount) {
-        return generateSomeCharacter(indentCount,SYMBOL.BLANK);
+        return generateSomeCharacter(indentCount, SYMBOL.BLANK);
     }
 
     /**
@@ -290,7 +291,7 @@ public class StringUtility {
     public static String generateSomeCharacter(int characterCount, String c) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < characterCount; i++) {
-            sb.append(c==null?SYMBOL.UNDERLINE:c);
+            sb.append(c == null ? SYMBOL.UNDERLINE : c);
         }
         return sb.toString();
     }
@@ -385,18 +386,6 @@ public class StringUtility {
         return ret;
     }
 
-    public static boolean isInArray(Object[] array, Object item) {
-        if (array == null || array.length == 0) {
-            return false;
-        }
-        for (Object object : array) {
-            if (item.equals(object)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     /**
      * 从数组array中排除exceptArray并拼接成数组
      * <p/>
@@ -411,7 +400,7 @@ public class StringUtility {
         Object[] exceptArray) {
         StringBuilder sb = new StringBuilder();
         for (Object object : array) {
-            if (isInArray(exceptArray, object)) {
+            if (existInArray(exceptArray, object)) {
                 continue;
             }
             if (sb.length() > 0) {
@@ -425,12 +414,13 @@ public class StringUtility {
     public static String join(String joinChar, Object... array) {
         StringBuilder sb = new StringBuilder();
         for (Object object : array) {
-            if (object != null) {
-                if (sb.length() > 0) {
-                    sb.append(joinChar);
-                }
-                sb.append(object);
+            if (object == null) {
+                continue;
             }
+            if (sb.length() > 0) {
+                sb.append(joinChar);
+            }
+            sb.append(object);
         }
         return sb.toString();
     }
@@ -546,7 +536,7 @@ public class StringUtility {
      * @return
      */
     public static String byteToStr(byte[] byteArray) {
-        String strDigest = "";
+        String strDigest =SYMBOL.EMPTY;
         for (byte b : byteArray) {
             strDigest += byteToHexStr(b);
         }
@@ -682,7 +672,7 @@ public class StringUtility {
 
     public static String wrap(String source, String wrap, String lineSplit) {
         if (isNullOrEmpty(source)) {
-            return "";
+            return SYMBOL.EMPTY;
         }
 
         if (isNullOrEmpty(wrap)) {
