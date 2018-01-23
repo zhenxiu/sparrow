@@ -19,6 +19,8 @@ package com.sparrow.utility;
 
 import com.sparrow.enums.DATE_TIME_UNIT;
 
+import java.util.Calendar;
+
 /**
  * @author harry
  */
@@ -92,7 +94,9 @@ public class LockConfig {
     }
 
     public long getAbsoluteLockTime() {
-        return DateTimeUtility.getLimitTime(this.dateTimeUnit, this.lockTime);
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        return DateTimeUtility.ceiling(calendar,this.dateTimeUnit);
     }
 
     public int getLockTime() {

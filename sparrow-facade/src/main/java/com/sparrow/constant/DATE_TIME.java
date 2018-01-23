@@ -36,6 +36,31 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class DATE_TIME {
 
+    /**
+     * second
+     */
+    private static final long SECOND = 1000;
+    /**
+     * minute
+     */
+    private static final long MINUTE = SECOND * 60;
+    /**
+     * hour
+     */
+    private static final long HOUR = MINUTE * 60;
+    /**
+     * day
+     */
+    private static final long DAY = HOUR * 24;
+    /**
+     * week
+     */
+    private static final long WEEK = DAY * 7;
+    /**
+     * month
+     */
+    private static final long MONTH = DAY * 30;
+
     public static final String FORMAT_YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
 
     public static final String FORMAT_YYYY_MM_DD_HH_MM = "yyyy-MM-dd HH:mm";
@@ -100,51 +125,50 @@ public class DATE_TIME {
         }
     };
 
-    public static Map<DATE_TIME_UNIT, Integer> DEFAULT_FIRST_VALUE = new HashMap<DATE_TIME_UNIT, Integer>() {
-        {
+    public static Map<DATE_TIME_UNIT, Integer> DEFAULT_FIRST_VALUE = new HashMap<DATE_TIME_UNIT, Integer>(6);
+    public static Map<DATE_TIME_UNIT, Integer> DATE_TIME_UNIT_CALENDER_CONVERTER = new HashMap<DATE_TIME_UNIT, Integer>(7);
+    public static Map<DATE_TIME_UNIT, Long> MILLISECOND_UNIT = new HashMap<DATE_TIME_UNIT, Long>(6);
 
-            DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.MONTH, DIGIT.ONE);
-            DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.DAY, DIGIT.ONE);
-            DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.HOUR, DIGIT.ZERO);
-            DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.MINUTE, DIGIT.ZERO);
-            DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.SECOND, DIGIT.ZERO);
-        }
-    };
+    static {
+        //0表示1月
+        DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.MONTH, DIGIT.ZERO);
+        DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.DAY, DIGIT.ONE);
+        DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.HOUR, DIGIT.ZERO);
+        DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.MINUTE, DIGIT.ZERO);
+        DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.SECOND, DIGIT.ZERO);
+        DEFAULT_FIRST_VALUE.put(DATE_TIME_UNIT.MILLISECOND, DIGIT.ZERO);
 
-    public static Map<DATE_TIME_UNIT, Integer> DATE_TIME_UNIT_CALENDER_CONVERTER = new HashMap<DATE_TIME_UNIT, Integer>(){
-        {
-            DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.MONTH,Calendar.MONTH);
-            DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.DAY,Calendar.DATE);
-            DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.HOUR,Calendar.HOUR_OF_DAY);
-            DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.MINUTE,Calendar.MINUTE);
-            DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.SECOND,Calendar.SECOND);
-            DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.YEAR,Calendar.YEAR);
-    }};
+        DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.YEAR, Calendar.YEAR);
+        DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.MONTH, Calendar.MONTH);
+        DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.DAY, Calendar.DATE);
+        DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.HOUR, Calendar.HOUR_OF_DAY);
+        DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.MINUTE, Calendar.MINUTE);
+        DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.SECOND, Calendar.SECOND);
+        DATE_TIME_UNIT_CALENDER_CONVERTER.put(DATE_TIME_UNIT.MILLISECOND, Calendar.MILLISECOND);
 
-    public class MILLIS_UNIT {
         /**
          * second
          */
-        public static final int SECOND = 1000;
+        MILLISECOND_UNIT.put(DATE_TIME_UNIT.SECOND, SECOND);
         /**
          * minute
          */
-        public static final int MINUTE = SECOND * 60;
+        MILLISECOND_UNIT.put(DATE_TIME_UNIT.MINUTE, SECOND * 60);
         /**
          * hour
          */
-        public static final int HOUR = MINUTE * 60;
+        MILLISECOND_UNIT.put(DATE_TIME_UNIT.HOUR, MINUTE * 60);
         /**
          * day
          */
-        public static final int DAY = HOUR * 24;
+        MILLISECOND_UNIT.put(DATE_TIME_UNIT.DAY, HOUR * 24);
         /**
          * week
          */
-        public static final int WEEK = DAY * 7;
+        MILLISECOND_UNIT.put(DATE_TIME_UNIT.WEEK, DAY * 7);
         /**
          * month
          */
-        public static final int MONTH = DAY * 30;
+        MILLISECOND_UNIT.put(DATE_TIME_UNIT.MONTH, DAY * 30);
     }
 }

@@ -77,7 +77,6 @@ public class Segment {
         return null;
     }
 
-
     public Segment union(Segment segment) {
         if (segment.getEnd().getPoint().compareTo(segment.getStart().getPoint()) < 0) {
             throw new IllegalArgumentException("segment.end < segment.start");
