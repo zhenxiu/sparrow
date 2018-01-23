@@ -8,12 +8,11 @@ import com.sparrow.exception.CacheConnectionException;
 import com.sparrow.json.Json;
 import com.sparrow.support.Entity;
 import com.sparrow.utility.StringUtility;
+import org.apache.poi.ss.formula.functions.T;
 import redis.clients.jedis.ShardedJedis;
+import redis.clients.jedis.Tuple;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by harry on 2018/1/18.
@@ -89,7 +88,7 @@ public class RedisCacheClient implements CacheClient {
                     return null;
                 }
                 if (Entity.class.isAssignableFrom(clazz)) {
-                    return (T) JsonFactory.getProvider().parse(value, clazz);
+                    return (T)jsonProvider.parse(value, clazz);
                 }
                 TypeConverter typeConverter = new TypeConverter(clazz);
                 return (T) typeConverter.convert(value);
@@ -156,6 +155,113 @@ public class RedisCacheClient implements CacheClient {
     }
 
     @Override
+    public Long removeFromSet(final KEY key, final Object value) throws CacheConnectionException {
+        return redisPool.execute(new Executor<Long>() {
+            @Override
+            public Long execute(ShardedJedis jedis) {
+                return jedis.srem(key.key(), value.toString());
+            }
+        });
+    }
+
+    @Override
+    public Boolean existInSet(final KEY key, final Object value) throws CacheConnectionException {
+        return redisPool.execute(new Executor<Boolean>() {
+            @Override
+            public Boolean execute(ShardedJedis jedis) {
+                return jedis.sismember(key.key(), value.toString());
+            }
+        });
+    }
+
+
+    //order set
+    @Override
+    public Long getOrderSetSize(final KEY key) throws CacheConnectionException {
+        return redisPool.execute(new Executor<Long>() {
+            @Override
+            public Long execute(ShardedJedis jedis) {
+                return jedis.zcard(key.key());
+            }
+        });
+    }
+
+    @Override
+    public Long addToOrderSet(final KEY key, final Object value, final Long score) throws CacheConnectionException {
+        return redisPool.execute(new Executor<Long>() {
+            @Override
+            public Long execute(ShardedJedis jedis) {
+                return jedis.zadd(key.key(),score, value.toString());
+            }
+        });
+    }
+
+
+    @Override
+    public Long removeFromOrderSet(final KEY key, final Object value) throws CacheConnectionException {
+        return redisPool.execute(new Executor<Long>() {
+            @Override
+            public Long execute(ShardedJedis jedis) {
+                return jedis.zrem(key.key(), value.toString());
+            }
+        });
+    }
+
+    @Override
+    public Long removeFromOrderSet(final KEY key, final Long from, final Long to) throws CacheConnectionException {
+        return redisPool.execute(new Executor<Long>() {
+            @Override
+            public Long execute(ShardedJedis jedis) {
+                return jedis.zremrangeByRank(key.key(), from, to);
+            }
+        });
+    }
+
+    @Override
+    public Double getScore(final KEY key, final Object value) throws CacheConnectionException {
+        return redisPool.execute(new Executor<Double>() {
+            @Override
+            public Double execute(ShardedJedis jedis) {
+                return jedis.zscore(key.key(), value.toString());
+            }
+        });
+    }
+
+    @Override
+    public Long getIndexOfOrderSet(final KEY key, final Object value) throws CacheConnectionException {
+        return redisPool.execute(new Executor<Long>() {
+            @Override
+            public Long execute(ShardedJedis jedis) {
+                return jedis.zrank(key.key(), value.toString());
+            }
+        });
+    }
+
+    @Override
+    public <T> Map<T,Double> getAllWithScore(final KEY key,final Class clazz) throws CacheConnectionException {
+        return redisPool.execute(new Executor<Map<T,Double>>() {
+            @Override
+            public Map<T,Double> execute(ShardedJedis jedis) {
+                Set<Tuple> tuples= jedis.zrevrangeWithScores(key.key(),0,-1);
+                Map<T,Double> scoreMap=new LinkedHashMap<T, Double>(tuples.size());
+                for(Tuple tuple:tuples){
+                    T k;
+                    if (Entity.class.isAssignableFrom(tuple.getElement().getClass())) {
+                        k= (T)JsonFactory.getProvider().parse(tuple.getElement(), clazz);
+                    }
+                    else {
+                        TypeConverter typeConverter = new TypeConverter(tuple.getElement().getClass());
+                        k = (T) typeConverter.convert(tuple.getElement());
+                    }
+                    scoreMap.put(k,tuple.getScore());
+                }
+                return scoreMap;
+            }
+        });
+    }
+
+
+    @Override
     public Long getListSize(final KEY key) throws CacheConnectionException {
         return redisPool.execute(new Executor<Long>() {
             @Override
@@ -185,25 +291,6 @@ public class RedisCacheClient implements CacheClient {
         });
     }
 
-    @Override
-    public Long removeFromSet(final KEY key, final Object value) throws CacheConnectionException {
-        return redisPool.execute(new Executor<Long>() {
-            @Override
-            public Long execute(ShardedJedis jedis) {
-                return jedis.srem(key.key(), value.toString());
-            }
-        });
-    }
-
-    @Override
-    public Boolean existInSet(final KEY key, final Object value) throws CacheConnectionException {
-        return redisPool.execute(new Executor<Boolean>() {
-            @Override
-            public Boolean execute(ShardedJedis jedis) {
-                return jedis.sismember(key.key(), value.toString());
-            }
-        });
-    }
 
     @Override
     public Long addToList(final KEY key, final String... value) throws CacheConnectionException {

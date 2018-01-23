@@ -21,6 +21,14 @@ public interface CacheClient {
 
     Long getSetSize(KEY key) throws CacheConnectionException;
 
+    Long removeFromOrderSet(KEY key, Long from, Long to) throws CacheConnectionException;
+
+    Double getScore(KEY key, Object value) throws CacheConnectionException;
+
+    Long getIndexOfOrderSet(KEY key, Object value) throws CacheConnectionException;
+
+    <T> Map<T,Double> getAllWithScore(KEY key, Class clazz) throws CacheConnectionException;
+
     Long getListSize(KEY key) throws CacheConnectionException;
 
     String hashGet(KEY key, String hashKey) throws CacheConnectionException;
@@ -28,6 +36,9 @@ public interface CacheClient {
     <T> T hashGet(KEY key, String hashKey, Class clazz) throws CacheConnectionException;
 
     Long hashSet(KEY key, String hashKey, Object value) throws CacheConnectionException;
+
+    //order set
+    Long getOrderSetSize(KEY key) throws CacheConnectionException;
 
     Long addToSet(KEY key, Object value) throws CacheConnectionException;
 
@@ -40,6 +51,10 @@ public interface CacheClient {
     Long removeFromList(KEY key, Object value) throws CacheConnectionException;
 
     Long removeFromSet(KEY key, Object value) throws CacheConnectionException;
+
+    Long addToOrderSet(KEY key, Object value, Long score) throws CacheConnectionException;
+
+    Long removeFromOrderSet(KEY key, Object value) throws CacheConnectionException;
 
     Boolean existInSet(KEY key, Object value) throws CacheConnectionException;
 
