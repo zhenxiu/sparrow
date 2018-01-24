@@ -37,4 +37,6 @@ public interface Json {
     <T> T parse(String json, Class<T> clazz);
 
     <T> List<T> parseList(String json, Class<T> clazz);
+
+    Map<String,Object>  parse(String json);
 }

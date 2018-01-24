@@ -30,7 +30,7 @@ import java.util.*;
  * @author harry
  */
 public class SparrowJsonImpl implements Json {
-    private Logger logger = LoggerFactory.getLogger(SparrowJsonImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(SparrowJsonImpl.class);
 
     @Override
     public String toString(Entity model) {
@@ -65,5 +65,10 @@ public class SparrowJsonImpl implements Json {
     @Override
     public <T> List<T> parseList(String json, Class<T> clazz) {
         return JSON.parseArray(json, clazz);
+    }
+
+    @Override
+    public Map<String,Object>  parse(String json) {
+        return JSON.parseObject(json);
     }
 }

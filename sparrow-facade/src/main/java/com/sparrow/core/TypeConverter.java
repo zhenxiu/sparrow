@@ -32,7 +32,7 @@ public class TypeConverter {
     }
 
     protected String name;
-    protected String value;
+    protected Object value;
     protected Class type;
 
     /**
@@ -42,7 +42,7 @@ public class TypeConverter {
      * @param value
      * @param type
      */
-    public TypeConverter(String name, String value, Class type) {
+    public TypeConverter(String name, Object value, Class type) {
         this.name = name;
         this.value = value;
         this.type = type;
@@ -64,51 +64,81 @@ public class TypeConverter {
         return type;
     }
 
-    public Object convert(String value) {
+    public Object convert(Object value) {
         this.value = value;
         return this.convert();
     }
+
+    public static Integer getInteger(Object value) {
+        return (Integer) new TypeConverter(Integer.class).convert(value);
+    }
+
+    public static String getString(Object value) {
+        return (String) new TypeConverter(String.class).convert(value);
+    }
+
+    public static Boolean getBoolean(Object value) {
+        return (Boolean) new TypeConverter(Boolean.class).convert(value);
+    }
+
+    public static Long getLong(Object value) {
+        return (Long) new TypeConverter(Long.class).convert(value);
+    }
+
+    public static BigDecimal getDecimal(Object value) {
+        return (BigDecimal) new TypeConverter(BigDecimal.class).convert(value);
+    }
+
+    public static Date getDate(Object value) {
+        return (Date) new TypeConverter(Date.class).convert(value);
+    }
+
+    public static Timestamp getTimestamp(Object value){
+        return (Timestamp) new TypeConverter(Timestamp.class).convert(value);
+    }
+
 
     public Object convert() {
         if (StringUtility.isNullOrEmpty(value)) {
             return null;
         }
         try {
+            String stringValue=value.toString();
             if (this.getType() == String.class) {
-                return value;
+                return stringValue;
             }
 
             if (this.getType() == int.class || this.getType() == Integer.class) {
-                return Integer.valueOf(value);
+                return Integer.valueOf(stringValue);
             }
             if (this.getType() == long.class || this.getType() == Long.class) {
-                return Long.valueOf(value);
+                return Long.valueOf(stringValue);
             }
             if (this.getType() == Date.class) {
-                return Date.valueOf(value);
+                return Date.valueOf(stringValue);
             }
             if (this.getType() == Timestamp.class) {
-                if (value.length() <= 10) {
-                    return Timestamp.valueOf(value + " 00:00:00");
+                if (value.toString().length() <= 10) {
+                    return Timestamp.valueOf(stringValue + " 00:00:00");
                 }
-                return Timestamp.valueOf(value);
+                return Timestamp.valueOf(stringValue);
             }
             if (this.getType() == boolean.class || this.getType() == Boolean.class) {
                 boolean b = false;
-                if (!StringUtility.isNullOrEmpty(value)) {
+                if (!StringUtility.isNullOrEmpty(stringValue)) {
                     if (String.valueOf(STATUS_RECORD.ENABLE
-                            .ordinal()).equals(value) || Boolean.TRUE.toString().equalsIgnoreCase(value)) {
+                            .ordinal()).equals(stringValue) || Boolean.TRUE.toString().equalsIgnoreCase(stringValue)) {
                         b = true;
                     }
                 }
                 return b;
             }
             if (this.getType() == double.class || this.getType() == Double.class) {
-                return Double.valueOf(value);
+                return Double.valueOf(stringValue);
             }
             if (this.getType() == BigDecimal.class) {
                 //留给业务处理
-                return new BigDecimal(value);
+                return new BigDecimal(stringValue);
             }
         } catch (RuntimeException e) {
             return null;
