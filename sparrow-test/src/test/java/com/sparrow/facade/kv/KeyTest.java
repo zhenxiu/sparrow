@@ -62,11 +62,5 @@ public class KeyTest {
         System.out.println(KEY.parse(codeIdNamePairKey.key()).getModule());
         System.out.println(KEY.parse(userRegisterKey.key()).getModule());
         System.out.println(KEY.parse(userKey.key()).getModule());
-
-
-
-
-
-
     }
 }

@@ -15,6 +15,7 @@ import com.sparrow.support.ModuleSupport;
 public class RedisTest {
     public static void main(String[] args) throws CacheConnectionException {
         Container container = new SparrowContainerImpl();
+        //定义模块，一个业务会存在多个模块
         ModuleSupport OD=new ModuleSupport() {
             @Override
             public String code() {
@@ -26,9 +27,12 @@ public class RedisTest {
                 return "OD";
             }
         };
+
+        //相同模块下会存在多个业务
         KEY.Business od=new KEY.Business(OD,"POOL");
         container.init();
         CacheClient client = container.getBean("cacheClient");
+        //相同业务下存在多个KEY
         KEY key = new KEY.Builder().business(od).businessId("BJS","CHI","HU").build();
         client.set(key, "test");
 
