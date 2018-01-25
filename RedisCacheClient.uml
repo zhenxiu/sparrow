@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>com.sparrow.cache.impl.redis.RedisCacheClient</OriginalElement>
+  <nodes>
+    <node x="1089.0" y="460.0">com.sparrow.cache.impl.redis.Executor</node>
+    <node x="1768.0" y="104.0">com.sparrow.redis.SparrowCacheMonitor</node>
+    <node x="345.0" y="1024.0">com.sparrow.cache.impl.redis.RedisCacheClient</node>
+    <node x="1421.0" y="0.0">com.sparrow.constant.cache.KEY</node>
+    <node x="1768.0" y="0.0">com.sparrow.cache.CacheMonitor</node>
+    <node x="0.0" y="0.0">com.sparrow.cache.CacheClient</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.sparrow.cache.impl.redis.RedisCacheClient" target="com.sparrow.cache.impl.redis.Executor">
+      <point x="257.75" y="-522.0" />
+      <point x="1118.25" y="999.0" />
+      <point x="1186.5" y="999.0" />
+      <point x="0.0" y="27.0" />
+    </edge>
+    <edge source="com.sparrow.cache.impl.redis.RedisCacheClient" target="com.sparrow.cache.CacheClient">
+      <point x="-257.75" y="-522.0" />
+      <point x="602.75" y="999.0" />
+      <point x="534.5" y="999.0" />
+      <point x="0.0" y="487.0" />
+    </edge>
+    <edge source="com.sparrow.redis.SparrowCacheMonitor" target="com.sparrow.cache.CacheMonitor">
+      <point x="0.0" y="-27.0" />
+      <point x="0.0" y="27.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.3232758620689655" x="999.5" y="1034.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Methods</Category>
+    <Category>Constructors</Category>
+    <Category>Fields</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
