@@ -25,7 +25,7 @@ import com.sparrow.constant.cache.KEY;
  */
 public class KeyTest {
     public static void main(String[] args) {
-        KEY.Business codeIdNamePair = new KEY.Business(SPARROW_MODULE.CODE, "ID", "NAME", "PAIR");
+        KEY.Business codeIdNamePair = new KEY.Business(SPARROW_MODULE.CODE, "OD", "NAME", "PAIR");
         KEY.Business userRegister = new KEY.Business(SPARROW_MODULE.USER, "REGISTER");
         KEY.Business user = new KEY.Business(SPARROW_MODULE.USER);
 

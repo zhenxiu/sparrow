@@ -17,13 +17,17 @@
 
 package com.sparrow.cache.impl.redis;
 
+import com.sparrow.cache.CacheMonitor;
+import com.sparrow.constant.cache.KEY;
 import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.container.Container;
 import com.sparrow.container.ContainerAware;
 import com.sparrow.core.Pair;
 import com.sparrow.exception.CacheConnectionException;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.pool.impl.GenericObjectPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,12 +45,18 @@ import redis.clients.util.Sharded;
 public class RedisPool implements ContainerAware {
     private Logger logger = LoggerFactory.getLogger(RedisPool.class);
     private ShardedJedisPool pool = null;
+    private CacheMonitor cacheMonitor;
+
 
     private String urls;
     private Integer maxActive = 100;
     private Integer maxIdle = 50;
     private Integer maxWait = 50000;
     private Boolean testOnBorrow = true;
+
+    public void setCacheMonitor(CacheMonitor cacheMonitor) {
+        this.cacheMonitor = cacheMonitor;
+    }
 
     public void setMaxActive(Integer maxActive) {
         this.maxActive = maxActive;
@@ -86,12 +96,17 @@ public class RedisPool implements ContainerAware {
     public RedisPool() {
     }
 
-    public <T> T execute(Executor<T> reader) throws CacheConnectionException {
+    <T> T execute(Executor<T> executor, KEY key) throws CacheConnectionException {
         ShardedJedis jedis = null;
         try {
+            Long startTime = System.currentTimeMillis();
             jedis = this.pool.getResource();
-            T result = reader.execute(jedis);
+            T result = executor.execute(jedis);
             this.pool.returnResource(jedis);
+            Long endTime = System.currentTimeMillis();
+            if(this.cacheMonitor!=null) {
+                this.cacheMonitor.monitor(startTime, endTime, key);
+            }
             return result;
         } catch (JedisConnectionException e) {
             this.pool.returnBrokenResource(jedis);
@@ -100,7 +115,8 @@ public class RedisPool implements ContainerAware {
         }
     }
 
-    @Override public void aware(Container container, String beanName) {
+    @Override
+    public void aware(Container container, String beanName) {
         JedisPoolConfig config = new JedisPoolConfig();
         // 最大活动链接
         config.setMaxActive(this.maxActive);
@@ -118,6 +134,6 @@ public class RedisPool implements ContainerAware {
             jdsInfoList.add(infoA);
         }
         pool = new ShardedJedisPool(config, jdsInfoList, Hashing.MURMUR_HASH,
-            Sharded.DEFAULT_KEY_TAG_PATTERN);
+                Sharded.DEFAULT_KEY_TAG_PATTERN);
     }
 }

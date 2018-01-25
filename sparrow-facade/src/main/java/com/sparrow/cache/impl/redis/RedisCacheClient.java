@@ -55,7 +55,7 @@ public class RedisCacheClient implements CacheClient {
                 }
                 return result;
             }
-        });
+        },key);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) throws CacheConnectionException {
                 return jedis.hlen(key.key());
             }
-        });
+        },key);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class RedisCacheClient implements CacheClient {
             public String execute(ShardedJedis jedis) throws CacheConnectionException {
                 return jedis.hget(key.key(), hashKey);
             }
-        });
+        },key);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class RedisCacheClient implements CacheClient {
                 TypeConverter typeConverter = new TypeConverter(clazz);
                 return (T) typeConverter.convert(value);
             }
-        });
+        },key);
     }
 
     @Override
@@ -103,7 +103,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.hset(key.key(), hashKey, value.toString());
             }
-        });
+        },key);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.scard(key.key());
             }
-        });
+        },key);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.sadd(key.key(), value.toString());
             }
-        });
+        },key);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.sadd(key.key(), value);
             }
-        });
+        },key);
     }
 
     @Override
@@ -151,7 +151,7 @@ public class RedisCacheClient implements CacheClient {
                 }
                 return i;
             }
-        });
+        },key);
     }
 
     @Override
@@ -161,7 +161,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.srem(key.key(), value.toString());
             }
-        });
+        },key);
     }
 
     @Override
@@ -171,7 +171,7 @@ public class RedisCacheClient implements CacheClient {
             public Boolean execute(ShardedJedis jedis) {
                 return jedis.sismember(key.key(), value.toString());
             }
-        });
+        },key);
     }
 
 
@@ -183,7 +183,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.zcard(key.key());
             }
-        });
+        },key);
     }
 
     @Override
@@ -193,7 +193,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.zadd(key.key(),score, value.toString());
             }
-        });
+        },key);
     }
 
 
@@ -204,7 +204,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.zrem(key.key(), value.toString());
             }
-        });
+        },key);
     }
 
     @Override
@@ -214,7 +214,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.zremrangeByRank(key.key(), from, to);
             }
-        });
+        },key);
     }
 
     @Override
@@ -224,7 +224,7 @@ public class RedisCacheClient implements CacheClient {
             public Double execute(ShardedJedis jedis) {
                 return jedis.zscore(key.key(), value.toString());
             }
-        });
+        },key);
     }
 
     @Override
@@ -234,7 +234,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.zrank(key.key(), value.toString());
             }
-        });
+        },key);
     }
 
     @Override
@@ -257,7 +257,7 @@ public class RedisCacheClient implements CacheClient {
                 }
                 return scoreMap;
             }
-        });
+        },key);
     }
 
 
@@ -268,7 +268,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.llen(key.key());
             }
-        });
+        },key);
     }
 
     @Override
@@ -278,7 +278,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.rpush(key.key(), value.toString());
             }
-        });
+        },key);
     }
 
     @Override
@@ -288,7 +288,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.lrem(key.key(), 1L, value.toString());
             }
-        });
+        },key);
     }
 
 
@@ -299,7 +299,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.lpush(key.key(), value);
             }
-        });
+        },key);
     }
 
     @Override
@@ -317,7 +317,7 @@ public class RedisCacheClient implements CacheClient {
                 }
                 return i;
             }
-        });
+        },key);
     }
 
     @Override
@@ -327,7 +327,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.expire(key.key(), expire);
             }
-        });
+        },key);
     }
 
     @Override
@@ -337,7 +337,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.expireAt(key.key(), -1L);
             }
-        });
+        },key);
     }
 
     @Override
@@ -347,7 +347,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.expireAt(key.key(), expire);
             }
-        });
+        },key);
     }
 
     @Override
@@ -357,7 +357,7 @@ public class RedisCacheClient implements CacheClient {
             public String execute(ShardedJedis jedis) {
                 return jedis.setex(key.key(), seconds, value.toString());
             }
-        });
+        },key);
     }
 
     @Override
@@ -367,7 +367,7 @@ public class RedisCacheClient implements CacheClient {
             public String execute(ShardedJedis jedis) {
                 return jedis.set(key.key(), jsonProvider.toString(value));
             }
-        });
+        },key);
     }
 
     @Override
@@ -377,7 +377,7 @@ public class RedisCacheClient implements CacheClient {
             public String execute(ShardedJedis jedis) {
                 return jedis.set(key.key(), value.toString());
             }
-        });
+        },key);
     }
 
     @Override
@@ -387,7 +387,7 @@ public class RedisCacheClient implements CacheClient {
             public String execute(ShardedJedis jedis) throws CacheConnectionException {
                 return jedis.get(key.key());
             }
-        });
+        },key);
     }
 
     @Override
@@ -405,7 +405,7 @@ public class RedisCacheClient implements CacheClient {
                 TypeConverter typeConverter = new TypeConverter(clazz);
                 return (T) typeConverter.convert(json);
             }
-        });
+        },key);
     }
 
     @Override
@@ -431,7 +431,7 @@ public class RedisCacheClient implements CacheClient {
                 }
                 return tList;
             }
-        });
+        },key);
     }
 
     @Override
@@ -441,7 +441,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.setnx(key.key(), value.toString());
             }
-        });
+        },key);
     }
 
     @Override
@@ -451,7 +451,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.append(key.key(), value.toString());
             }
-        });
+        },key);
     }
 
     @Override
@@ -461,7 +461,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.decr(key.key());
             }
-        });
+        },key);
     }
 
     @Override
@@ -471,7 +471,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.decrBy(key.key(), count);
             }
-        });
+        },key);
     }
 
     @Override
@@ -481,7 +481,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.incrBy(key.key(), count);
             }
-        });
+        },key);
     }
 
     @Override
@@ -491,7 +491,7 @@ public class RedisCacheClient implements CacheClient {
             public Long execute(ShardedJedis jedis) {
                 return jedis.incr(key.key());
             }
-        });
+        },key);
     }
 
     @Override
@@ -501,6 +501,6 @@ public class RedisCacheClient implements CacheClient {
             public Boolean execute(ShardedJedis jedis) {
                 return jedis.getbit(key.key(), offset);
             }
-        });
+        },key);
     }
 }

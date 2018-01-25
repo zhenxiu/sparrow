@@ -59,4 +59,9 @@ public class GsonExtensionJsonImpl implements Json {
         return result;
     }
 
+    @Override
+    public Map<String, Object> parse(String json) {
+        return null;
+    }
+
 }
