@@ -17,11 +17,11 @@ public interface CacheHash {
 
     Long getSize(KEY key) throws CacheConnectionException;
 
-    String get(KEY key, String hashKey) throws CacheConnectionException;
+    String get(KEY key, String field) throws CacheConnectionException;
 
-    <T> T hash(KEY key, String hashKey, Class clazz) throws CacheConnectionException;
+    <T> T get(KEY key, String field, Class clazz) throws CacheConnectionException;
 
-    Long put(KEY key, String hashKey, Object value) throws CacheConnectionException;
+    Long put(KEY key, String field, Object value) throws CacheConnectionException;
 
     <K,T> Integer put(KEY key, Map<K, T> map) throws CacheConnectionException;
 }

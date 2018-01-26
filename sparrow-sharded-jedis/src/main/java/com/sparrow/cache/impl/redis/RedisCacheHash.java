@@ -87,21 +87,21 @@ public class RedisCacheHash extends AbstractCommand implements CacheHash {
     }
 
     @Override
-    public String get(final KEY key, final String hashKey) throws CacheConnectionException {
+    public String get(final KEY key, final String field) throws CacheConnectionException {
         return redisPool.execute(new Executor<String>() {
             @Override
             public String execute(ShardedJedis jedis) throws CacheConnectionException {
-                return jedis.hget(key.key(), hashKey);
+                return jedis.hget(key.key(), field);
             }
         }, key);
     }
 
     @Override
-    public <T> T hash(final KEY key, final String hashKey, final Class clazz) throws CacheConnectionException {
+    public <T> T get(final KEY key, final String field, final Class clazz) throws CacheConnectionException {
         return redisPool.execute(new Executor<T>() {
             @Override
             public T execute(ShardedJedis jedis) throws CacheConnectionException {
-                String value = jedis.hget(key.key(), hashKey);
+                String value = jedis.hget(key.key(), field);
                 if (StringUtility.isNullOrEmpty(value)) {
                     return null;
                 }
@@ -112,12 +112,12 @@ public class RedisCacheHash extends AbstractCommand implements CacheHash {
     }
 
     @Override
-    public Long put(final KEY key, final String hashKey, final Object value) throws CacheConnectionException {
+    public Long put(final KEY key, final String field, final Object value) throws CacheConnectionException {
         return redisPool.execute(new Executor<Long>() {
             @Override
             public Long execute(ShardedJedis jedis) {
                 TypeConverter typeConverter=new TypeConverter(String.class);
-                return jedis.hset(key.key(), hashKey, typeConverter.convert(value).toString());
+                return jedis.hset(key.key(), field, typeConverter.convert(value).toString());
             }
         }, key);
     }

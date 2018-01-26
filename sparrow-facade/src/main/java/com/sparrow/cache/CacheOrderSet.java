@@ -12,7 +12,7 @@ public interface CacheOrderSet {
 
     Long getSize(KEY key) throws CacheConnectionException;
 
-    Long add(KEY key, Object value, Long score) throws CacheConnectionException;
+    Long add(KEY key, Object value, double score) throws CacheConnectionException;
 
     Long remove(KEY key, Object value) throws CacheConnectionException;
 

@@ -22,7 +22,7 @@ public class RedisCacheString extends AbstractCommand implements CacheString {
         return redisPool.execute(new Executor<String>() {
             @Override
             public String execute(ShardedJedis jedis) {
-                TypeConverter typeConverter=new TypeConverter(value.getClass());
+                TypeConverter typeConverter=new TypeConverter(String.class);
                 String v=typeConverter.convert(value).toString();
                 return jedis.set(key.key(), v);
             }

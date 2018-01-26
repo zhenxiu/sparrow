@@ -31,7 +31,7 @@ public class RedisCacheOrderSet extends AbstractCommand implements CacheOrderSet
     }
 
     @Override
-    public Long add(final KEY key, final Object value, final Long score) throws CacheConnectionException {
+    public Long add(final KEY key, final Object value, final double score) throws CacheConnectionException {
         return redisPool.execute(new Executor<Long>() {
             @Override
             public Long execute(ShardedJedis jedis) {
