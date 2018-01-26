@@ -90,7 +90,7 @@ public class CookieUtility {
 
         try {
             if(cacheClient!=null) {
-                permission = cacheClient.get(permissionKey);
+                permission = cacheClient.string().get(permissionKey);
             }
             else {
                 permission = (String) request.getSession().getAttribute(permissionKey.getBusiness());
@@ -103,7 +103,7 @@ public class CookieUtility {
             permission = this.get(request.getCookies(), permissionKey.getBusiness());
             if (!StringUtility.isNullOrEmpty(permission) && cacheClient != null) {
                 try {
-                    cacheClient.setExpire(permissionKey, 60 * 60, permission);
+                    cacheClient.string().setExpire(permissionKey, 60 * 60, permission);
                 } catch (CacheConnectionException ignore) {
                     logger.error("cookie connectin break", ignore);
                 }

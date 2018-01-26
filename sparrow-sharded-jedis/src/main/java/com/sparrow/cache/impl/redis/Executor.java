@@ -17,7 +17,6 @@
 
 package com.sparrow.cache.impl.redis;
 
-import com.sparrow.constant.cache.KEY;
 import com.sparrow.exception.CacheConnectionException;
 import redis.clients.jedis.ShardedJedis;
 

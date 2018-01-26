@@ -28,7 +28,7 @@ import com.sparrow.utility.StringUtility;
  * @author harry
  */
 public class InOperation implements RelationalOperation {
-    private String join(Iterable iterable) {
+    private <T> String join(Iterable<T> iterable) {
         StringBuilder sb = new StringBuilder();
         for (Object key : iterable) {
             if (sb.length() > 0) {

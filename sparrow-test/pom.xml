@@ -79,6 +79,11 @@
             <artifactId>sparrow-log</artifactId>
             <version>${sparrow_log_version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.sparrow</groupId>
+            <artifactId>sparrow-sharded-jedis</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
         <!--sparrow end-->
 
         <!--json-->

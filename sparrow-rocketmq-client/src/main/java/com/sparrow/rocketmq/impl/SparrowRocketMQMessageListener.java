@@ -47,7 +47,7 @@ public class SparrowRocketMQMessageListener implements MessageListenerConcurrent
             return true;
         }
         try {
-            return !cacheClient.existInSet(monitor,keys);
+            return !cacheClient.set().exist(monitor,keys);
         } catch (CacheConnectionException e) {
             return true;
         }

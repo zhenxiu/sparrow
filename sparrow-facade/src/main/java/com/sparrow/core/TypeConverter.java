@@ -17,7 +17,10 @@
 
 package com.sparrow.core;
 
+import com.sparrow.core.spi.JsonFactory;
 import com.sparrow.enums.STATUS_RECORD;
+import com.sparrow.json.Json;
+import com.sparrow.support.Entity;
 import com.sparrow.utility.StringUtility;
 
 import java.math.BigDecimal;
@@ -31,9 +34,19 @@ public class TypeConverter {
     public TypeConverter() {
     }
 
+    /**
+     * 字段名
+     */
     protected String name;
+    /**
+     * 当前值
+     */
     protected Object value;
+    /**
+     * 目标类型
+     */
     protected Class type;
+    private Json json = JsonFactory.getProvider();
 
     /**
      * 实体对象
@@ -93,7 +106,7 @@ public class TypeConverter {
         return (Date) new TypeConverter(Date.class).convert(value);
     }
 
-    public static Timestamp getTimestamp(Object value){
+    public static Timestamp getTimestamp(Object value) {
         return (Timestamp) new TypeConverter(Timestamp.class).convert(value);
     }
 
@@ -103,8 +116,14 @@ public class TypeConverter {
             return null;
         }
         try {
-            String stringValue=value.toString();
+            Class valueType = value.getClass();
+            String stringValue = value.toString();
+            //转成string
             if (this.getType() == String.class) {
+                //当前值是entity对象则转json
+                if (Entity.class.isAssignableFrom(valueType)) {
+                    return json.toString((Entity) value);
+                }
                 return stringValue;
             }
 
@@ -139,6 +158,10 @@ public class TypeConverter {
             if (this.getType() == BigDecimal.class) {
                 //留给业务处理
                 return new BigDecimal(stringValue);
+            }
+            //转成实例对象
+            if (Entity.class.isAssignableFrom(this.getType())) {
+                return json.parse(stringValue, this.getType());
             }
         } catch (RuntimeException e) {
             return null;
