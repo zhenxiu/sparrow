@@ -24,6 +24,7 @@ package com.sparrow.constant;
  * @version 1.0
  */
 public class USER {
+    public static final String PERMISSION="PERMISSION";
     /**
      * 游客ID
      */
@@ -78,5 +79,7 @@ public class USER {
      * 开放平台加密密钥
      */
     public static final String OAUTH_3DAS_SECRET_KEY = "oauth_3das_secret_key";
+
+
 
 }

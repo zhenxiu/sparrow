@@ -45,7 +45,7 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
         }
         while (true) {
             try {
-             cacheClient.removeFromSet(this.monitor, key);
+             cacheClient.set().remove(this.monitor, key);
                 return;
             } catch (CacheConnectionException e) {
                 logger.error("monitor consume connection break ", e);
@@ -60,7 +60,7 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
         }
         while (true) {
             try {
-                cacheClient.addToSet(this.monitor, key);
+                cacheClient.set().add(this.monitor, key);
                 return;
             } catch (CacheConnectionException e) {
                 logger.error("monitor product connection break ", e);
@@ -75,14 +75,14 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
         }
         Long productCount = null;
         try {
-            productCount = cacheClient.getSetSize(this.monitor);
+            productCount = cacheClient.set().getSize(this.monitor);
             Boolean match = productCount==0;
             logger.info("product key{}:count{},match {}", RedisDistributedCountDownLatch.this.isFinish(),
                     productCount,
                     match);
             if (match) {
                 while (true) {
-                    Long success = cacheClient.expireAt(this.monitor, -1L);
+                    Long success = cacheClient.key().expireAt(this.monitor, -1L);
                     if (success>0) {
                         return true;
                     }

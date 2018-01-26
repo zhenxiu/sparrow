@@ -23,13 +23,11 @@ import com.sparrow.constant.SPARROW_MODULE;
 import com.sparrow.constant.cache.KEY;
 import com.sparrow.container.Container;
 import com.sparrow.core.spi.ApplicationContext;
-import com.sparrow.enums.BUSINESS;
 import com.sparrow.support.latch.DistributedCountDownLatch;
 import com.sparrow.support.redis.impl.RedisDistributedCountDownLatch;
-import com.sparrow.cache.impl.redis.RedisPool;
 
 /**
- * Created by TCLDUSER on 2018/1/11.
+ * Created by harry on 2018/1/11.
  */
 public class RedisLatchTest {
     public static void main(String[] args) {

@@ -59,7 +59,7 @@ package com.sparrow.facade.excel;//package com.sparrow.facade.excel;
 //                if (cell == null) {
 //                    cell = excelRow.createCell(column);
 //                }
-//                Validator Validator = ValidatorMap.get(excelTitle.get(column));
+//                Validator Validator = ValidatorMap.list(excelTitle.list(column));
 //                if (Validator != null) {
 //                    //如果配置为不验证，则直接下一条
 //                    if (!Validator.isValidate()) {
@@ -70,7 +70,7 @@ package com.sparrow.facade.excel;//package com.sparrow.facade.excel;
 //                        if (Result.getTable().equals(Result.TABLE_PROJECT)) {
 //                            rowProjectResult.add(Result);
 //                        } else {
-//                            rowContracterResult.get(Result.getIndex() - 1).add(Result);
+//                            rowContracterResult.list(Result.getIndex() - 1).add(Result);
 //                        }
 //                    } else {
 //                        System.out.println(Result.toString());
@@ -93,8 +93,8 @@ package com.sparrow.facade.excel;//package com.sparrow.facade.excel;
 //        }
 //        StringBuilder sb = new StringBuilder();
 //        for (int rowIndex = 0; rowIndex < projectsResult.size(); rowIndex++) {
-//            List<Result> rowProjectResult = projectsResult.get(rowIndex);
-//            List<List<Result>> rowContractResult = contacterResult.get(rowIndex);
+//            List<Result> rowProjectResult = projectsResult.list(rowIndex);
+//            List<List<Result>> rowContractResult = contacterResult.list(rowIndex);
 //            Object[] projectNamesAndValues = new Object[rowProjectResult.size() * 2 + 2 * 4];
 //            int projectIndex = 0;
 //            for (Result Result : rowProjectResult) {
@@ -117,7 +117,7 @@ package com.sparrow.facade.excel;//package com.sparrow.facade.excel;
 //                if (sb.length() > 0) {
 //                    sb.append("<br/>");
 //                }
-//                sb.append("第" + rowProjectResult.get(0).getCell().getRow() + "行");
+//                sb.append("第" + rowProjectResult.list(0).getCell().getRow() + "行");
 //            } else {
 //                for (List<Result> contractParameters : rowContractResult) {
 //                    if (contractParameters.size() == 0) {
@@ -145,7 +145,7 @@ package com.sparrow.facade.excel;//package com.sparrow.facade.excel;
 //                    contractNameValues[contractIndex++] = "project_id";
 //                    contractNameValues[contractIndex++] = project.getId();
 //                    contractNameValues[contractIndex++] = "project_code";
-//                    contractNameValues[contractIndex] = project.get("project_code");
+//                    contractNameValues[contractIndex] = project.list("project_code");
 //                    Contacter.createIt(contractNameValues);
 //                }
 //            }

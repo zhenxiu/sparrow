@@ -52,9 +52,17 @@ public class SparrowContainerImpl extends DocumentParser implements Container {
     private String xmlName;
     private String systemConfigPath;
 
+    public SparrowContainerImpl(String xmlName,String systemConfigPath) {
+        this.xmlName =xmlName;
+        this.systemConfigPath = systemConfigPath;
+    }
+
+    public SparrowContainerImpl(String xmlName) {
+        this(xmlName,"/system_config.properties");
+    }
+
     public SparrowContainerImpl() {
-        this.xmlName = "/beans.xml";
-        this.systemConfigPath = "/system_config.properties";
+        this("/beans.xml","/system_config.properties");
     }
 
     private void parseElement(Element element) throws Exception {

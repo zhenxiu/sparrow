@@ -135,6 +135,8 @@ public class SPARROW_ERROR implements ErrorSupport {
     public static final SPARROW_ERROR BLOG_FORUM_CODE_NULL = new SPARROW_ERROR(SPARROW_MODULE.BLOG, "03", "thread forum code is null");
     public static final SPARROW_ERROR BLOG_THREAD_SIMHASH_EXIST = new SPARROW_ERROR(SPARROW_MODULE.BLOG, "04", "thread simhash code has exist");
     public static final SPARROW_ERROR BLOG_THREAD_CRAWLED = new SPARROW_ERROR(SPARROW_MODULE.BLOG, "05", "thread has crawled");
+    public static final SPARROW_ERROR BLOG_LOCK = new SPARROW_ERROR(SPARROW_MODULE.BLOG, "06", "thread can't operation");
+
     //shop
     public static final SPARROW_ERROR SHOP_PRODUCT_NOT_EXIST = new SPARROW_ERROR(SPARROW_MODULE.SHOP, "01", "shop product not exist");
     public static final SPARROW_ERROR SHOP_DATE_NOT_ALLOW = new SPARROW_ERROR(SPARROW_MODULE.SHOP, "02", "shop date not allow");

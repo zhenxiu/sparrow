@@ -48,8 +48,8 @@ public class KEY {
         KEY k=new KEY();
         Pair<String,String> businessWithId=Pair.split(key,SYMBOL.COLON);
         k.businessId=businessWithId.getSecond();
-        String[] bussinessArray=businessWithId.getFirst().split("\\.");
-        k.module=bussinessArray[0];
+        String[] businessArray=businessWithId.getFirst().split("\\.");
+        k.module=businessArray[0];
         k.business=businessWithId.getFirst();
         return k;
     }

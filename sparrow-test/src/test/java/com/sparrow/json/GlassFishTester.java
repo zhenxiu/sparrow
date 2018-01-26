@@ -56,8 +56,8 @@ public class GlassFishTester {
 
         //    Json js=JsonFactory.getProvider();
       //      JsonReader jsonReader=  js.parse(jsonString);
-    //        System.out.println(jsonReader.readObject().get("userId"));
-  //         System.out.println(jsonReader.readObject().get("userId"));
+    //        System.out.println(jsonReader.readObject().list("userId"));
+  //         System.out.println(jsonReader.readObject().list("userId"));
 
             //new JsonReaderImpl(new StringReader(jsonString), new BufferPoolImpl());
 //jsonReader.close();

@@ -60,4 +60,9 @@ public class FastJsonExtensionJsonImpl implements Json {
         List<T> result = gson.fromJson(json, type);
         return result;
     }
+
+    @Override
+    public Map<String, Object> parse(String json) {
+       return JSON.parseObject(json);
+    }
 }

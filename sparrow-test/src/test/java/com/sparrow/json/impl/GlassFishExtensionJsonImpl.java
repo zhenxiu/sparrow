@@ -58,4 +58,9 @@ public class GlassFishExtensionJsonImpl implements Json {
         List<T> result = gson.fromJson(json, type);
         return result;
     }
+
+    @Override
+    public Map<String, Object> parse(String json) {
+        return null;
+    }
 }
