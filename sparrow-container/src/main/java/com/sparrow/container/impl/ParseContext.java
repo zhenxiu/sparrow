@@ -1,8 +1,9 @@
-package com.sparrow.container;
+package com.sparrow.container.impl;
 
 import com.sparrow.cg.Generator4MethodAccessor;
 import com.sparrow.cg.MethodAccessor;
 import com.sparrow.constant.magic.SYMBOL;
+import com.sparrow.container.BeanDefinition;
 import com.sparrow.core.TypeConverter;
 import com.sparrow.exception.DuplicateActionMethodException;
 import com.sparrow.utility.StringUtility;
