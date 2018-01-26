@@ -17,6 +17,7 @@
 
 package com.sparrow.servlet.impl;
 
+import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.servlet.ServletContainer;
 import com.sparrow.support.web.CookieUtility;
 import com.sparrow.support.web.ServletUtility;
@@ -32,12 +33,16 @@ import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.TreeMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author harry
  */
 public abstract class AbstractServletContainer implements ServletContainer {
-    ServletUtility servletUtility = ServletUtility.getInstance();
+    private static Logger logger = LoggerFactory.getLogger(AbstractServletContainer.class);
+    private ServletUtility servletUtility = ServletUtility.getInstance();
+    private CookieUtility cookieUtility;
 
     @Override
     public String getActionKey() {
@@ -46,12 +51,12 @@ public abstract class AbstractServletContainer implements ServletContainer {
 
     @Override
     public Long getCurrentUserId() {
-        return CookieUtility.getUser(this.getRequest()).getUserId();
+        return cookieUtility.getUser(this.getRequest()).getUserId();
     }
 
     @Override
     public String getCurrentUserName() {
-        return CookieUtility.getUser(this.getRequest()).getUserName();
+        return cookieUtility.getUser(this.getRequest()).getUserName();
     }
 
     @Override
@@ -109,12 +114,12 @@ public abstract class AbstractServletContainer implements ServletContainer {
 
     @Override
     public void cookie(String key, String value, Integer expireDays) {
-        CookieUtility.set(this.getResponse(), key, value, expireDays);
+        cookieUtility.set(this.getResponse(), key, value, expireDays);
     }
 
     @Override
     public void rootCookie(String key, String value, Integer expireDays) {
-        CookieUtility.setRoot(this.getResponse(), key, value, expireDays);
+        cookieUtility.setRoot(this.getResponse(), key, value, expireDays);
     }
 
     @Override
@@ -133,18 +138,16 @@ public abstract class AbstractServletContainer implements ServletContainer {
     @Override
     public String getRequestBody() {
         StringBuilder sb = new StringBuilder();
-
         try {
             BufferedReader br = new BufferedReader(new InputStreamReader(this.getRequest().getInputStream()));
-
             String line;
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
-
             return sb.toString();
-        } catch (Exception var5) {
-            return "";
+        } catch (Exception e) {
+            logger.error("request body error", e);
+            return SYMBOL.EMPTY;
         }
     }
 }

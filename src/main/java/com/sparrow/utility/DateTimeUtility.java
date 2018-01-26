@@ -19,8 +19,10 @@ package com.sparrow.utility;
 
 import com.sparrow.constant.DATE_TIME;
 import com.sparrow.constant.magic.DIGIT;
+import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.core.Pair;
 import com.sparrow.enums.DATE_TIME_UNIT;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -30,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,22 +66,17 @@ public class DateTimeUtility {
     /**
      * 获取时间间隔
      *
-     * @param startTime 开始时间
-     * @param endTime 结束时间
-     * @param millisTimeUnit 以毫秒为时间单位
+     * @param startTime    开始时间
+     * @param endTime      结束时间
+     * @param dateTimeUnit 以毫秒为时间单位
      * @return
      */
-    public static int getInterval(Date startTime, Date endTime,
-        int millisTimeUnit) {
+    public static int getInterval(Long startTime, Long endTime,
+                                  DATE_TIME_UNIT dateTimeUnit) {
         if (startTime == null || endTime == null) {
             return Integer.MIN_VALUE;
         }
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(startTime);
-        long start = cal.getTimeInMillis();
-        cal.setTime(endTime);
-        long end = cal.getTimeInMillis();
-        return (int) ((end - start) / millisTimeUnit);
+        return (int) ((endTime - startTime) / DATE_TIME.MILLISECOND_UNIT.get(dateTimeUnit));
     }
 
     /**
@@ -96,16 +94,16 @@ public class DateTimeUtility {
             mm %= 60;
         }
         return String.format("%1$s:%2$s:%3$s",
-            StringUtility.leftPad(String.valueOf(hh), '0', DIGIT.TOW),
-            StringUtility.leftPad(String.valueOf(mm), '0', DIGIT.TOW),
-            StringUtility.leftPad(String.valueOf(ss), '0', DIGIT.TOW));
+                StringUtility.leftPad(String.valueOf(hh), '0', DIGIT.TOW),
+                StringUtility.leftPad(String.valueOf(mm), '0', DIGIT.TOW),
+                StringUtility.leftPad(String.valueOf(ss), '0', DIGIT.TOW));
     }
 
     /**
      * 为当前时间加上指定单位的长度
      *
      * @param calendar Calendar.Date
-     * @param amount 时间长度
+     * @param amount   时间长度
      * @return
      */
     public static long addTime(int calendar, int amount) {
@@ -158,6 +156,18 @@ public class DateTimeUtility {
     }
 
     /**
+     * 获取格式化时间
+     *
+     * @param timestamp
+     * @param format
+     * @return
+     */
+    public static String getFormatTime(Long timestamp, String format) {
+        DateFormat sdf = DATE_TIME.getInstance(format);
+        return sdf.format(timestamp);
+    }
+
+    /**
      * 获取**前的格式的时间
      *
      * @return
@@ -165,17 +175,17 @@ public class DateTimeUtility {
     public static String getBeforeFormatTime(Date timestamp) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(timestamp);
-        long timesplit = (System.currentTimeMillis() - cal.getTimeInMillis()) / 1000;
-        Iterator<String> keyit = DATE_TIME.BEFORE_FORMAT.keySet().iterator();
+        long timeSplit = (System.currentTimeMillis() - cal.getTimeInMillis()) / 1000;
+        Iterator<String> keyIt = DATE_TIME.BEFORE_FORMAT.keySet().iterator();
         Stack<String> result = new Stack<String>();
-        String beforeFormat = "";
+        String beforeFormat = SYMBOL.EMPTY;
         do {
-            String key = keyit.next();
+            String key = keyIt.next();
             Integer value = DATE_TIME.BEFORE_FORMAT.get(key);
-            result.push(timesplit % value + key);
-            timesplit = timesplit / value;
+            result.push(timeSplit % value + key);
+            timeSplit = timeSplit / value;
         }
-        while (timesplit > DIGIT.ZERO);
+        while (timeSplit > DIGIT.ZERO);
         if (!result.isEmpty()) {
             beforeFormat = result.pop();
         }
@@ -183,56 +193,36 @@ public class DateTimeUtility {
     }
 
     /**
-     * 获取大于当前时间的最小时间
+     * 获取大于当前时间的最小时间（其余时间单位向下取整）
      *
      * @param unit
-     * @param split
      * @return 2014-3-10下午11:12:47 harry
      */
-    public static long getLimitTime(DATE_TIME_UNIT unit, int split) {
-
-        Map<DATE_TIME_UNIT, Integer> defaultValue = new HashMap<DATE_TIME_UNIT, Integer>();
-
-        defaultValue.put(DATE_TIME_UNIT.MONTH, DIGIT.ZERO);
-        defaultValue.put(DATE_TIME_UNIT.DAY, DIGIT.ONE);
-        defaultValue.put(DATE_TIME_UNIT.HOUR, DIGIT.ZERO);
-        defaultValue.put(DATE_TIME_UNIT.MINUTE, DIGIT.ZERO);
-        defaultValue.put(DATE_TIME_UNIT.SECOND, DIGIT.ZERO);
-
-        Map<DATE_TIME_UNIT, Integer> map = new HashMap<DATE_TIME_UNIT, Integer>();
-        map.put(DATE_TIME_UNIT.MONTH, Calendar.MONTH);
-        map.put(DATE_TIME_UNIT.DAY, Calendar.DATE);
-        map.put(DATE_TIME_UNIT.HOUR, Calendar.HOUR_OF_DAY);
-        map.put(DATE_TIME_UNIT.MINUTE, Calendar.MINUTE);
-        map.put(DATE_TIME_UNIT.SECOND, Calendar.SECOND);
-        map.put(DATE_TIME_UNIT.YEAR, Calendar.YEAR);
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        if (split > DIGIT.ZERO) {
-            calendar.add(map.get(unit), split);
+    public static long ceiling(Calendar calendar, DATE_TIME_UNIT unit) {
+        if (unit.equals(DATE_TIME_UNIT.WEEK)) {
+            throw new UnsupportedOperationException("WEEK date celling");
         }
-        calendar.set(Calendar.MILLISECOND, DIGIT.ZERO);
-        Iterator<DATE_TIME_UNIT> it = defaultValue.keySet().iterator();
-
-        while (it.hasNext()) {
-            DATE_TIME_UNIT u = it.next();
-            if (u.ordinal() < unit.ordinal()) {
-                calendar.set(map.get(u), defaultValue.get(u));
-            }
-        }
+        calendar.add(DATE_TIME.DATE_TIME_UNIT_CALENDER_CONVERTER.get(unit), 1);
+        floor(calendar, unit);
         return calendar.getTimeInMillis();
     }
 
     /**
-     * 判断两个时间段否有交集
+     * 向下取整
      *
-     * @param timeseg1
-     * @param timeseg2
-     * @return
+     * @param calendar
+     * @param unit
      */
-    public static boolean isTntersect(List<Long> timeseg1, List<Long> timeseg2) {
-        return timeseg1.get(DIGIT.ONE) >= timeseg2.get(DIGIT.ZERO)
-            && timeseg2.get(DIGIT.ONE) >= timeseg1.get(DIGIT.ZERO);
+    public static long floor(Calendar calendar, DATE_TIME_UNIT unit) {
+        if (unit.equals(DATE_TIME_UNIT.WEEK)) {
+            throw new UnsupportedOperationException("WEEK date floor");
+        }
+        for (DATE_TIME_UNIT u : DATE_TIME.DEFAULT_FIRST_VALUE.keySet()) {
+            if (u.ordinal() >= unit.ordinal()) {
+                continue;
+            }
+            calendar.set(DATE_TIME.DATE_TIME_UNIT_CALENDER_CONVERTER.get(u), DATE_TIME.DEFAULT_FIRST_VALUE.get(u));
+        }
+        return calendar.getTimeInMillis();
     }
 }

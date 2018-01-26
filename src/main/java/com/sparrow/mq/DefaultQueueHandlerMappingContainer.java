@@ -31,7 +31,7 @@ import java.util.*;
 public class DefaultQueueHandlerMappingContainer implements QueueHandlerMappingContainer {
     private Logger logger = LoggerFactory.getLogger(DefaultQueueHandlerMappingContainer.class);
 
-    DefaultQueueHandlerMappingContainer() {
+    public DefaultQueueHandlerMappingContainer() {
     }
 
     /**
@@ -41,12 +41,7 @@ public class DefaultQueueHandlerMappingContainer implements QueueHandlerMappingC
 
     @Override
     public void put(MQHandler handler) {
-        Class parameterClass = null;
-        Type type = handler.getClass()
-            .getGenericInterfaces()[0];
-        if (type instanceof ParameterizedType) {
-            parameterClass = (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
-        }
+        Class parameterClass =(Class) ((ParameterizedType) handler.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
         if (parameterClass != null) {
             queueHandlerMappings.put(parameterClass.getName(), handler);
         }

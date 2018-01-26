@@ -23,7 +23,7 @@ import com.sparrow.constant.CONSTANT;
 import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.container.Container;
 import com.sparrow.core.spi.ApplicationContext;
-import com.sparrow.core.TypeConvertor;
+import com.sparrow.core.TypeConverter;
 import com.sparrow.core.Pair;
 import com.sparrow.cg.MethodAccessor;
 import com.sparrow.cryptogram.ThreeDES;
@@ -39,26 +39,27 @@ import java.util.*;
 public class StringUtility {
 
     public static String newUuid() {
-        return UUID.randomUUID().toString().replace("-", "");
+        return UUID.randomUUID().toString().replace(SYMBOL.HORIZON_LINE, SYMBOL.EMPTY);
     }
 
     /**
      * @param array
-     * @param key KEY
+     * @param key
      * @return
      */
     public static boolean existInArray(Object[] array, Object key) {
         if (array == null || array.length == 0) {
             return false;
         }
-        boolean isExist = false;
         for (Object s : array) {
-            if (s.toString().trim().equals(key.toString().trim())) {
-                isExist = true;
-                break;
+            if (s == null) {
+                continue;
+            }
+            if (s.toString().trim().equalsIgnoreCase(key.toString().trim())) {
+                return true;
             }
         }
-        return isExist;
+        return false;
     }
 
     public static boolean existInArray(String array, String key) {
@@ -136,7 +137,7 @@ public class StringUtility {
      */
     public static String subStringByByte(String str, int len, String elide) {
         if (str == null) {
-            return "";
+            return SYMBOL.EMPTY;
         }
         int strLen = length(str);
         if (len >= strLen || len < 1) {
@@ -199,11 +200,11 @@ public class StringUtility {
     /**
      * 通过set方法获取字段名称
      *
-     * @param getMethod
+     * @param setMethod
      * @return
      */
-    public static String getFieldBySetMethod(String getMethod) {
-        return getMethod.substring("set".length());
+    public static String getFieldBySetMethod(String setMethod) {
+        return getFieldByGetMethod(setMethod);
     }
 
     /**
@@ -253,7 +254,7 @@ public class StringUtility {
      */
     public static String setFirstByteLowerCase(String srcString) {
         if (srcString == null || srcString.length() == 0) {
-            return "";
+            return SYMBOL.EMPTY;
         }
         char[] s = srcString.toCharArray();
         int firstCase = s[0];
@@ -277,7 +278,7 @@ public class StringUtility {
      * @return
      */
     public static String getIndent(int indentCount) {
-        return generateSomeCharacter(indentCount, " ");
+        return generateSomeCharacter(indentCount, SYMBOL.BLANK);
     }
 
     /**
@@ -290,11 +291,7 @@ public class StringUtility {
     public static String generateSomeCharacter(int characterCount, String c) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < characterCount; i++) {
-            if (c == null) {
-                sb.append(SYMBOL.UNDERLINE);
-            } else {
-                sb.append(c);
-            }
+            sb.append(c == null ? SYMBOL.UNDERLINE : c);
         }
         return sb.toString();
     }
@@ -389,19 +386,6 @@ public class StringUtility {
         return ret;
     }
 
-    public static boolean isInArray(Object[] array, Object item) {
-        if (array == null || array.length == 0) {
-            return false;
-        } else {
-            for (Object object : array) {
-                if (item.equals(object)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
     /**
      * 从数组array中排除exceptArray并拼接成数组
      * <p/>
@@ -416,7 +400,7 @@ public class StringUtility {
         Object[] exceptArray) {
         StringBuilder sb = new StringBuilder();
         for (Object object : array) {
-            if (isInArray(exceptArray, object)) {
+            if (existInArray(exceptArray, object)) {
                 continue;
             }
             if (sb.length() > 0) {
@@ -430,12 +414,13 @@ public class StringUtility {
     public static String join(String joinChar, Object... array) {
         StringBuilder sb = new StringBuilder();
         for (Object object : array) {
-            if (object != null) {
-                if (sb.length() > 0) {
-                    sb.append(joinChar);
-                }
-                sb.append(object);
+            if (object == null) {
+                continue;
             }
+            if (sb.length() > 0) {
+                sb.append(joinChar);
+            }
+            sb.append(object);
         }
         return sb.toString();
     }
@@ -486,7 +471,7 @@ public class StringUtility {
 
     public static String decodeForGet(String text) {
         try {
-            return new String(text.getBytes("ISO8859-1"), "UTF-8");
+            return new String(text.getBytes(CONSTANT.CHARSET_ISO_8859_1), CONSTANT.CHARSET_UTF_8);
         } catch (UnsupportedEncodingException e) {
             return null;
         }
@@ -551,7 +536,7 @@ public class StringUtility {
      * @return
      */
     public static String byteToStr(byte[] byteArray) {
-        String strDigest = "";
+        String strDigest =SYMBOL.EMPTY;
         for (byte b : byteArray) {
             strDigest += byteToHexStr(b);
         }
@@ -617,17 +602,17 @@ public class StringUtility {
                 }
             }
             if (serialParameters.length() > 0) {
-                serialParameters.append("&");
+                serialParameters.append(SYMBOL.AND);
             }
             if (isEncode) {
                 try {
-                    serialParameters.append(key + "="
+                    serialParameters.append(key + SYMBOL.EQUAL
                         + URLEncoder.encode(v, CONSTANT.CHARSET_UTF_8));
                 } catch (UnsupportedEncodingException ignore) {
                 }
 
             } else {
-                serialParameters.append(key + "=" + v);
+                serialParameters.append(key + SYMBOL.EQUAL + v);
             }
         }
         return serialParameters.toString();
@@ -664,21 +649,22 @@ public class StringUtility {
 
     public static String getParameter(Entity entity) {
         Container container = ApplicationContext.getContainer();
-        List<TypeConvertor> fieldList = container.getFieldList(entity.getClass());
+        List<TypeConverter> fieldList = container.getFieldList(entity.getClass());
         MethodAccessor methodAccessor = container.getProxyBean(entity.getClass());
         StringBuilder sb = new StringBuilder();
-        for (TypeConvertor field : fieldList) {
+        for (TypeConverter field : fieldList) {
             Object o = methodAccessor.get(entity, field.getName());
-            if (!StringUtility.isNullOrEmpty(o)) {
-                if (sb.length() > 0) {
-                    sb.append(SYMBOL.DOLLAR);
-                }
-                try {
-                    sb.append(StringUtility.setFirstByteLowerCase(field.getName())
-                        + SYMBOL.EQUAL
-                        + URLEncoder.encode(String.valueOf(o), CONSTANT.CHARSET_UTF_8));
-                } catch (UnsupportedEncodingException ignore) {
-                }
+            if (StringUtility.isNullOrEmpty(o)) {
+                continue;
+            }
+            if (sb.length() > 0) {
+                sb.append(SYMBOL.DOLLAR);
+            }
+            try {
+                sb.append(StringUtility.setFirstByteLowerCase(field.getName())
+                    + SYMBOL.EQUAL
+                    + URLEncoder.encode(String.valueOf(o), CONSTANT.CHARSET_UTF_8));
+            } catch (UnsupportedEncodingException ignore) {
             }
         }
         return sb.toString();
@@ -686,7 +672,7 @@ public class StringUtility {
 
     public static String wrap(String source, String wrap, String lineSplit) {
         if (isNullOrEmpty(source)) {
-            return "";
+            return SYMBOL.EMPTY;
         }
 
         if (isNullOrEmpty(wrap)) {
@@ -791,7 +777,7 @@ public class StringUtility {
         return format;
     }
 
-    public static String printStackTrace(String msg,Throwable t) {
+    public static String printStackTrace(String msg, Throwable t) {
         PrintWriter pw = null;
         try {
             StringWriter sw = new StringWriter();

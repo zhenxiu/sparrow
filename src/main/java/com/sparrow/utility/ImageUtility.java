@@ -22,7 +22,7 @@ import com.sparrow.constant.EXTENSION;
 import com.sparrow.constant.FILE;
 import com.sparrow.constant.REGEX;
 import com.sparrow.constant.SPARROW_ERROR;
-import com.sparrow.core.TypeConvertor;
+import com.sparrow.core.TypeConverter;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.exception.Asserts;
 import com.sparrow.support.Entity;
@@ -361,9 +361,8 @@ public class ImageUtility {
             result);
         if (imageMatcher.find()) {
             return imageMatcher.group(1);
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -374,9 +373,9 @@ public class ImageUtility {
      */
     public static java.util.List<Long> getImageList(Entity entity) {
         java.util.List<Long> imageIdList = new ArrayList<Long>();
-        java.util.List<TypeConvertor> fieldList = ApplicationContext.getContainer().getFieldList(entity.getClass());
+        java.util.List<TypeConverter> fieldList = ApplicationContext.getContainer().getFieldList(entity.getClass());
         MethodAccessor methodAccessor = ApplicationContext.getContainer().getProxyBean(entity.getClass());
-        for (TypeConvertor type : fieldList) {
+        for (TypeConverter type : fieldList) {
             Object value = methodAccessor.get(entity, type.getName());
             if (!(value instanceof String)) {
                 continue;

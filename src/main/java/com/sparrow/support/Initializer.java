@@ -17,11 +17,13 @@
 
 package com.sparrow.support;
 
+import com.sparrow.container.Container;
+
 /**
  * @author harry
  */
 public interface Initializer {
-    void init();
+    void init(Container container);
 
-    void destroy();
+    void destroy(Container container);
 }

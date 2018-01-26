@@ -49,4 +49,6 @@ public interface DistributedCountDownLatch {
      * @return
      */
     boolean monitor(int secondInterval);
+
+    boolean monitor();
 }

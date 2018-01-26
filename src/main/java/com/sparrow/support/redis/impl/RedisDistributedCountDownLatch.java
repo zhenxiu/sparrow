@@ -17,94 +17,78 @@
 
 package com.sparrow.support.redis.impl;
 
+import com.sparrow.cache.CacheClient;
+import com.sparrow.constant.cache.KEY;
 import com.sparrow.exception.CacheConnectionException;
 import com.sparrow.support.latch.DistributedCountDownLatch;
-import com.sparrow.support.redis.RedisReader;
-import com.sparrow.support.redis.RedisWriter;
-import com.sparrow.utility.RedisPool;
 import com.sparrow.utility.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import redis.clients.jedis.ShardedJedis;
 
 /**
  * Created by harry on 2018/1/11.
  */
 public class RedisDistributedCountDownLatch implements DistributedCountDownLatch {
     private static Logger logger = LoggerFactory.getLogger(RedisDistributedCountDownLatch.class);
-    private RedisPool redisPool;
-    private String productKey;
-    private String consumeKey;
+    private KEY monitor;
+    private CacheClient cacheClient;
 
-    public RedisDistributedCountDownLatch(RedisPool redisPool, String productKey, String consumeKey) {
-        this.productKey = productKey;
-        this.consumeKey = consumeKey;
-        this.redisPool = redisPool;
-    }
-
-    public static RedisDistributedCountDownLatch getConsumer(RedisPool redisPool, String consumeKey) {
-        return new RedisDistributedCountDownLatch(redisPool, null, consumeKey);
+    public RedisDistributedCountDownLatch(CacheClient cacheClient,KEY monitorKey) {
+        this.cacheClient=cacheClient;
+        this.monitor = monitorKey;
     }
 
     @Override
     public void consume(final String key) {
-        if (StringUtility.isNullOrEmpty(this.productKey)) {
-            throw new UnsupportedOperationException("consume key is null");
+        if (this.monitor ==null) {
+            throw new UnsupportedOperationException("product key is null");
         }
-        redisPool.write(new RedisWriter() {
-            @Override
-            public void write(ShardedJedis jedis) {
-                jedis.sadd(RedisDistributedCountDownLatch.this.consumeKey, key);
+        while (true) {
+            try {
+             cacheClient.set().remove(this.monitor, key);
+                return;
+            } catch (CacheConnectionException e) {
+                logger.error("monitor consume connection break ", e);
             }
-        });
+        }
     }
 
     @Override
     public void product(final String key) {
-        if (StringUtility.isNullOrEmpty(this.productKey)) {
+        if (this.monitor ==null) {
             throw new UnsupportedOperationException("product key is null");
         }
-        redisPool.write(new RedisWriter() {
-            @Override
-            public void write(ShardedJedis jedis) {
-                jedis.sadd(RedisDistributedCountDownLatch.this.productKey, key);
+        while (true) {
+            try {
+                cacheClient.set().add(this.monitor, key);
+                return;
+            } catch (CacheConnectionException e) {
+                logger.error("monitor product connection break ", e);
             }
-        });
+        }
     }
 
     @Override
     public boolean isFinish() {
-        if (StringUtility.isNullOrEmpty(this.productKey)) {
+        if (StringUtility.isNullOrEmpty(this.monitor)) {
             throw new UnsupportedOperationException("product key is null");
         }
+        Long productCount = null;
         try {
-            return redisPool.read(new RedisReader<Boolean>() {
-                @Override
-                public Boolean read(ShardedJedis jedis) {
-                    Long productCount = jedis.scard(RedisDistributedCountDownLatch.this.productKey);
-                    Long consumeCount = jedis.scard(RedisDistributedCountDownLatch.this.consumeKey);
-                    Boolean match = productCount.equals(consumeCount);
-                    logger.info("product key{}:count{},consume key{}:count{}, match {}", RedisDistributedCountDownLatch.this.productKey,
-                        productCount,
-                        RedisDistributedCountDownLatch.this.consumeKey,
-                        consumeCount,
-                        match);
-                    if (match) {
-                        while (true) {
-                            if (redisPool.write(new RedisWriter() {
-                                @Override
-                                public void write(ShardedJedis jedis) {
-                                    jedis.expireAt(RedisDistributedCountDownLatch.this.productKey, -1);
-                                    jedis.expireAt(RedisDistributedCountDownLatch.this.consumeKey, -1);
-                                }
-                            })) {
-                                return true;
-                            }
-                        }
+            productCount = cacheClient.set().getSize(this.monitor);
+            Boolean match = productCount==0;
+            logger.info("product key{}:count{},match {}", RedisDistributedCountDownLatch.this.isFinish(),
+                    productCount,
+                    match);
+            if (match) {
+                while (true) {
+                    Long success = cacheClient.key().expireAt(this.monitor, -1L);
+                    if (success>0) {
+                        return true;
                     }
-                    return false;
                 }
-            });
+            }
+            return false;
         } catch (CacheConnectionException e) {
             return false;
         }
@@ -121,5 +105,10 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
             } catch (InterruptedException ignore) {
             }
         }
+    }
+
+    @Override
+    public boolean monitor() {
+       return this.monitor(2);
     }
 }

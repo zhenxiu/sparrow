@@ -44,8 +44,7 @@ public class MapValueComparator<T> implements Comparator<T> {
     public int compare(T a, T b) {
         if (map.get(a) >= map.get(b)) {
             return order == ORDER.DESC ? -1 : 1;
-        } else {
-            return order == ORDER.DESC ? 1 : -1;
         }
+        return order == ORDER.DESC ? 1 : -1;
     }
 }

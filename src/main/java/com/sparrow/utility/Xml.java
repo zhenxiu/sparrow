@@ -17,6 +17,7 @@
 
 package com.sparrow.utility;
 
+import com.sparrow.constant.CONSTANT;
 import com.sparrow.constant.magic.ESCAPED;
 import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.support.EnvironmentSupport;
@@ -43,8 +44,6 @@ import java.util.TreeMap;
  */
 public class Xml {
 
-    public static void main(String[] args) throws Exception {
-    }
 
     public static Document getXmlDocumentByPath(String xmlFullPath,
         String dtdName) throws ParserConfigurationException, SAXException,
@@ -81,7 +80,7 @@ public class Xml {
         try {
             if (xml != null) {
                 document = builder.parse(new ByteArrayInputStream(xml
-                    .getBytes("UTF-8")));
+                    .getBytes(CONSTANT.CHARSET_UTF_8)));
             }
         } catch (Exception e) {
             e.printStackTrace();

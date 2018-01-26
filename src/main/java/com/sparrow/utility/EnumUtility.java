@@ -74,9 +74,8 @@ public class EnumUtility {
         }
         if (e != null) {
             return getMap(e, maxCount, name);
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**

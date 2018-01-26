@@ -17,6 +17,7 @@
 
 package com.sparrow.core.spi;
 
+import com.sparrow.container.Container;
 import com.sparrow.json.Json;
 
 import javax.json.JsonException;
@@ -38,6 +39,7 @@ public class JsonFactory {
             if (json != null) {
                 return json;
             }
+
             ServiceLoader<Json> loader = ServiceLoader.load(Json.class);
             Iterator<Json> it = loader.iterator();
             if (it.hasNext()) {

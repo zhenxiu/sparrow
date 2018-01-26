@@ -19,28 +19,34 @@ package com.sparrow.utility;
 
 import com.sparrow.enums.DATE_TIME_UNIT;
 
+import java.util.Calendar;
+
 /**
  * @author harry
  */
-public class LockEntity {
+public class LockConfig {
+
     /**
-     * 相对时间构照
-     *
-     * 字节锁
-     *
-     * @param lockTime
-     * @param maxTimes
-     * @param key
-     * @param isContinueLockTime
-     * @param containOperationId
+     * 锁构造
+     * @param absolute 是否绝对时间
+     * @param lockTime 锁定时间
+     * @param maxTimes 锁定时间内最大操作次数
+     * @param isContinueLockTime 是否顺延时间
+     * @param containOperationId key是否包含operation id
      */
-    public LockEntity(int lockTime, int maxTimes, String key,
-        boolean isContinueLockTime, boolean containOperationId) {
-        this.absolute = false;
-        this.setLockTime(lockTime);
-        this.setMaxTimes(maxTimes);
-        this.setContinueLockTime(isContinueLockTime);
-        this.setContainOperationId(containOperationId);
+    private LockConfig(Boolean absolute,int lockTime, int maxTimes,
+        boolean isContinueLockTime, boolean containOperationId,DATE_TIME_UNIT dateTimeUnit) {
+        this.absolute = absolute;
+        this.lockTime=lockTime;
+        this.maxTimes=maxTimes;
+        this.isContinueLockTime=isContinueLockTime;
+        this.containOperationId=containOperationId;
+        this.dateTimeUnit=dateTimeUnit;
+    }
+
+    public static LockConfig getRelativeLock(int lockTime, int maxTimes,
+        boolean isContinueLockTime, boolean containOperationId){
+        return new LockConfig(false,lockTime,maxTimes,isContinueLockTime,containOperationId,null);
     }
 
     /**
@@ -51,14 +57,9 @@ public class LockEntity {
      * lockTime=1
      *
      * @param maxTimes
-     * @param key
      */
-    public LockEntity(DATE_TIME_UNIT dateTimeUnit, int maxTimes, String key) {
-        this.absolute = true;
-        this.lockTime = 1;
-        this.dateTimeUnit = dateTimeUnit;
-        this.setMaxTimes(maxTimes);
-        this.containOperationId = true;
+    public static LockConfig getAbsoluteLock(DATE_TIME_UNIT dateTimeUnit, int maxTimes) {
+        return new LockConfig(true,1,maxTimes,false,true,dateTimeUnit);
     }
 
     private boolean absolute;
@@ -93,7 +94,9 @@ public class LockEntity {
     }
 
     public long getAbsoluteLockTime() {
-        return DateTimeUtility.getLimitTime(this.dateTimeUnit, this.lockTime);
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        return DateTimeUtility.ceiling(calendar,this.dateTimeUnit);
     }
 
     public int getLockTime() {

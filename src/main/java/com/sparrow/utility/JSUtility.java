@@ -17,6 +17,8 @@
 
 package com.sparrow.utility;
 
+import com.sparrow.constant.CONSTANT;
+import com.sparrow.constant.magic.SYMBOL;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -52,11 +54,11 @@ public class JSUtility {
     public static String encodeURIComponent(String content) {
         try {
             if (StringUtility.isNullOrEmpty(content)) {
-                return "";
+                return SYMBOL.EMPTY;
             }
-            return URLEncoder.encode(content, "UTF-8").replace("+", "%20");
+            return URLEncoder.encode(content, CONSTANT.CHARSET_UTF_8).replace(SYMBOL.ADD, "%20");
         } catch (Exception e) {
-            return "";
+            return SYMBOL.EMPTY;
         }
     }
 
@@ -68,9 +70,9 @@ public class JSUtility {
      */
     public static String decodeURIComponent(String content) {
         try {
-            return URLDecoder.decode(content, "UTF-8");
+            return URLDecoder.decode(content,CONSTANT.CHARSET_UTF_8);
         } catch (UnsupportedEncodingException e) {
-            return "";
+            return SYMBOL.EMPTY;
         }
     }
 

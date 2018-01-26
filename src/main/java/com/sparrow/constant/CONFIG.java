@@ -29,7 +29,6 @@ public class CONFIG {
 
     public static final String INTERNATIONALIZATION = "internationalization";
     public static final String LANGUAGE = "language";
-    public static final String PERMISSION = "permission";
     public static final String ROOT_PATH = "root_path";
     public static final String DATASOURCE_KEY = "datasource_key";
 
@@ -37,7 +36,6 @@ public class CONFIG {
     public static final String MVC_CONFIG = "mvc_config";
     public static final String REDIS_HOST = "redis_host";
     public static final String REDIS_PORT = "redis_port";
-    public static final String REDIS_OPEN = "redis_open";
     public static final String RESOURCE = "resource";
     public static final String THEMES = "themes";
     public static final String RESOURCE_PHYSICAL_PATH = "resource_physical_path";

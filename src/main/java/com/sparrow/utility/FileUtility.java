@@ -23,20 +23,29 @@ import com.sparrow.constant.FILE;
 import com.sparrow.constant.magic.DIGIT;
 import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.support.EnvironmentSupport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author harry
  */
 public class FileUtility {
 
-    Logger logger = LoggerFactory.getLogger(FileUtility.class);
+    private static Logger logger = LoggerFactory.getLogger(FileUtility.class);
     private static FileUtility fileUtil = new FileUtility();
 
     private FileUtility() {
@@ -201,10 +210,8 @@ public class FileUtility {
                 fos.write(buffer, DIGIT.ZERO, readSize);
             }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException("file not found", e);
         } finally {
             if (is != null) {
                 try {
@@ -243,10 +250,8 @@ public class FileUtility {
                 outputStream.write(buffer, DIGIT.ZERO, readSize);
             }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         } finally {
             try {
                 inputStream.close();
@@ -287,33 +292,34 @@ public class FileUtility {
                     return SYMBOL.EMPTY;
                 }
                 // 是否需要skip
-                if (isSkip) {
-                    // 往外跳
-                    if (compare.compare(tempString, keyword) < DIGIT.ZERO) {
-                        // 先做标记
-                        reader.mark(skip);
-                        // 如果不足标准skip ，跳跃浮度减半
-                        if (skip < skip / DIGIT.TOW) {
-                            skip /= DIGIT.TOW;
-                        } else {
-                            // 跳出文本范围 则减半
-                            while (reader.skip(skip) < skip) {
-                                skip /= DIGIT.TOW;
-                                reader.reset();
-                            }
-                        }
-                        reader.readLine();
-                        // 向里跳
-                    } else {
-                        reader.reset();
+                if (!isSkip) {
+                    continue;
+                }
+                // 往外跳
+                if (compare.compare(tempString, keyword) < DIGIT.ZERO) {
+                    // 先做标记
+                    reader.mark(skip);
+                    // 如果不足标准skip ，跳跃浮度减半
+                    if (skip < skip / DIGIT.TOW) {
                         skip /= DIGIT.TOW;
-                        if (skip <= minSkip) {
-                            isSkip = false;
-                            lastWord = tempString;
-                        } else {
-                            reader.skip(skip);
-                            reader.readLine();
+                    } else {
+                        // 跳出文本范围 则减半
+                        while (reader.skip(skip) < skip) {
+                            skip /= DIGIT.TOW;
+                            reader.reset();
                         }
+                    }
+                    reader.readLine();
+                    // 向里跳
+                } else {
+                    reader.reset();
+                    skip /= DIGIT.TOW;
+                    if (skip <= minSkip) {
+                        isSkip = false;
+                        lastWord = tempString;
+                    } else {
+                        reader.skip(skip);
+                        reader.readLine();
                     }
                 }
             }
@@ -370,7 +376,7 @@ public class FileUtility {
             .split("\\|");
         // jpeg 或者是其他格式都转换成jpg
         if (EXTENSION.JPEG.equalsIgnoreCase(extension)
-            || !StringUtility.isInArray(imageExtension, extension)) {
+            || !StringUtility.existInArray(imageExtension, extension)) {
             extension = EXTENSION.JPG;
         }
         return extension;
@@ -439,7 +445,7 @@ public class FileUtility {
     }
 
     public boolean isImage(String extension) {
-        return StringUtility.isInArray(Config
+        return StringUtility.existInArray(Config
             .getValue(FILE.IMAGE_EXTENSION).split("\\|"), extension);
     }
 

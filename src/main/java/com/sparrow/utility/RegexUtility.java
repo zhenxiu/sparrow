@@ -39,12 +39,11 @@ public class RegexUtility {
         Pattern p = Pattern
             .compile(regex, Pattern.MULTILINE + Pattern.CANON_EQ);
         Matcher m = p.matcher(source);
-        if (m.find()) {
-            for (int i = 1; i <= m.groupCount(); i++) {
-                desc = desc.replace(SYMBOL.DOLLAR + i, m.group(i));
-            }
-        } else {
+        if (!m.find()) {
             return null;
+        }
+        for (int i = 1; i <= m.groupCount(); i++) {
+            desc = desc.replace(SYMBOL.DOLLAR + i, m.group(i));
         }
         return desc;
     }
@@ -81,13 +80,12 @@ public class RegexUtility {
             .compile(regex, Pattern.MULTILINE + Pattern.CANON_EQ);
         Matcher m = p.matcher(source);
         List<String> groupList = null;
-        if (m.find()) {
-            groupList = new ArrayList<String>();
-            for (int i = 1; i <= m.groupCount(); i++) {
-                groupList.add(m.group(i));
-            }
-        } else {
+        if (!m.find()) {
             return null;
+        }
+        groupList = new ArrayList<String>();
+        for (int i = 1; i <= m.groupCount(); i++) {
+            groupList.add(m.group(i));
         }
         return groupList;
     }

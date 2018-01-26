@@ -17,7 +17,7 @@
 
 package com.sparrow.orm;
 
-import com.sparrow.core.TypeConvertor;
+import com.sparrow.core.TypeConverter;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -27,7 +27,7 @@ import javax.persistence.Id;
 /**
  * @author harry
  */
-public class Field extends TypeConvertor {
+public class Field extends TypeConverter {
     private HashType hashStrategy;
     private GenerationType generationType;
     private String columnName;

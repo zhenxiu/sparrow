@@ -19,6 +19,7 @@ package com.sparrow.orm.query;
 
 import com.sparrow.enums.ComparisonOperator;
 import com.sparrow.orm.query.impl.SimpleCriteriaField;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -105,7 +106,13 @@ public class Criteria {
     }
 
     public Criteria in(Object... values) {
-        return in(toCollection(values));
+        this.criteriaEntry = new CriteriaEntry(ComparisonOperator.IN, values);
+        return this;
+    }
+
+    public Criteria in(String values) {
+        this.criteriaEntry = new CriteriaEntry(ComparisonOperator.IN, values);
+        return this;
     }
 
     public Criteria in(Iterable<?> values) {
@@ -113,12 +120,14 @@ public class Criteria {
         return this;
     }
 
-    private List<Object> toCollection(Object... values) {
-        return Arrays.asList(values);
+    public Criteria notIn(Object... values) {
+        this.criteriaEntry = new CriteriaEntry(ComparisonOperator.NOT_IN, values);
+        return this;
     }
 
-    public Criteria notIn(Object... values) {
-        return notIn(toCollection(values));
+    public Criteria notIn(String values) {
+        this.criteriaEntry = new CriteriaEntry(ComparisonOperator.NOT_IN, values);
+        return this;
     }
 
     public Criteria notIn(Iterable<?> values) {
@@ -126,6 +135,20 @@ public class Criteria {
         return this;
     }
 
+    public Criteria isNull() {
+        this.criteriaEntry = new CriteriaEntry(ComparisonOperator.IS_NULL);
+        return this;
+    }
+
+    public Criteria isNotNull() {
+        this.criteriaEntry = new CriteriaEntry(ComparisonOperator.IS_NOT_NULL);
+        return this;
+    }
+
+    public Criteria mod(Integer mod,Integer remainder) {
+        this.criteriaEntry = new CriteriaEntry(ComparisonOperator.MOD,remainder,mod);
+        return this;
+    }
     public CriteriaField getField() {
         return this.field;
     }
@@ -134,10 +157,20 @@ public class Criteria {
 
         private ComparisonOperator key;
         private Object value;
+        private Integer mod;
+
+        CriteriaEntry(ComparisonOperator key) {
+            this(key, null, null);
+        }
 
         CriteriaEntry(ComparisonOperator key, Object value) {
+            this(key, value, null);
+        }
+
+        CriteriaEntry(ComparisonOperator key, Object value, Integer mod) {
             this.key = key;
             this.value = value;
+            this.mod = mod;
         }
 
         public ComparisonOperator getKey() {
@@ -148,12 +181,16 @@ public class Criteria {
             return value;
         }
 
+        public Integer getMod() {
+            return mod;
+        }
+
         @Override
         public String toString() {
             return "CriteriaEntry{" +
-                "key=" + key +
-                ", value=" + value +
-                '}';
+                    "key=" + key +
+                    ", value=" + value +
+                    '}';
         }
     }
 }

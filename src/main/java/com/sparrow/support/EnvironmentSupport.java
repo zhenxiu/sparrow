@@ -20,6 +20,8 @@ package com.sparrow.support;
 import com.sparrow.constant.CONSTANT;
 import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.utility.Config;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,6 +32,7 @@ import java.net.URL;
  * @author harry
  */
 public class EnvironmentSupport {
+    private static Logger logger= LoggerFactory.getLogger(EnvironmentSupport.class);
 
     private static EnvironmentSupport environmentSupport = new EnvironmentSupport();
 
@@ -152,7 +155,7 @@ public class EnvironmentSupport {
                 fileInputStream = new FileInputStream(new File(relativeFileName));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+           logger.error("input stream error",e);
         }
         return fileInputStream;
     }
@@ -174,7 +177,7 @@ public class EnvironmentSupport {
                 fileInputStream = new FileInputStream(new File(relativeFileName));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("input stream error",e);
         }
         return fileInputStream;
     }

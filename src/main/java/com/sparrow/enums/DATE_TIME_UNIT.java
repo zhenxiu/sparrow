@@ -23,6 +23,10 @@ package com.sparrow.enums;
 
 public enum DATE_TIME_UNIT {
     /**
+     * 毫秒
+     */
+    MILLISECOND,
+    /**
      * 秒
      */
     SECOND,

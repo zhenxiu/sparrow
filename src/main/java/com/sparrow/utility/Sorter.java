@@ -17,6 +17,7 @@
 
 package com.sparrow.utility;
 
+import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.core.Pair;
 import com.sparrow.enums.ORDER;
 
@@ -35,7 +36,7 @@ public class Sorter {
      */
     public Sorter(String sort, String queryString) {
         if (!StringUtility.isNullOrEmpty(sort)) {
-            Pair<String, String> sortPair = Pair.split(sort, "_");
+            Pair<String, String> sortPair = Pair.split(sort, SYMBOL.UNDERLINE);
             sortKey = sortPair.getFirst();
             direction = sortPair.getSecond().equalsIgnoreCase(ORDER.ASC.toString()) ? ORDER.DESC : ORDER.ASC;
         }

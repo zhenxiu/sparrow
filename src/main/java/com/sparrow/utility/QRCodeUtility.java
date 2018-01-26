@@ -21,6 +21,8 @@ import com.google.zxing.*;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
+import com.sparrow.constant.CONSTANT;
+import com.sparrow.constant.EXTENSION;
 import com.sparrow.support.BufferedImageLuminanceSource;
 import com.sparrow.support.Size;
 
@@ -39,14 +41,12 @@ import java.util.Hashtable;
  * @author harry
  */
 public class QRCodeUtility {
-    private static final String CHARSET = "utf-8";
-    private static final String FORMAT_NAME = "JPG";
 
     private static BufferedImage createImage(String content, String logo,
         boolean needCompress, Size size, Size logoSize) throws Exception {
         Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
         hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
-        hints.put(EncodeHintType.CHARACTER_SET, CHARSET);
+        hints.put(EncodeHintType.CHARACTER_SET, CONSTANT.CHARSET_UTF_8);
         hints.put(EncodeHintType.MARGIN, 1);
         BitMatrix bitMatrix = new MultiFormatWriter().encode(content,
             BarcodeFormat.QR_CODE, size.getWidth(), size.getHeight(), hints);
@@ -124,7 +124,7 @@ public class QRCodeUtility {
         throws Exception {
         BufferedImage image = QRCodeUtility.createImage(content, logoPath,
             true, size, logoSize);
-        ImageIO.write(image, FORMAT_NAME, output);
+        ImageIO.write(image, EXTENSION.JPG_WITHOUT_DOT, output);
     }
 
     /**
@@ -138,7 +138,7 @@ public class QRCodeUtility {
         throws Exception {
         BufferedImage image = QRCodeUtility.createImage(content, null,
             true, new Size(300, 300), new Size(60, 60));
-        ImageIO.write(image, FORMAT_NAME, output);
+        ImageIO.write(image, EXTENSION.JPG_WITHOUT_DOT, output);
     }
 
     /**
@@ -159,14 +159,8 @@ public class QRCodeUtility {
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
         Result result;
         Hashtable<DecodeHintType, Object> hints = new Hashtable<DecodeHintType, Object>();
-        hints.put(DecodeHintType.CHARACTER_SET, CHARSET);
+        hints.put(DecodeHintType.CHARACTER_SET, CONSTANT.CHARSET_UTF_8);
         result = new MultiFormatReader().decode(bitmap, hints);
         return result.getText();
-    }
-
-    public static void main(String[] args) throws Exception {
-        String text = "http://www.yihaomen.com";
-        OutputStream outputStream = new FileOutputStream(new File("d:\\code2.jpg"));
-        QRCodeUtility.encode(text, outputStream);
     }
 }
