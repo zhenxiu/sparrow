@@ -71,18 +71,28 @@ public class KEY {
 
     public static class Business {
         private String module;
-        private String key;
+        private StringBuilder key=new StringBuilder();
 
         public Business(ModuleSupport module, String... business) {
             this.module = module.name();
-            this.key = this.module;
+            this.key.append(this.module);
             if (business != null && business.length > 0) {
-                this.key += SYMBOL.DOT + StringUtility.join(Arrays.asList(business), SYMBOL.DOT);
+                this.key.append(SYMBOL.DOT);
+                this.key.append(StringUtility.join(Arrays.asList(business), SYMBOL.DOT));
             }
         }
 
+        public Business append(String ... business){
+            if(business==null||business.length==0){
+                return this;
+            }
+            this.key.append(SYMBOL.DOT);
+            this.key.append(StringUtility.join(Arrays.asList(business),SYMBOL.DOT));
+            return this;
+        }
+
         public String getKey() {
-            return key;
+            return key.toString();
         }
 
         public String getModule() {
