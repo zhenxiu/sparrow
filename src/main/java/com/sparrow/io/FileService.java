@@ -32,6 +32,8 @@ public interface FileService {
 
     OutputStream createOutputStream(String fullFilePath) throws IOException;
 
+    void createEmptyFile(String fullFilePath) throws IOException;
+
     List<String> getFileNameList(String directory) throws IOException;
 
     List<String> getFileNameList(String directory, String extension) throws IOException;

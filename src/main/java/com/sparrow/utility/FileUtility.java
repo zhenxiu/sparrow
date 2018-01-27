@@ -361,6 +361,12 @@ public class FileUtility {
         return Math.ceil(length / DIGIT.K / DIGIT.K * DIGIT.HUNDRED) / DIGIT.HUNDRED + "GB";
     }
 
+    /**
+     * 获取文件扩展名
+     *
+     * @param fileUrl
+     * @return .jpg
+     */
     public String getExtension(String fileUrl) {
         return fileUrl.substring(fileUrl.lastIndexOf('.'))
             .toLowerCase();

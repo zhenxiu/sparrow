@@ -29,7 +29,6 @@ import java.util.List;
 
 /**
  * @author harry
- * @date 2018/1/19
  */
 public class JDKFileService implements FileService {
     private static Logger logger = LoggerFactory.getLogger(JDKFileService.class);
@@ -47,6 +46,23 @@ public class JDKFileService implements FileService {
     @Override
     public OutputStream createOutputStream(String fullFilePath) throws IOException {
         return new FileOutputStream(new File(fullFilePath));
+    }
+
+    @Override
+    public void createEmptyFile(String fullFilePath) throws FileNotFoundException {
+        OutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(new File(fullFilePath));
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.flush();
+                    outputStream.close();
+                } catch (IOException e) {
+                    logger.error("create empty file error", e);
+                }
+            }
+        }
     }
 
     @Override
@@ -122,7 +138,6 @@ public class JDKFileService implements FileService {
             throw new IOException(e);
         }
     }
-
 
     @Override
     public void copy(String srcName, String descPath) throws IOException {

@@ -34,6 +34,7 @@ public class EXTENSION {
     public static final String JSON = ".json";
     public static final String JSP = ".jsp";
     public static final String HTML = ".html";
+    public static final String ZIP=".zip";
 
 
     public static final String EXCEL2003_WITHOUT_DOT = "xls";
@@ -49,4 +50,5 @@ public class EXTENSION {
     public static final String JSON_WITHOUT_DOT = "json";
     public static final String JSP_WITHOUT_DOT = "jsp";
     public static final String HTML_WITHOUT_DOT = "html";
+    public static final String ZIP_WITHOUT_DOT="zip";
 }

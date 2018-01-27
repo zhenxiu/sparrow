@@ -107,8 +107,12 @@ public class DateTimeUtility {
      * @return
      */
     public static long addTime(int calendar, int amount) {
+        return addTime(System.currentTimeMillis(),calendar,amount);
+    }
+
+    public static long addTime(Long time,int calendar, int amount) {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date(System.currentTimeMillis()));
+        cal.setTime(new Date(time));
         cal.add(calendar, amount);
         return cal.getTimeInMillis();
     }
@@ -124,7 +128,7 @@ public class DateTimeUtility {
         return sdf.format(new Date(System.currentTimeMillis()));
     }
 
-    public static Long convert(String date, String format) {
+    public static Long parse(String date, String format) {
         DateFormat sdf = DATE_TIME.getInstance(format);
         try {
             return sdf.parse(date).getTime();
@@ -172,9 +176,9 @@ public class DateTimeUtility {
      *
      * @return
      */
-    public static String getBeforeFormatTime(Date timestamp) {
+    public static String getBeforeFormatTime(Long timestamp) {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(timestamp);
+        cal.setTimeInMillis(timestamp);
         long timeSplit = (System.currentTimeMillis() - cal.getTimeInMillis()) / 1000;
         Iterator<String> keyIt = DATE_TIME.BEFORE_FORMAT.keySet().iterator();
         Stack<String> result = new Stack<String>();
