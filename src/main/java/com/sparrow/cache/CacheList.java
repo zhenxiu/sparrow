@@ -11,13 +11,13 @@ import java.util.List;
 public interface CacheList {
     Long getSize(KEY key) throws CacheConnectionException;
 
-    Long add(KEY key, Object value) throws CacheConnectionException;
+    <T> Long add(KEY key, T value) throws CacheConnectionException;
 
     Long add(KEY key, String... value) throws CacheConnectionException;
 
     <T> Integer add(KEY key, Iterable<T> values) throws CacheConnectionException;
 
-    Long remove(KEY key, Object value) throws CacheConnectionException;
+    <T> Long remove(KEY key, T value) throws CacheConnectionException;
 
     List<String> list(KEY key) throws CacheConnectionException;
 

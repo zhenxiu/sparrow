@@ -12,19 +12,19 @@ public interface CacheOrderSet {
 
     Long getSize(KEY key) throws CacheConnectionException;
 
-    Long add(KEY key, Object value, double score) throws CacheConnectionException;
+    <T> Long add(KEY key, T value, double score) throws CacheConnectionException;
 
-    Long remove(KEY key, Object value) throws CacheConnectionException;
+    <T> Long remove(KEY key, T value) throws CacheConnectionException;
 
     Long remove(KEY key, Long from, Long to) throws CacheConnectionException;
 
-    Double getScore(KEY key, Object value) throws CacheConnectionException;
+    <T> Double getScore(KEY key, T value) throws CacheConnectionException;
 
-    Long getRank(KEY key, Object value) throws CacheConnectionException;
+    <T> Long getRank(KEY key, T value) throws CacheConnectionException;
 
-    Map<String, Double> getAllWithScore(KEY key) throws CacheConnectionException;
+    <T> Map<T, Double> getAllWithScore(KEY key) throws CacheConnectionException;
 
-    Integer putAllWithScore(KEY key, Map<String, Double> keyScoreMap) throws CacheConnectionException;
+    <T> Integer putAllWithScore(KEY key, Map<T, Double> keyScoreMap) throws CacheConnectionException;
 
-    Map<String, Double> getAllWithScore(KEY key, CacheDataNotFound<Map<String,Double>> hook);
+    <T> Map<T, Double> getAllWithScore(KEY key, Class keyClazz, CacheDataNotFound<Map<T, Double>> hook);
 }
