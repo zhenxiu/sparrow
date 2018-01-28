@@ -38,8 +38,12 @@ public class CollectionsUtility {
         return result;
     }
 
-    public static Boolean isNullOrEmpty(Collection<?> collection) {
-        return collection == null || collection.size() == 0;
+    public static Boolean isNullOrEmpty(Iterable<?> collection) {
+        return collection == null || !collection.iterator().hasNext();
+    }
+
+    public static <T> Boolean isNullOrEmpty(T [] collection) {
+        return collection == null || collection.length==0;
     }
 
     /**

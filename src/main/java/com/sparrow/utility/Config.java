@@ -66,10 +66,12 @@ public class Config {
             return SYMBOL.EMPTY;
         }
         String value = internationalizationMap.get(key);
-        if (value != null) {
-            if (value.contains(SYMBOL.DOLLAR + CONFIG.ROOT_PATH)) {
-                value = value.replace(SYMBOL.DOLLAR + CONFIG.ROOT_PATH, Config.getValue(CONFIG.ROOT_PATH));
-            }
+        if (value == null) {
+            return SYMBOL.EMPTY;
+        }
+        String rootPath = Config.getValue(CONFIG.ROOT_PATH);
+        if (!StringUtility.isNullOrEmpty(rootPath) && value.contains(SYMBOL.DOLLAR + CONFIG.ROOT_PATH)) {
+            value = value.replace(SYMBOL.DOLLAR + CONFIG.ROOT_PATH, rootPath);
         }
         return value;
     }
@@ -159,11 +161,12 @@ public class Config {
     public static String getValue(String key) {
         try {
             Object value = Cache.getInstance().get(CACHE_KEY.CONFIG_FILE, key);
-            if (value != null) {
-                String v = value.toString();
-                v = StringUtility.replace(v, CONSTANT.REPLACE_MAP);
-                return v;
+            if (value == null) {
+                return null;
             }
+            String v = value.toString();
+            v = StringUtility.replace(v, CONSTANT.REPLACE_MAP);
+            return v;
         } catch (Exception e) {
             logger.error("get value error", e);
         }

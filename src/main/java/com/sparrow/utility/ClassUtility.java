@@ -100,15 +100,21 @@ public class ClassUtility {
     private static List<Class> findClass(File directory, String packageName)
         throws ClassNotFoundException, URISyntaxException {
         List<Class> classes = new ArrayList<Class>();
-        if (directory != null && directory.exists()) {
-            for (File file : directory.listFiles()) {
-                if (file.isDirectory()) {
-                    classes.addAll(findClass(file, packageName + SYMBOL.DOT + file.getName()));
-                } else if (file.getName().endsWith(".class")) {
-                    classes.add(Class.forName(packageName + SYMBOL.DOT + file.getName().substring(0, file.getName().length() - 6)));
-                }
+        if (directory == null || !directory.exists()) {
+            return null;
+        }
+        File[]fileList= directory.listFiles();
+        if(CollectionsUtility.isNullOrEmpty(fileList)){
+            return null;
+        }
+        for (File file : fileList) {
+            if (file.isDirectory()) {
+                classes.addAll(findClass(file, packageName + SYMBOL.DOT + file.getName()));
+            } else if (file.getName().endsWith(".class")) {
+                classes.add(Class.forName(packageName + SYMBOL.DOT + file.getName().substring(0, file.getName().length() - 6)));
             }
         }
+
         return classes;
     }
 
