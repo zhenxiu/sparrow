@@ -37,6 +37,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.zip.ZipOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -249,7 +250,9 @@ public class FileUtility {
                 }
                 outputStream.write(buffer, DIGIT.ZERO, readSize);
             }
-
+            if(outputStream instanceof ZipOutputStream){
+               ((ZipOutputStream) outputStream).finish();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -274,7 +277,9 @@ public class FileUtility {
         BufferedReader reader = null;
         try {
             if (!file.exists()) {
-                file.createNewFile();
+                if (!file.createNewFile()) {
+                    throw new FileNotFoundException(file.getPath());
+                }
             }
             reader = new BufferedReader(new InputStreamReader(
                 new FileInputStream(file), "utf-8"), skip);
@@ -397,14 +402,14 @@ public class FileUtility {
     /**
      * 获取文件名 不包含扩展名
      *
-     * @param imageUrl
+     * @param fulleFilePath
      * @return
      */
-    public String getFileName(String imageUrl) {
+    public String getFileName(String fulleFilePath) {
         // 获取客户端文件名 http://img.zhuaququ.com/0/0.100.jpg?date=new date()
-        int fileNameStartIndex = imageUrl.lastIndexOf('/') + DIGIT.ONE;
-        int fileNameEndIndex = imageUrl.lastIndexOf('.');
-        return imageUrl.substring(fileNameStartIndex,
+        int fileNameStartIndex = fulleFilePath.lastIndexOf('/') + DIGIT.ONE;
+        int fileNameEndIndex = fulleFilePath.lastIndexOf('.');
+        return fulleFilePath.substring(fileNameStartIndex,
             fileNameEndIndex);
     }
 
