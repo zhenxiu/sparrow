@@ -43,6 +43,7 @@ start
 -  下载项目管理壳子，通过该项目可以下载sparrow所以子项目
     git@github.com:sparrowzoo/sparrow-shell.git
     具体操作见该项目 [readme.md](https://github.com/sparrowzoo/sparrow-shell)
+- style 目录为codestyle 和checkstyle 及copyright 相关配置文件，朋友们可自行配置.
     
 - 编译sparrow-super 项目 该项目包括sparrow 所有依赖的jar,共用配置文件及sparrow 子项子的全局版本号,目前所有还没有上传至maven 仓库，感兴趣的朋友可以fork版本自行控制，待代码稳定后逐步上传至maven仓库共享。
     maven编译命令
