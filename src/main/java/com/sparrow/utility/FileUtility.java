@@ -137,12 +137,11 @@ public class FileUtility {
     }
 
     private String makeDirectory(String fullFilePath) {
-        int index = fullFilePath.lastIndexOf('/');
-        if (index == -1) {
-            index = fullFilePath.lastIndexOf('\\');
+        File destFile = new File(fullFilePath);
+        if (destFile.isDirectory()) {
+            return fullFilePath;
         }
-
-        // 目录图所在路径
+        int index = fullFilePath.lastIndexOf(File.separator);
         String descDirectoryPath = fullFilePath.substring(DIGIT.ZERO, index + DIGIT.ONE);
         if (StringUtility.isNullOrEmpty(descDirectoryPath)) {
             descDirectoryPath = System.getProperty("user.dir");
@@ -198,8 +197,10 @@ public class FileUtility {
         FileOutputStream fos = null;
         try {
             String fileFullPath = this.makeDirectory(descFilePath);
-            // 目标图文件对象
             File descFile = new File(fileFullPath);
+            if (descFile.isDirectory()) {
+                descFile = new File(fileFullPath + File.separator + FileUtility.getInstance().getFileNameWithExtension(srcFilePath));
+            }
             is = new FileInputStream(srcFilePath);
             fos = new FileOutputStream(descFile);
             byte[] buffer = new byte[DIGIT.K];
@@ -250,8 +251,8 @@ public class FileUtility {
                 }
                 outputStream.write(buffer, DIGIT.ZERO, readSize);
             }
-            if(outputStream instanceof ZipOutputStream){
-               ((ZipOutputStream) outputStream).finish();
+            if (outputStream instanceof ZipOutputStream) {
+                ((ZipOutputStream) outputStream).finish();
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -276,13 +277,11 @@ public class FileUtility {
 
         BufferedReader reader = null;
         try {
-            if (!file.exists()) {
-                if (!file.createNewFile()) {
-                    throw new FileNotFoundException(file.getPath());
-                }
+            if (!file.exists() && !file.createNewFile()) {
+                throw new FileNotFoundException(file.getPath());
             }
             reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(file), "utf-8"), skip);
+                new FileInputStream(file), CONSTANT.CHARSET_UTF_8), skip);
             String tempString;
             reader.mark(skip);
             skip /= 2;

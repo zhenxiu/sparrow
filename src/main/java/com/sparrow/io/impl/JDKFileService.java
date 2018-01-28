@@ -79,7 +79,7 @@ public class JDKFileService implements FileService {
             localFiles = dir.listFiles(new FilenameFilter() {
                 @Override
                 public boolean accept(File dir, String name) {
-                    return name.equalsIgnoreCase(extension);
+                    return name.toLowerCase().endsWith(extension.toLowerCase());
                 }
             });
         } else {
@@ -141,12 +141,6 @@ public class JDKFileService implements FileService {
 
     @Override
     public void copy(String srcName, String descPath) throws IOException {
-        File destFile = new File(descPath);
-        if (!destFile.exists()) {
-            if (!destFile.mkdirs()) {
-                throw new FileNotFoundException(descPath);
-            }
-        }
         FileUtility.getInstance().copy(srcName, descPath);
     }
 }
