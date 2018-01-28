@@ -40,10 +40,25 @@ email:zh_harry#163.com
 
 start
 -----
-[测试用例 https://github.com/sparrowzoo/sparrow-test](https://github.com/sparrowzoo/sparrow-test)
-sparrow-test 为case 逐步完善中...
+-  下载项目管理壳子，通过该项目可以下载sparrow所以子项目
+    git@github.com:sparrowzoo/sparrow-shell.git
+    具体操作见该项目 [readme.md](https://github.com/sparrowzoo/sparrow-shell)
+    
+- 编译sparrow-super 项目 该项目包括sparrow 所有依赖的jar,共用配置文件及sparrow 子项子的全局版本号,目前所有还没有上传至maven 仓库，感兴趣的朋友可以fork版本自行控制，待代码稳定后逐步上传至maven仓库共享。
+    maven编译命令
+    cd sparrow/sparrow-super
+    mvn clean install -U -Dmaven.test.skip
+ 
+- 回到父项目根目录cd ..  编译全局项目,如令如上
+
+- sparrow 为保持代码整洁，所有的test 项目单独由一个sparrow-test 项目管理，该项目已有部分功能通过test case,朋友们可以下载了解sparrow 运行
+ [测试用例 https://github.com/sparrowzoo/sparrow-test](https://github.com/sparrowzoo/sparrow-test)
+ sparrow-test 为case 逐步完善中...
+ 
+ 
+-  后绪重点会开发orm(跨数据源 db elastic search hbase) 和mvc两大重要模块，敬请期待...
 
 我们的愿景和未来
 --------
-让程序员脱离spring 也能写代码,而且更快，更优雅
+让程序员脱离spring, 也能写代码,而且更快，更优雅
 

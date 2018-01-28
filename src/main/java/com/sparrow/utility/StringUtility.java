@@ -536,7 +536,7 @@ public class StringUtility {
      * @return
      */
     public static String byteToStr(byte[] byteArray) {
-        String strDigest =SYMBOL.EMPTY;
+        String strDigest = SYMBOL.EMPTY;
         for (byte b : byteArray) {
             strDigest += byteToHexStr(b);
         }
@@ -797,5 +797,12 @@ public class StringUtility {
                 pw.close();
             }
         }
+    }
+
+    public static int ignoreCaseIndexOf(String str, String subStr) {
+        if (str == null || subStr == null) {
+            return -1;
+        }
+        return str.toLowerCase().indexOf(subStr.toLowerCase());
     }
 }
