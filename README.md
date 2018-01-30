@@ -1,6 +1,6 @@
 麻雀虽小，但五脏俱全
 ---
-sparrow 源自中国俗语 麻雀虽小，但五脏俱全，努力打造一个全新的低耦合，0依赖的高性能java 开发基础框架。
+sparrow 源自中国俗语 麻雀虽小，但五脏俱全，全力打造一个全新的低耦合，0依赖的高性能java 开发基础框架。
 这个框架我从11年开始写，中间重构了n遍，最原始的代码可能都找不到了，之所以坚持写，最初并不是想造新轮子。 
 主要是从中学习基础原理。 经过近十年的打磨，发现有些设计思想和理念，是值得学习的。比如spring mvc 的设计模式，orm ico 等等。 
 虽然很多朋友们都了解，但要真正自己实现起来也并不是那么容易。而这个过程对原来的深入理解是很帮助，所以将这部分开源出来，
@@ -48,20 +48,27 @@ email:zh_harry#163.com
 
 start
 -----
--  下载项目管理壳子，通过该项目可以下载sparrow所以子项目
-    git@github.com:sparrowzoo/sparrow-shell.git
+-  下载项目管理壳子sparrow-shell，通过该项目可以下载sparrow所以子项目
+    GIT 地址: git@github.com:sparrowzoo/sparrow-shell.git
     具体操作见该项目 [readme.md](https://github.com/sparrowzoo/sparrow-shell)
 - style 目录为codestyle 和checkstyle 及copyright 相关配置文件，朋友们可自行配置.
     
 - 编译sparrow-super 项目 该项目包括sparrow 所有依赖的jar,共用配置文件及sparrow 子项子的全局版本号,目前所有还没有上传至maven 仓库，感兴趣的朋友可以fork版本自行控制，待代码稳定后逐步上传至maven仓库共享。
     maven编译命令
+    ```
     cd sparrow/sparrow-super
     mvn clean install -U -Dmaven.test.skip
- 
-- 回到父项目根目录cd ..  编译全局项目,如令如上
+    ```
+- 回到父项目根目录
+    
+    ```
+    cd ..  
+    mvn clean install -U -Dmaven.test.skip
+    ```
 
 - sparrow 为保持代码整洁，所有的test 项目单独由一个sparrow-test 项目管理，该项目已有部分功能通过test case,朋友们可以下载了解sparrow 运行
- [测试用例 https://github.com/sparrowzoo/sparrow-test](https://github.com/sparrowzoo/sparrow-test)
+
+     [测试用例 https://github.com/sparrowzoo/sparrow-test](https://github.com/sparrowzoo/sparrow-test)
  case 逐步完善中...
  
  
