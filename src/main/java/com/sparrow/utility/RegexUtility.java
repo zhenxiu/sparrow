@@ -50,7 +50,6 @@ public class RegexUtility {
 
     /**
      * 只判断是否匹配 且不做后续处理
-     * <p/>
      * 例如:判断电子邮件或手机号码是否匹配等
      *
      * @param source

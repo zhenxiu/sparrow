@@ -32,41 +32,26 @@ public interface Container {
 
     /**
      * 获取类的代理对象
-     *
-     * @param clazz
-     * @return
      */
     MethodAccessor getProxyBean(Class<?> clazz);
 
     /**
      * 获取类的字段转换器
-     *
-     * @param clazz
-     * @return
      */
     List<TypeConverter> getFieldList(Class clazz);
 
     /**
      * 获取action method
-     *
-     * @param clazzName
-     * @return
      */
     Map<String, Method> getControllerMethod(String clazzName);
 
     /**
      * 获取bean 对象根据bean名称
-     *
-     * @param beanName
-     * @param <T>
-     * @return
      */
     <T> T getBean(String beanName);
 
     /**
      * 获取所有bean
-     *
-     * @return
      */
     Map<String, Object> getAllBean();
 
@@ -77,9 +62,6 @@ public interface Container {
 
     /**
      * 获取某容器下的所有bean
-     *
-     * @param container
-     * @return
      */
     Map<String, Object> getBeanMap(CONTAINER container);
 }

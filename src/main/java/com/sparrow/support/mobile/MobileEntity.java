@@ -125,13 +125,13 @@ public class MobileEntity {
     /**
      * 验证码是否有效
      *
-     * @param field
-     * @return
+     * @param field 验证码显示域
+     * @return 验证码是否有效
      */
     public Boolean valid(ERROR_FIELD_SUFFIX field) throws BusinessException {
         //手机验证码有效时间
-        int mobileValidateTokenAvailableTime = Integer.valueOf(Config
-            .getValue(CONFIG.MOBILE_VALIDATE_TOKEN_AVAILABLE_TIME));
+        int mobileValidateTokenAvailableTime =Config
+                .getIntegerValue(CONFIG.MOBILE_VALIDATE_TOKEN_AVAILABLE_TIME);
         Long currentTime = System.currentTimeMillis();
         Long validTime = this.sendTime + mobileValidateTokenAvailableTime * 1000;
         if (currentTime > validTime) {
@@ -143,9 +143,9 @@ public class MobileEntity {
     /**
      * 验证码是否正确
      *
-     * @param validateCode
-     * @param field
-     * @return
+     * @param validateCode 验证码
+     * @param field        验证码显示域
+     * @return 是否验证成功
      */
     public Boolean validate(String validateCode, ERROR_FIELD_SUFFIX field) throws BusinessException {
         if (Config.getBooleanValue(CONFIG.DEBUG)) {

@@ -19,6 +19,7 @@ package com.sparrow.utility;
 
 import com.sparrow.constant.CONSTANT;
 import com.sparrow.constant.magic.SYMBOL;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -35,7 +36,7 @@ import java.util.jar.JarFile;
 public class ClassUtility {
     /**
      * @param c 接口
-     * @return List<Class>    实现接口的所有类
+     * @return 实现接口的所有类
      */
     public static List<Class> getAllClassByInterface(Class c) {
         List<Class> clazzList = new ArrayList<Class>();
@@ -58,12 +59,14 @@ public class ClassUtility {
         return clazzList;
     }
 
+
     /**
      * @param packageName 包名
-     * @return List<Class>    包下所有类
+     * @return 包下所有类
+     * @throws ClassNotFoundException, IOException, URISyntaxException
      */
     public static List<Class> getClasses(
-        String packageName) throws ClassNotFoundException, IOException, URISyntaxException {
+            String packageName) throws ClassNotFoundException, IOException, URISyntaxException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace(SYMBOL.DOT, SYMBOL.SLASH);
         Enumeration<URL> resources = classLoader.getResources(path);
@@ -75,14 +78,14 @@ public class ClassUtility {
                 classes.addAll(findClass(directory, packageName));
             } else if ("jar".equalsIgnoreCase(resource.getProtocol())) {
                 classes.addAll(findClass(((JarURLConnection) resource.openConnection())
-                    .getJarFile(), path));
+                        .getJarFile(), path));
             }
         }
         return classes;
     }
 
     private static List<Class> findClass(JarFile jarFile, String packagePath)
-        throws ClassNotFoundException, URISyntaxException {
+            throws ClassNotFoundException, URISyntaxException {
         List<Class> classes = new ArrayList<Class>();
         Enumeration<JarEntry> entrys = jarFile.entries();
         while (entrys.hasMoreElements()) {
@@ -98,13 +101,13 @@ public class ClassUtility {
     }
 
     private static List<Class> findClass(File directory, String packageName)
-        throws ClassNotFoundException, URISyntaxException {
+            throws ClassNotFoundException, URISyntaxException {
         List<Class> classes = new ArrayList<Class>();
         if (directory == null || !directory.exists()) {
             return null;
         }
-        File[]fileList= directory.listFiles();
-        if(CollectionsUtility.isNullOrEmpty(fileList)){
+        File[] fileList = directory.listFiles();
+        if (CollectionsUtility.isNullOrEmpty(fileList)) {
             return null;
         }
         for (File file : fileList) {

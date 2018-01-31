@@ -19,6 +19,7 @@ package com.sparrow.utility;
 
 import com.sparrow.constant.CONSTANT;
 import com.sparrow.constant.magic.SYMBOL;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -29,10 +30,8 @@ import java.net.URLEncoder;
 public class JSUtility {
     /**
      * 获取js的安全脚本
-     * <p/>
-     * &apos;'单引号
-     * <p/>
-     * &quot; " 双引号
+     * '单引号
+     * " 双引号
      *
      * @param str
      * @return
@@ -42,7 +41,7 @@ public class JSUtility {
             return null;
         }
         return str.replace("'", "&apos;").replace("\"", "&quot;")
-            .replace("\r\n", "<br/>").replace("\n", "<br/>");
+                .replace("\r\n", "<br/>").replace("\n", "<br/>");
     }
 
     /**
@@ -70,7 +69,7 @@ public class JSUtility {
      */
     public static String decodeURIComponent(String content) {
         try {
-            return URLDecoder.decode(content,CONSTANT.CHARSET_UTF_8);
+            return URLDecoder.decode(content, CONSTANT.CHARSET_UTF_8);
         } catch (UnsupportedEncodingException e) {
             return SYMBOL.EMPTY;
         }
@@ -84,13 +83,13 @@ public class JSUtility {
      * @return
      */
     public static String getEditorContent(String editor,
-        String editorContent, String attach) {
+                                          String editorContent, String attach) {
         return String
-            .format("%1$s.initContent=function(){"
-                    + "%1$s.setEditorContent(decodeURIComponent(\"%2$s\"));};"
-                    + "%1$s.attach.setParentObject(%1$s);"
-                    + "%1$s.config.attach.uploadedJson=decodeURIComponent('%3$s');",
-                editor, encodeURIComponent(editorContent),
-                encodeURIComponent(attach));
+                .format("%1$s.initContent=function(){"
+                                + "%1$s.setEditorContent(decodeURIComponent(\"%2$s\"));};"
+                                + "%1$s.attach.setParentObject(%1$s);"
+                                + "%1$s.config.attach.uploadedJson=decodeURIComponent('%3$s');",
+                        editor, encodeURIComponent(editorContent),
+                        encodeURIComponent(attach));
     }
 }

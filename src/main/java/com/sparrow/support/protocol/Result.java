@@ -24,7 +24,6 @@ import com.sparrow.support.ErrorSupport;
 
 /**
  * 可用于协议 规范服务端返回格式 <p> BusinessException KEY ErrorSupport SPARROW_ERROR name+suffix=key suffix 与界面name 对应
- * <p/>
  * 为什么用该类型？与异常相比 考虑继承的问题 枚举不可以继承 考虑该类要求稳定不经常修改 不要影响数据协议 考虑第三调用的泛型
  *
  * @author harry
@@ -60,7 +59,7 @@ public class Result<T> implements VO {
      */
     private String error;
     /**
-     * 错误 key-->key.suffix(field)
+     * 错误 key= key.suffix(field)
      */
     private String key;
     /**

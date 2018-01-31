@@ -41,21 +41,13 @@ public class Operation {
     }
 
     public Operation(String allowStatus, String allowRole, String name, String description, Integer resultStatus) {
-        this.allowStatus = new String[] {allowStatus};
-        this.allowRole = new String[] {allowRole};
+        this.allowStatus = new String[]{allowStatus};
+        this.allowRole = new String[]{allowRole};
         this.name = name;
         this.description = description;
         this.resultStatus = resultStatus;
     }
 
-    /**
-     * 只验证不设置状态
-     *
-     * @param allowStatus
-     * @param allowRole
-     * @param name
-     * @param description
-     */
     public Operation(String allowStatus, String allowRole, String name, String description) {
         this(allowStatus, allowRole, name, description, null);
     }

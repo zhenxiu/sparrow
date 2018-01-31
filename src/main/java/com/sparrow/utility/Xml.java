@@ -46,17 +46,17 @@ public class Xml {
 
 
     public static Document getXmlDocumentByPath(String xmlFullPath,
-        String dtdName) throws ParserConfigurationException, SAXException,
-        IOException {
+                                                String dtdName) throws ParserConfigurationException, SAXException,
+            IOException {
         final String finalDtdFile = dtdName;
         DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
-            .newInstance();
+                .newInstance();
         DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
         if (!StringUtility.isNullOrEmpty(dtdName)) {
             docBuilder.setEntityResolver(new EntityResolver() {
                 @Override
                 public InputSource resolveEntity(String publicId,
-                    String systemId) throws SAXException, IOException {
+                                                 String systemId) throws SAXException, IOException {
                     InputSource is = new InputSource();
                     is.setByteStream(EnvironmentSupport.getInstance().getFileInputStream("/" + finalDtdFile));
                     is.setPublicId(publicId);
@@ -80,7 +80,7 @@ public class Xml {
         try {
             if (xml != null) {
                 document = builder.parse(new ByteArrayInputStream(xml
-                    .getBytes(CONSTANT.CHARSET_UTF_8)));
+                        .getBytes(CONSTANT.CHARSET_UTF_8)));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,7 +101,7 @@ public class Xml {
             String[] elementName = xmlKey.split("\\.");
             for (String e : elementName) {
                 element = (Element) (element
-                    .getElementsByTagName(e)).item(0);
+                        .getElementsByTagName(e)).item(0);
             }
             return element.getTextContent().trim();
         } catch (Exception ex) {
@@ -110,7 +110,7 @@ public class Xml {
     }
 
     public static Element getElementByTagAttribute(Document doc,
-        String tagName, String attributeName, String attributeValue) {
+                                                   String tagName, String attributeName, String attributeValue) {
         Element element = doc.getDocumentElement();
         NodeList nodeList = element.getElementsByTagName(tagName);
         for (int i = 0; i < nodeList.getLength(); i++) {
@@ -125,7 +125,7 @@ public class Xml {
     }
 
     public static List<Element> getElementsByTagName(Document doc,
-        String tagName) {
+                                                     String tagName) {
         Element element = doc.getDocumentElement();
         NodeList nodeList = element.getElementsByTagName(tagName);
         List<Element> elementList = new ArrayList<Element>();
@@ -166,16 +166,6 @@ public class Xml {
 
     /**
      * xml编码
-     * <p/>
-     * &lt;<小于号
-     * <p/>
-     * &gt;>大于号
-     * <p/>
-     * &amp;&与（和）号
-     * <p/>
-     * &apos;'单引号
-     * <p/>
-     * &quot; " 双引号
      */
     public static String xmlEncode(String xml) {
         if (xml.contains(SYMBOL.AND)) {
@@ -189,7 +179,7 @@ public class Xml {
         }
 
         if (xml.contains(SYMBOL.SINGLE_QUOTES)) {
-            xml = xml.replace(SYMBOL.SINGLE_QUOTES,ESCAPED.SINGLE_QUOTES);
+            xml = xml.replace(SYMBOL.SINGLE_QUOTES, ESCAPED.SINGLE_QUOTES);
         }
 
         if (xml.contains(SYMBOL.DOUBLE_QUOTES)) {

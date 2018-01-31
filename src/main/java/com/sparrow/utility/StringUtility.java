@@ -69,7 +69,7 @@ public class StringUtility {
     /**
      * 拆分数组的关键字编码 例如:key1:value1,key2:value2 先对边界字进行编码,以防原码有出来边界字符而无法显示 该函数代码顺序不能变
      *
-     * @param str 需要折分的字符串 格式如:key1:value1,key2:value2
+     * @param str     需要折分的字符串 格式如:key1:value1,key2:value2
      * @param onlyDot
      * @return
      */
@@ -314,10 +314,10 @@ public class StringUtility {
      */
     public static String getOnlineQQ(String qq) {
         return "<a target=blank href=\"http://wpa.qq.com/msgrd?V=1&Uin={0}&Exe=QQ&Site="
-            + Config.getLanguageValue(CONFIG_KEY_LANGUAGE.WEBSITE_NAME,
-            "zh_cn")
-            + "&Menu=No\"><img border=\"0\" src=\"http://wpa.qq.com/pa?p=1:"
-            + qq + ":1\" alt=\"给我发消息\"></a>";
+                + Config.getLanguageValue(CONFIG_KEY_LANGUAGE.WEBSITE_NAME,
+                "zh_cn")
+                + "&Menu=No\"><img border=\"0\" src=\"http://wpa.qq.com/pa?p=1:"
+                + qq + ":1\" alt=\"给我发消息\"></a>";
     }
 
     /**
@@ -366,7 +366,6 @@ public class StringUtility {
 
     /**
      * 将指定字符串src，以每两个字符分割转换为16进制形式
-     * <p/>
      * 如："2B44EFD9" byte[]{0x2B, 0x44, 0xEF,0xD9}
      *
      * @param src String
@@ -378,9 +377,9 @@ public class StringUtility {
         for (int i = 0; i < tmp.length / 2; i++) {
             byte src0 = tmp[i * 2];
             byte src1 = tmp[i * 2 + 1];
-            byte b0 = Byte.decode("0x" + new String(new byte[] {src0}));
+            byte b0 = Byte.decode("0x" + new String(new byte[]{src0}));
             b0 = (byte) (b0 << 4);
-            byte b1 = Byte.decode("0x" + new String(new byte[] {src1}));
+            byte b1 = Byte.decode("0x" + new String(new byte[]{src1}));
             ret[i] = (byte) (b0 ^ b1);
         }
         return ret;
@@ -388,7 +387,6 @@ public class StringUtility {
 
     /**
      * 从数组array中排除exceptArray并拼接成数组
-     * <p/>
      * 用于标签删除时的帖子标签更新
      *
      * @param array
@@ -397,7 +395,7 @@ public class StringUtility {
      * @return
      */
     public static String join(Object[] array, char joinChar,
-        Object[] exceptArray) {
+                              Object[] exceptArray) {
         StringBuilder sb = new StringBuilder();
         for (Object object : array) {
             if (existInArray(exceptArray, object)) {
@@ -551,8 +549,8 @@ public class StringUtility {
      */
     private static String byteToHexStr(byte mByte) {
         char[] digit = {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A',
-            'B', 'C', 'D', 'E', 'F'};
+                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A',
+                'B', 'C', 'D', 'E', 'F'};
         char[] tempArr = new char[2];
         tempArr[0] = digit[(mByte >>> 4) & 0X0F];
         tempArr[1] = digit[mByte & 0X0F];
@@ -584,12 +582,12 @@ public class StringUtility {
     }
 
     public static String serialParameters(Map<String, String> parameters,
-        boolean isEncode) {
+                                          boolean isEncode) {
         return serialParameters(parameters, isEncode, null);
     }
 
     public static String serialParameters(Map<String, String> parameters,
-        boolean isEncode, List<String> exceptKeyList) {
+                                          boolean isEncode, List<String> exceptKeyList) {
         StringBuilder serialParameters = new StringBuilder();
         for (String key : parameters.keySet()) {
             String v = parameters.get(key);
@@ -607,7 +605,7 @@ public class StringUtility {
             if (isEncode) {
                 try {
                     serialParameters.append(key + SYMBOL.EQUAL
-                        + URLEncoder.encode(v, CONSTANT.CHARSET_UTF_8));
+                            + URLEncoder.encode(v, CONSTANT.CHARSET_UTF_8));
                 } catch (UnsupportedEncodingException ignore) {
                 }
 
@@ -662,8 +660,8 @@ public class StringUtility {
             }
             try {
                 sb.append(StringUtility.setFirstByteLowerCase(field.getName())
-                    + SYMBOL.EQUAL
-                    + URLEncoder.encode(String.valueOf(o), CONSTANT.CHARSET_UTF_8));
+                        + SYMBOL.EQUAL
+                        + URLEncoder.encode(String.valueOf(o), CONSTANT.CHARSET_UTF_8));
             } catch (UnsupportedEncodingException ignore) {
             }
         }
