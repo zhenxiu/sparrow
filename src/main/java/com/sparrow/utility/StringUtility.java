@@ -69,7 +69,7 @@ public class StringUtility {
     /**
      * 拆分数组的关键字编码 例如:key1:value1,key2:value2 先对边界字进行编码,以防原码有出来边界字符而无法显示 该函数代码顺序不能变
      *
-     * @param str     需要折分的字符串 格式如:key1:value1,key2:value2
+     * @param str 需要折分的字符串 格式如:key1:value1,key2:value2
      * @param onlyDot
      * @return
      */
@@ -314,10 +314,10 @@ public class StringUtility {
      */
     public static String getOnlineQQ(String qq) {
         return "<a target=blank href=\"http://wpa.qq.com/msgrd?V=1&Uin={0}&Exe=QQ&Site="
-                + Config.getLanguageValue(CONFIG_KEY_LANGUAGE.WEBSITE_NAME,
-                "zh_cn")
-                + "&Menu=No\"><img border=\"0\" src=\"http://wpa.qq.com/pa?p=1:"
-                + qq + ":1\" alt=\"给我发消息\"></a>";
+            + Config.getLanguageValue(CONFIG_KEY_LANGUAGE.WEBSITE_NAME,
+            "zh_cn")
+            + "&Menu=No\"><img border=\"0\" src=\"http://wpa.qq.com/pa?p=1:"
+            + qq + ":1\" alt=\"给我发消息\"></a>";
     }
 
     /**
@@ -365,8 +365,7 @@ public class StringUtility {
     }
 
     /**
-     * 将指定字符串src，以每两个字符分割转换为16进制形式
-     * 如："2B44EFD9" byte[]{0x2B, 0x44, 0xEF,0xD9}
+     * 将指定字符串src，以每两个字符分割转换为16进制形式 如："2B44EFD9" byte[]{0x2B, 0x44, 0xEF,0xD9}
      *
      * @param src String
      * @return byte[]
@@ -377,17 +376,16 @@ public class StringUtility {
         for (int i = 0; i < tmp.length / 2; i++) {
             byte src0 = tmp[i * 2];
             byte src1 = tmp[i * 2 + 1];
-            byte b0 = Byte.decode("0x" + new String(new byte[]{src0}));
+            byte b0 = Byte.decode("0x" + new String(new byte[] {src0}));
             b0 = (byte) (b0 << 4);
-            byte b1 = Byte.decode("0x" + new String(new byte[]{src1}));
+            byte b1 = Byte.decode("0x" + new String(new byte[] {src1}));
             ret[i] = (byte) (b0 ^ b1);
         }
         return ret;
     }
 
     /**
-     * 从数组array中排除exceptArray并拼接成数组
-     * 用于标签删除时的帖子标签更新
+     * 从数组array中排除exceptArray并拼接成数组 用于标签删除时的帖子标签更新
      *
      * @param array
      * @param joinChar
@@ -395,7 +393,7 @@ public class StringUtility {
      * @return
      */
     public static String join(Object[] array, char joinChar,
-                              Object[] exceptArray) {
+        Object[] exceptArray) {
         StringBuilder sb = new StringBuilder();
         for (Object object : array) {
             if (existInArray(exceptArray, object)) {
@@ -549,8 +547,8 @@ public class StringUtility {
      */
     private static String byteToHexStr(byte mByte) {
         char[] digit = {
-                '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A',
-                'B', 'C', 'D', 'E', 'F'};
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A',
+            'B', 'C', 'D', 'E', 'F'};
         char[] tempArr = new char[2];
         tempArr[0] = digit[(mByte >>> 4) & 0X0F];
         tempArr[1] = digit[mByte & 0X0F];
@@ -582,12 +580,12 @@ public class StringUtility {
     }
 
     public static String serialParameters(Map<String, String> parameters,
-                                          boolean isEncode) {
+        boolean isEncode) {
         return serialParameters(parameters, isEncode, null);
     }
 
     public static String serialParameters(Map<String, String> parameters,
-                                          boolean isEncode, List<String> exceptKeyList) {
+        boolean isEncode, List<String> exceptKeyList) {
         StringBuilder serialParameters = new StringBuilder();
         for (String key : parameters.keySet()) {
             String v = parameters.get(key);
@@ -605,7 +603,7 @@ public class StringUtility {
             if (isEncode) {
                 try {
                     serialParameters.append(key + SYMBOL.EQUAL
-                            + URLEncoder.encode(v, CONSTANT.CHARSET_UTF_8));
+                        + URLEncoder.encode(v, CONSTANT.CHARSET_UTF_8));
                 } catch (UnsupportedEncodingException ignore) {
                 }
 
@@ -660,8 +658,8 @@ public class StringUtility {
             }
             try {
                 sb.append(StringUtility.setFirstByteLowerCase(field.getName())
-                        + SYMBOL.EQUAL
-                        + URLEncoder.encode(String.valueOf(o), CONSTANT.CHARSET_UTF_8));
+                    + SYMBOL.EQUAL
+                    + URLEncoder.encode(String.valueOf(o), CONSTANT.CHARSET_UTF_8));
             } catch (UnsupportedEncodingException ignore) {
             }
         }
@@ -715,27 +713,43 @@ public class StringUtility {
         return matchUrl(source, desc, true);
     }
 
-    private static boolean matchUrl(String source, String desc, boolean withParameter) {
-        if (isNullOrEmpty(source) || isNullOrEmpty(desc)) {
+    private static boolean matchUrl(String source, String target, boolean withParameter) {
+        if (isNullOrEmpty(source) || isNullOrEmpty(target)) {
             return false;
         }
-        if (source.equals(desc)) {
+        if (source.equalsIgnoreCase(target)) {
             return true;
         }
         String rootPath = Config.getValue(CONFIG.ROOT_PATH);
         if (source.startsWith(rootPath)) {
             source = source.substring(rootPath.length());
         }
-        if (desc.startsWith(rootPath)) {
-            desc = desc.substring(rootPath.length());
+        if (target.startsWith(rootPath)) {
+            target = target.substring(rootPath.length());
         }
         source = subString(source, SYMBOL.POUND_SIGN);
-        desc = subString(desc, SYMBOL.POUND_SIGN);
+        target = subString(target, SYMBOL.POUND_SIGN);
         if (!withParameter) {
             source = subString(source, SYMBOL.QUESTION_MARK);
-            desc = subString(desc, SYMBOL.QUESTION_MARK);
+            target = subString(target, SYMBOL.QUESTION_MARK);
         }
-        return source.equals(desc);
+
+        String extension = Config.getValue(CONFIG.DEFAULT_PAGE_EXTENSION);
+        if (source.endsWith(extension)) {
+            source = source.replace(extension, SYMBOL.EMPTY);
+        }
+
+        if (target.endsWith(extension)) {
+            target = target.replace(extension, SYMBOL.EMPTY);
+        }
+
+        if (source.startsWith(SYMBOL.SLASH)) {
+            source = source.replace(SYMBOL.SLASH, SYMBOL.EMPTY);
+        }
+        if (target.startsWith(SYMBOL.SLASH)) {
+            target = target.replace(SYMBOL.SLASH, SYMBOL.EMPTY);
+        }
+        return source.equals(target);
     }
 
     public static Pair<String, String> secretMobile(String mobile) {

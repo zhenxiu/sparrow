@@ -158,11 +158,14 @@ public class Config {
         internationalization.put(language, properties);
     }
 
-    public static String getValue(String key) {
+    public static String getValue(String key){
+        return getValue(key,null);
+    }
+    public static String getValue(String key,String defaultValue) {
         try {
             Object value = Cache.getInstance().get(CACHE_KEY.CONFIG_FILE, key);
             if (value == null) {
-                return null;
+                return defaultValue;
             }
             String v = value.toString();
             v = StringUtility.replace(v, CONSTANT.REPLACE_MAP);
