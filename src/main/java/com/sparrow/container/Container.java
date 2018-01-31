@@ -60,6 +60,8 @@ public interface Container {
      */
     void init();
 
+    void init(String xmlName, String systemConfigPath);
+
     /**
      * 获取某容器下的所有bean
      */

@@ -24,6 +24,7 @@ import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.core.Cache;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.StringUtility;
+
 import java.util.Enumeration;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -44,51 +45,55 @@ public class ServletUtility {
 
     public boolean include(ServletRequest request) {
         return request
-            .getAttribute(CONSTANT.REQUEST_ACTION_INCLUDE) != null;
+                .getAttribute(CONSTANT.REQUEST_ACTION_INCLUDE) != null;
     }
 
     public String getActionKey(ServletRequest request) {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         Object servletPath = request
-            .getAttribute(CONSTANT.REQUEST_ACTION_INCLUDE);
+                .getAttribute(CONSTANT.REQUEST_ACTION_INCLUDE);
         String actionKey;
         if (servletPath != null) {
             actionKey = servletPath.toString();
         } else {
             actionKey = httpServletRequest.getServletPath();
         }
-        //第一次请求时初始化rootPath website  和domain
+
         String rootPath = Config.getValue(CONFIG.ROOT_PATH);
-        if (StringUtility.isNullOrEmpty(rootPath)) {
-            String serverName = request.getServerName();
-            String path = httpServletRequest.getContextPath();
-            rootPath = request.getScheme()
+        if (!StringUtility.isNullOrEmpty(rootPath)) {
+            return actionKey;
+        }
+
+        //第一次请求时初始化rootPath website  和domain
+        String serverName = request.getServerName();
+        String path = httpServletRequest.getContextPath();
+        rootPath = request.getScheme()
                 + "://"
                 + serverName
                 + (request.getServerPort() == 80 ? "" : ":"
                 + request.getServerPort()) + path;
-            // eclipse tomcat 启动时会默认请求http://localhost故此处加此判断
-            //只解析一二级域名
-            if (rootPath.indexOf(CONSTANT.LOCALHOST) != 0 && rootPath.indexOf(CONSTANT.LOCALHOST_127) != 0) {
-                String website = serverName.substring(serverName.indexOf(".") + 1);
-                website = website.substring(0, website.indexOf("."));
-                Cache.getInstance().put(CACHE_KEY.CONFIG_FILE, CONFIG.WEBSITE,
+        // eclipse tomcat 启动时会默认请求http://localhost故此处加此判断
+        //只解析一二级域名
+        if (rootPath.indexOf(CONSTANT.LOCALHOST) != 0 && rootPath.indexOf(CONSTANT.LOCALHOST_127) != 0) {
+            String website = serverName.substring(serverName.indexOf(".") + 1);
+            website = website.substring(0, website.indexOf("."));
+            Cache.getInstance().put(CACHE_KEY.CONFIG_FILE, CONFIG.WEBSITE,
                     website);
-                if (Cache.getInstance().get(CACHE_KEY.CONFIG_FILE, CONFIG.ROOT_DOMAIN) == null) {
-                    String rootDomain = serverName.substring(serverName.indexOf("."));
-                    Cache.getInstance().put(CACHE_KEY.CONFIG_FILE, CONFIG.ROOT_DOMAIN,
-                        rootDomain);
-                }
 
-                if (Cache.getInstance().get(CACHE_KEY.CONFIG_FILE, CONFIG.DOMAIN) == null) {
-                    Cache.getInstance().put(CACHE_KEY.CONFIG_FILE, CONFIG.DOMAIN,
-                        serverName);
-                }
-                CONSTANT.REPLACE_MAP.put("$website", website);
+            if (Cache.getInstance().get(CACHE_KEY.CONFIG_FILE, CONFIG.ROOT_DOMAIN) == null) {
+                String rootDomain = serverName.substring(serverName.indexOf("."));
+                Cache.getInstance().put(CACHE_KEY.CONFIG_FILE, CONFIG.ROOT_DOMAIN,
+                        rootDomain);
             }
-            Cache.getInstance().put(CACHE_KEY.CONFIG_FILE,
-                CONFIG.ROOT_PATH, rootPath);
+
+            if (Cache.getInstance().get(CACHE_KEY.CONFIG_FILE, CONFIG.DOMAIN) == null) {
+                Cache.getInstance().put(CACHE_KEY.CONFIG_FILE, CONFIG.DOMAIN,
+                        serverName);
+            }
+            CONSTANT.REPLACE_MAP.put("$website", website);
         }
+        Cache.getInstance().put(CACHE_KEY.CONFIG_FILE,
+                CONFIG.ROOT_PATH, rootPath);
         return actionKey;
     }
 

@@ -61,7 +61,10 @@ public class CookieUtility {
             domain = Config.getValue(CONFIG.DOMAIN);
         }
         Cookie cookie = new Cookie(key, JSUtility.encodeURIComponent(value));
-        cookie.setDomain(domain);
+        if(domain!=null) {
+            logger.warn("please config [domain] key in sparrow system config ");
+            cookie.setDomain(domain);
+        }
         cookie.setPath("/");
         if (days > 0) {
             cookie.setMaxAge(days * 24 * 60 * 60);

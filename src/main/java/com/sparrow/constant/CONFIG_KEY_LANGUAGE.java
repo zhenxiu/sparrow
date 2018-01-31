@@ -78,4 +78,5 @@ public class CONFIG_KEY_LANGUAGE {
     public static final String THREAD_TITLE_PREFIX = "thread_title_";
     public static final String BLOG_COMMENT_NEST_CONTENT_FORMAT = "blog_comment_nest_content_format";
     public static final String CMS_REFERENCE_PREFIX = "cms_reference_";
+    public static final String TRANSIT_SUCCESS_MESSAGE="transit_success_message";
 }
