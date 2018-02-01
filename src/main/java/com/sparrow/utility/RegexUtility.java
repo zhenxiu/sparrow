@@ -20,6 +20,8 @@ package com.sparrow.utility;
 import com.sparrow.constant.CONSTANT;
 import com.sparrow.constant.REGEX;
 import com.sparrow.constant.magic.SYMBOL;
+import com.sparrow.core.Pair;
+import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,22 +33,6 @@ import java.util.regex.Pattern;
  */
 public class RegexUtility {
 
-    public static String urlRewrite(String desc, String source, String regex) {
-        //如果以=开始，为精确匹配
-        if (regex.startsWith(SYMBOL.EQUAL) && (SYMBOL.EQUAL + source).equals(regex)) {
-            return desc;
-        }
-        Pattern p = Pattern
-            .compile(regex, Pattern.MULTILINE + Pattern.CANON_EQ);
-        Matcher m = p.matcher(source);
-        if (!m.find()) {
-            return null;
-        }
-        for (int i = 1; i <= m.groupCount(); i++) {
-            desc = desc.replace(SYMBOL.DOLLAR + i, m.group(i));
-        }
-        return desc;
-    }
 
     /**
      * 只判断是否匹配 且不做后续处理
@@ -76,7 +62,7 @@ public class RegexUtility {
             regex = StringUtility.replace(regex, CONSTANT.REPLACE_MAP);
         }
         Pattern p = Pattern
-            .compile(regex, Pattern.MULTILINE + Pattern.CANON_EQ);
+                .compile(regex, REGEX.OPTION);
         Matcher m = p.matcher(source);
         List<String> groupList = null;
         if (!m.find()) {
@@ -94,7 +80,7 @@ public class RegexUtility {
             regex = StringUtility.replace(regex, CONSTANT.REPLACE_MAP);
         }
         Pattern p = Pattern
-            .compile(regex, Pattern.MULTILINE + Pattern.CANON_EQ);
+                .compile(regex, REGEX.OPTION);
         Matcher m = p.matcher(source);
         List<List<String>> multiGroupList = new ArrayList<List<String>>();
         while (m.find()) {
@@ -105,5 +91,24 @@ public class RegexUtility {
             multiGroupList.add(groupList);
         }
         return multiGroupList;
+    }
+
+    public static Pair<String, List<String>> getActionRegex(String actionKey) {
+        String configParameter = "(\\{[a-z0-9]*\\})";
+        String digitalAndLetter = "([a-z0-9]*)";
+        Pattern p = Pattern
+                .compile(configParameter, REGEX.OPTION);
+        Matcher m = p.matcher(actionKey);
+        String urlRegex = actionKey;
+        List<String> parameters = new ArrayList<String>();
+        while (m.find()) {
+            for (int i = 1; i <= m.groupCount(); i++) {
+                String group = m.group(i);
+                urlRegex = urlRegex.replace(group, digitalAndLetter);
+                String parameter = group.substring(1, group.length() - 1);
+                parameters.add(parameter);
+            }
+        }
+        return Pair.create(urlRegex, parameters);
     }
 }
