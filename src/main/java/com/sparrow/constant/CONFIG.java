@@ -30,8 +30,6 @@ public class CONFIG {
     public static final String INTERNATIONALIZATION = "internationalization";
     public static final String LANGUAGE = "language";
     public static final String ROOT_PATH = "root_path";
-    public static final String DATASOURCE_KEY = "datasource_key";
-
     public static final String FRONTEND_ROOT_PATH = "frontend_root_path";
     public static final String MVC_CONFIG = "mvc_config";
     public static final String REDIS_HOST = "redis_host";

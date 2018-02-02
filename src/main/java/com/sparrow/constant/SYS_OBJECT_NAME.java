@@ -23,21 +23,23 @@ package com.sparrow.constant;
  * @author harry
  * @version 1.0
  */
-public class SYS_OBJECT_NAME {
-    public static final String THREAD_SERVER = "threadService";
-    public static final String CODE_SERVER = "codeService";
-    public static final String USER_SERVER = "userService";
-    public static final String ATTACH_SERVER = "attachService";
-    public static final String PRIVILEGE_SERVER = "privilegeService";
-    public static final String FORUM_SERVER = "forumService";
-    public static final String GROUP_SERVER = "groupService";
-    public static final String USER_GROUP_SERVER = "userGroupSerice";
-    public static final String PARSE_HTML_HELPER = "parseHtmlHelper";
-    public static final String FILE_UPLOAD_HELPER = "fileUploadHelper";
-    public static final String TEMP_SERVER = "tempServer";
-    public static final String USER_COUNT_SERVER = "userCountService";
-    public static final String INITIALIZER_SERVER = "initializer";
-    public static final String SYSTEM_ACTION_CALL_BACK = "systemActionCallBack";
-    public static final String MOBILE_SERVICE = "mobileSupport";
-    public static final String CMS_SERVICE = "cmsService";
+public enum SYS_OBJECT_NAME {
+    THREAD_SERVICE,
+    CODE_SERVICE,
+    USER_SERVICE,
+    ATTACH_SERVICE,
+    PRIVILEGE_SERVICE,
+    FORUM_SERVICE,
+    GROUP_SERVICE,
+    USER_GROUP_SERVICE,
+    PARSE_HTML_HELPER,
+    FILE_UPLOAD_HELPER,
+    TEMP_SERVER,
+    USER_COUNT_SERVICE,
+    INITIALIZER,
+    SYSTEM_ACTION_CALLBACK,
+    MOBILE_SUPPORT,
+    CMS_SERVICE,
+    CONNECTION_CONTEXT_HOLDER,
+    COOKIE_UTILITY
 }

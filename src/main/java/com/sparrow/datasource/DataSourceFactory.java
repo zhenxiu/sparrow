@@ -21,6 +21,7 @@ import com.sparrow.constant.CACHE_KEY;
 import com.sparrow.core.Cache;
 import com.sparrow.core.spi.ApplicationContext;
 import com.sparrow.support.EnvironmentSupport;
+import com.sparrow.utility.CollectionsUtility;
 import com.sparrow.utility.StringUtility;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -38,10 +39,14 @@ public class DataSourceFactory {
 
     private static Map<String, DatasourceConfig> datasourceConfigMap = new ConcurrentHashMap<String, DatasourceConfig>();
 
-    private static DataSourceFactory dataSourceFactory = new DataSourceFactory();
-
-    public static DataSourceFactory getInstance() {
-        return dataSourceFactory;
+    public DataSourceFactory(String initDatasourceKeys) {
+        String[] datasourceKeyArray=initDatasourceKeys.split(",");
+        if(CollectionsUtility.isNullOrEmpty(datasourceKeyArray)){
+            return;
+        }
+        for(String datasource:datasourceKeyArray){
+            this.getDatasourceConfig(datasource);
+        }
     }
 
     /**
