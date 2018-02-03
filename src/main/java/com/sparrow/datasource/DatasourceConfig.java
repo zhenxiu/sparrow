@@ -91,7 +91,7 @@ public class DatasourceConfig {
         this.poolSize = poolSize;
     }
 
-    public String getDatabaseName() {
+    public String getSchema() {
         if (StringUtility.isNullOrEmpty(url)) {
             return SYMBOL.EMPTY;
         }

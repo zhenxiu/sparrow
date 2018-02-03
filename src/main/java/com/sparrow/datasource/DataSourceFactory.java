@@ -14,111 +14,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.sparrow.datasource;
 
-import com.sparrow.constant.CACHE_KEY;
-import com.sparrow.core.Cache;
-import com.sparrow.core.spi.ApplicationContext;
-import com.sparrow.support.EnvironmentSupport;
-import com.sparrow.utility.CollectionsUtility;
-import com.sparrow.utility.StringUtility;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.sql.DataSource;
 
 /**
- * getDatasourceConfig 初始化ContextLoaderListener.java 中配置 database identify
+ * 完成connection 与datasource key 的对应关系，用于数据源与线程的绑定
  *
- * @author harry
+ * @author by harry
  */
-public class DataSourceFactory {
-
-    private static Map<String, DatasourceConfig> datasourceConfigMap = new ConcurrentHashMap<String, DatasourceConfig>();
-
-    public DataSourceFactory(String initDatasourceKeys) {
-        String[] datasourceKeyArray=initDatasourceKeys.split(",");
-        if(CollectionsUtility.isNullOrEmpty(datasourceKeyArray)){
-            return;
-        }
-        for(String datasource:datasourceKeyArray){
-            this.getDatasourceConfig(datasource);
-        }
-    }
+public interface DataSourceFactory {
+    /**
+     * get datasource by key
+     *
+     * @param dataSourceKey the identify of the datasource to confirm one datasource it's same to the file name of
+     * datasource properties config file
+     * @return return datasource
+     * @see javax.sql.DataSource
+     */
+    DataSource getDataSource(String dataSourceKey);
 
     /**
-     * 获取数据源
+     * get datasource by sparrow_default key
      *
      * @return
      */
-    public DataSource getDataSource(String dataSourceKey) {
-        if (StringUtility.isNullOrEmpty(dataSourceKey)) {
-            dataSourceKey = DatasourceKey.getDefault().getKey();
-        }
-        return ApplicationContext.getContainer().getBean(dataSourceKey);
-    }
-
-    public DataSource getDataSource() {
-        return getDataSource(null);
-    }
-
-    public DatasourceConfig getDatasourceConfig() {
-        return getDatasourceConfig(null);
-    }
+    DataSource getDataSource();
 
     /**
-     * 读取数据库源 <p> data source key 与 connection url 映射 data source+suffix determine datasource data
-     * source+database_split_key determine jdbc template
+     * get datasource config by default key sparrow_default
      *
-     * @param dataSourceKey
+     * @return datasource config object
+     */
+    DatasourceConfig getDatasourceConfig();
+
+    /**
+     * get datasource config object by datasource key
+     *
+     * @param dataSourceKey the identify of the datasource to confirm one datasource it's same to the file name of
+     * datasource properties config file
      * @return
      */
-    public DatasourceConfig getDatasourceConfig(String dataSourceKey) {
-        if (StringUtility.isNullOrEmpty(dataSourceKey)) {
-            dataSourceKey = "sparrow_default";
-        }
-        if (datasourceConfigMap.containsKey(dataSourceKey)) {
-            return datasourceConfigMap.get(dataSourceKey);
-        }
+    DatasourceConfig getDatasourceConfig(String dataSourceKey);
 
-        synchronized (this) {
-            if (datasourceConfigMap.containsKey(dataSourceKey)) {
-                return datasourceConfigMap.get(dataSourceKey);
-            }
-            DatasourceConfig datasourceConfig = new DatasourceConfig();
-            try {
-                Properties props = new Properties();
-
-                String filePath = "/" + dataSourceKey
-                    + ".properties";
-                props.load(EnvironmentSupport.getInstance().getFileInputStream(filePath));
-
-                datasourceConfig.setDriverClassName(props.getProperty("driverClassName"));
-                datasourceConfig.setUsername(props.getProperty("username"));
-                datasourceConfig.setPassword(props.getProperty("password"));
-                datasourceConfig.setUrl(props.getProperty("url"));
-                datasourceConfig.setPoolSize(Integer.parseInt(props.getProperty("poolSize")));
-            } catch (Exception ignore) {
-                throw new RuntimeException(ignore);
-            }
-            DatasourceKey key = DatasourceKey.parse(dataSourceKey);
-            Cache.getInstance().put(CACHE_KEY.DATA_SOURCE_URL_PAIR, datasourceConfig.getUrl(), key);
-            datasourceConfigMap.put(dataSourceKey, datasourceConfig);
-            return datasourceConfig;
-        }
-    }
-
-    public DatasourceKey getDatasourceKey(Connection connection) {
-        if (connection == null) {
-            return null;
-        }
-        try {
-            return Cache.getInstance().get(CACHE_KEY.DATA_SOURCE_URL_PAIR, connection.getMetaData().getURL());
-        } catch (SQLException e) {
-            return null;
-        }
-    }
+    /**
+     * get datasource key by connection
+     *
+     * @param connection java connection object
+     * @return
+     */
+    DatasourceKey getDatasourceKey(Connection connection);
 }
