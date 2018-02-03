@@ -33,19 +33,19 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
     private KEY monitor;
     private CacheClient cacheClient;
 
-    public RedisDistributedCountDownLatch(CacheClient cacheClient,KEY monitorKey) {
-        this.cacheClient=cacheClient;
+    public RedisDistributedCountDownLatch(CacheClient cacheClient, KEY monitorKey) {
+        this.cacheClient = cacheClient;
         this.monitor = monitorKey;
     }
 
     @Override
     public void consume(final String key) {
-        if (this.monitor ==null) {
+        if (this.monitor == null) {
             throw new UnsupportedOperationException("product key is null");
         }
         while (true) {
             try {
-             cacheClient.set().remove(this.monitor, key);
+                cacheClient.set().remove(this.monitor, key);
                 return;
             } catch (CacheConnectionException e) {
                 logger.error("monitor consume connection break ", e);
@@ -55,7 +55,7 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
 
     @Override
     public void product(final String key) {
-        if (this.monitor ==null) {
+        if (this.monitor == null) {
             throw new UnsupportedOperationException("product key is null");
         }
         while (true) {
@@ -76,19 +76,19 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
         Long productCount = null;
         try {
             productCount = cacheClient.set().getSize(this.monitor);
-            Boolean match = productCount==0;
-            logger.info("product key{}:count{},match {}", RedisDistributedCountDownLatch.this.isFinish(),
-                    productCount,
-                    match);
-            if (match) {
-                while (true) {
-                    Long success = cacheClient.key().expireAt(this.monitor, -1L);
-                    if (success>0) {
-                        return true;
-                    }
+            Boolean match = productCount == 0;
+            logger.info("product key {}:count {},match {}", this.monitor.key(),
+                productCount,
+                match);
+            if (!match) {
+                return false;
+            }
+            while (true) {
+                Long success = cacheClient.key().expireAt(this.monitor, -1L);
+                if (success > 0) {
+                    return true;
                 }
             }
-            return false;
         } catch (CacheConnectionException e) {
             return false;
         }
@@ -109,6 +109,6 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
 
     @Override
     public boolean monitor() {
-       return this.monitor(2);
+        return this.monitor(2);
     }
 }
