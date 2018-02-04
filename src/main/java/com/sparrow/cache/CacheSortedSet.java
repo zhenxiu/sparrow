@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Created by harry on 2018/1/26.
  */
-public interface CacheOrderSet {
+public interface CacheSortedSet {
 
     Long getSize(KEY key) throws CacheConnectionException;
 

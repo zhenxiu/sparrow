@@ -27,7 +27,7 @@ public interface CacheClient {
 
     CacheSet set();
 
-    CacheOrderSet orderSet();
+    CacheSortedSet sortedSet();
 
     CacheHash hash();
 

@@ -87,9 +87,8 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
         if (StringUtility.isNullOrEmpty(monitor)) {
             throw new UnsupportedOperationException("product key is null");
         }
-        Long productCount = null;
         try {
-            productCount = cacheClient.set().getSize(monitor);
+            Long productCount = cacheClient.set().getSize(monitor);
             Boolean match = productCount == 0;
             logger.info("product key {}:count {},match {}", monitor.key(),
                 productCount,
@@ -97,16 +96,16 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
             if (!match) {
                 return false;
             }
-            while (true) {
-                try {
-                    cacheClient.key().delete(monitor);
-                    return true;
-                } catch (CacheConnectionException ignore) {
-                    logger.error("monitor error", ignore);
-                }
-            }
         } catch (CacheConnectionException e) {
             return false;
+        }
+        while (true) {
+            try {
+                cacheClient.key().delete(monitor);
+                return true;
+            } catch (CacheConnectionException ignore) {
+                logger.error("monitor error", ignore);
+            }
         }
     }
 
