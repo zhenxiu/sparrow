@@ -35,7 +35,7 @@ public interface CacheSet {
 
     <T> Integer add(KEY key, Iterable<T> values) throws CacheConnectionException;
 
-    <T> Long remove(KEY key, T value) throws CacheConnectionException;
+    <T> Boolean remove(KEY key, T value) throws CacheConnectionException;
 
    <T>  Boolean exist(KEY key, T value) throws CacheConnectionException;
 

@@ -32,11 +32,14 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
     private static Logger logger = LoggerFactory.getLogger(RedisDistributedCountDownLatch.class);
     private CacheClient cacheClient;
 
-    public void setCacheClient(CacheClient cacheClient) {
-        this.cacheClient = cacheClient;
+    public RedisDistributedCountDownLatch() {
     }
 
     public RedisDistributedCountDownLatch(CacheClient cacheClient) {
+        this.cacheClient = cacheClient;
+    }
+
+    public void setCacheClient(CacheClient cacheClient) {
         this.cacheClient = cacheClient;
     }
 
@@ -95,9 +98,11 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
                 return false;
             }
             while (true) {
-                Long success = cacheClient.key().expireAt(monitor, -1L);
-                if (success > 0) {
+                try {
+                    cacheClient.key().delete(monitor);
                     return true;
+                } catch (CacheConnectionException ignore) {
+                    logger.error("monitor error", ignore);
                 }
             }
         } catch (CacheConnectionException e) {
