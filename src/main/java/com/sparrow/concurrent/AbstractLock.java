@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by harry on 2018/1/26.
+ * @author harry
  */
 public abstract class AbstractLock {
     protected Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -40,7 +40,7 @@ public abstract class AbstractLock {
                     timeout = 1 << times++;
                 }
                 Thread.sleep(timeout);
-                logger.debug("lock {} timeout {} at [{}] {}",key,timeout, DateTimeUtility.getFormatCurrentTime(),System.currentTimeMillis());
+                logger.debug("lock {} timeout {} at [{}] {}", key, timeout, DateTimeUtility.getFormatCurrentTime(), System.currentTimeMillis());
             } catch (InterruptedException ignore) {
             }
         }
