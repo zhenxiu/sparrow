@@ -30,22 +30,33 @@ import org.slf4j.LoggerFactory;
  */
 public class RedisDistributedCountDownLatch implements DistributedCountDownLatch {
     private static Logger logger = LoggerFactory.getLogger(RedisDistributedCountDownLatch.class);
-    private KEY monitor;
     private CacheClient cacheClient;
 
-    public RedisDistributedCountDownLatch(CacheClient cacheClient, KEY monitorKey) {
+    public void setCacheClient(CacheClient cacheClient) {
         this.cacheClient = cacheClient;
-        this.monitor = monitorKey;
+    }
+
+    public RedisDistributedCountDownLatch(CacheClient cacheClient) {
+        this.cacheClient = cacheClient;
+    }
+
+    @Override public boolean exist(KEY monitor, String key) {
+        try {
+            return cacheClient.set().exist(monitor, key);
+        } catch (CacheConnectionException e) {
+            logger.error("keys is exist connection exception " + key, e);
+            return false;
+        }
     }
 
     @Override
-    public void consume(final String key) {
-        if (this.monitor == null) {
+    public void consume(KEY monitor, final String key) {
+        if (monitor == null) {
             throw new UnsupportedOperationException("product key is null");
         }
         while (true) {
             try {
-                cacheClient.set().remove(this.monitor, key);
+                cacheClient.set().remove(monitor, key);
                 return;
             } catch (CacheConnectionException e) {
                 logger.error("monitor consume connection break ", e);
@@ -54,13 +65,13 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
     }
 
     @Override
-    public void product(final String key) {
-        if (this.monitor == null) {
+    public void product(KEY monitor, final String key) {
+        if (monitor == null) {
             throw new UnsupportedOperationException("product key is null");
         }
         while (true) {
             try {
-                cacheClient.set().add(this.monitor, key);
+                cacheClient.set().add(monitor, key);
                 return;
             } catch (CacheConnectionException e) {
                 logger.error("monitor product connection break ", e);
@@ -69,22 +80,22 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
     }
 
     @Override
-    public boolean isFinish() {
-        if (StringUtility.isNullOrEmpty(this.monitor)) {
+    public boolean isFinish(KEY monitor) {
+        if (StringUtility.isNullOrEmpty(monitor)) {
             throw new UnsupportedOperationException("product key is null");
         }
         Long productCount = null;
         try {
-            productCount = cacheClient.set().getSize(this.monitor);
+            productCount = cacheClient.set().getSize(monitor);
             Boolean match = productCount == 0;
-            logger.info("product key {}:count {},match {}", this.monitor.key(),
+            logger.info("product key {}:count {},match {}", monitor.key(),
                 productCount,
                 match);
             if (!match) {
                 return false;
             }
             while (true) {
-                Long success = cacheClient.key().expireAt(this.monitor, -1L);
+                Long success = cacheClient.key().expireAt(monitor, -1L);
                 if (success > 0) {
                     return true;
                 }
@@ -95,9 +106,9 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
     }
 
     @Override
-    public boolean monitor(int secondInterval) {
+    public boolean monitor(KEY monitor, int secondInterval) {
         while (true) {
-            if (isFinish()) {
+            if (isFinish(monitor)) {
                 return true;
             }
             try {
@@ -108,7 +119,8 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
     }
 
     @Override
-    public boolean monitor() {
-        return this.monitor(2);
+    public boolean monitor(KEY monitor) {
+        return this.monitor(monitor, 2);
     }
+
 }

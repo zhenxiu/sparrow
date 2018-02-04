@@ -17,38 +17,60 @@
 
 package com.sparrow.support.latch;
 
+import com.sparrow.constant.cache.KEY;
+
 /**
  * Created by harry on 2018/1/11.
  */
 public interface DistributedCountDownLatch {
     /**
+     * msg key是否存在
+     *
+     * @param monitor
+     * @param key
+     * @return
+     */
+    boolean exist(KEY monitor, String key);
+
+    /**
      * KEY消费
      *
-     * @param key
+     * @param monitor monitor ey
+     * @param key consume msg key
      */
-    void consume(String key);
+    void consume(KEY monitor, String key);
 
     /**
      * KEY生产
      *
-     * @param key
+     * @param monitor monitor key
+     * @param key product msg key
      */
-    void product(String key);
+    void product(KEY monitor, String key);
 
     /**
      * 是否结束
      *
+     * @param monitor monitor key
      * @return
      */
-    boolean isFinish();
+    boolean isFinish(KEY monitor);
 
     /**
-     * 监控
+     * monitor
      *
-     * @param secondInterval
+     * @param monitor monitor key
+     * @param secondInterval 探测时间间隔
      * @return
      */
-    boolean monitor(int secondInterval);
+    boolean monitor(KEY monitor, int secondInterval);
 
-    boolean monitor();
+    /**
+     * 默认2秒控测一次
+     *
+     * @param monitor monitor key
+     * @return
+     */
+    boolean monitor(KEY monitor);
+
 }
