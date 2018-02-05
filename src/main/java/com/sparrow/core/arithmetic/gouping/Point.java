@@ -21,9 +21,14 @@ package com.sparrow.core.arithmetic.gouping;
  * @author by harry
  */
 public class Point<T extends Comparable> {
+
     private T point;
     private Boolean start;
     private Boolean end;
+
+    public static <D extends Comparable>Point<D> copy(Point<D> point) {
+        return new Point<D>(point.point, point.start, point.end);
+    }
 
     public Point(T point) {
         this(point, null, null);

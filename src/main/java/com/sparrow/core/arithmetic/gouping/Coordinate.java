@@ -20,16 +20,17 @@ package com.sparrow.core.arithmetic.gouping;
 import java.util.*;
 
 /**
+ * E 为段类型 D为点类型
  * @author harry
  */
-public class Coordinate<E extends Segment, D extends Comparable> {
+public class Coordinate<E extends Segment<D>, D extends Comparable> {
     public Coordinate(List<E> dataList) {
         this.dataList = dataList;
     }
 
-    protected List<E> dataList = new ArrayList<E>();
+    private List<E> dataList = new ArrayList<E>();
 
-    protected List<Segment> segments = new ArrayList<Segment>();
+    protected List<Segment<D>> segments = new ArrayList<Segment<D>>();
 
     protected List<Point<D>> coordinate = new ArrayList<Point<D>>();
 
@@ -42,13 +43,13 @@ public class Coordinate<E extends Segment, D extends Comparable> {
         for (E segment : this.dataList) {
             Point<D> point = coordinate.get(segment.getStart().getPoint());
             if (point == null) {
-                point = new Point(segment.getStart().getPoint(), true, null);
+                point = new Point<D>(segment.getStart().getPoint(), true, null);
                 coordinate.put(segment.getStart().getPoint(), point);
             }
 
             point = coordinate.get(segment.getEnd().getPoint());
             if (point == null) {
-                point = new Point(segment.getEnd().getPoint(), null, true);
+                point = new Point<D>(segment.getEnd().getPoint(), null, true);
                 coordinate.put(segment.getEnd().getPoint(), point);
             }
         }
@@ -57,21 +58,21 @@ public class Coordinate<E extends Segment, D extends Comparable> {
 
     public void section() {
         for (int i = 0; i < this.coordinate.size() - 1; i++) {
-            Point current = this.coordinate.get(i);
-            Point next = this.coordinate.get(i + 1);
-            this.segments.add(new Segment(current, next));
+            Point<D> current = this.coordinate.get(i);
+            Point<D> next = this.coordinate.get(i + 1);
+            this.segments.add(new Segment<D>(current, next));
         }
     }
 
-    public Map<Segment, List<E>> aggregation() {
-        Map<Segment, List<E>> segmentMap = new HashMap<Segment, List<E>>();
-        for (Segment segment : this.segments) {
+    public Map<Segment<D>, List<E>> aggregation() {
+        Map<Segment<D>, List<E>> segmentMap = new HashMap<Segment<D>, List<E>>();
+        for (Segment<D> segment : this.segments) {
             segmentMap.put(segment, this.aggregation(segment));
         }
         return segmentMap;
     }
 
-    private List<E> aggregation(Segment s) {
+    private List<E> aggregation(Segment<D> s) {
         List<E> segments = new ArrayList<E>();
         for (E segment : this.dataList) {
             if (segment.getStart().getPoint().compareTo(s.getStart().getPoint()) > 0) {
@@ -84,7 +85,7 @@ public class Coordinate<E extends Segment, D extends Comparable> {
         return segments;
     }
 
-    public List<Segment> getSegments() {
+    public List<Segment<D>> getSegments() {
         return segments;
     }
 }
