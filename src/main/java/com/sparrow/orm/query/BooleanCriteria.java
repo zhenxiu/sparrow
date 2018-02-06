@@ -25,8 +25,6 @@ import java.util.List;
  */
 public class BooleanCriteria {
 
-    private boolean alias;
-
     private List<CriteriaLinker> criteriaList = new ArrayList<CriteriaLinker>();
 
     private List<BooleanCriteriaLinker> booleanCriteriaList = new ArrayList<BooleanCriteriaLinker>();
