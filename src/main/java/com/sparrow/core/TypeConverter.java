@@ -127,6 +127,9 @@ public class TypeConverter {
                 return stringValue;
             }
 
+            if (this.getType() == byte.class || this.getType() == Byte.class) {
+                return Byte.valueOf(stringValue);
+            }
             if (this.getType() == int.class || this.getType() == Integer.class) {
                 return Integer.valueOf(stringValue);
             }
