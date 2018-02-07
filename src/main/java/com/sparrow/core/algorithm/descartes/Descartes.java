@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.sparrow.core.arithmetic.descartes;
+package com.sparrow.core.algorithm.descartes;
 
 import com.sparrow.support.LinkedNode;
 import java.util.ArrayList;

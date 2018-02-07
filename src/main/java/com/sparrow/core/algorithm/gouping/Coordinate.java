@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.sparrow.core.arithmetic.gouping;
+package com.sparrow.core.algorithm.gouping;
 
 import java.util.*;
 
