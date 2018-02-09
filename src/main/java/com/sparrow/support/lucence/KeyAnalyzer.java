@@ -17,30 +17,34 @@
 
 package com.sparrow.support.lucence;
 
-import java.io.StringReader;
-import java.util.*;
-
+import com.sparrow.constant.CONFIG;
 import com.sparrow.core.Pair;
 import com.sparrow.support.MapValueComparator;
+import com.sparrow.utility.Config;
+import com.sparrow.utility.FileUtility;
 import com.sparrow.utility.RegexUtility;
+import com.sparrow.utility.StringUtility;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
-import com.sparrow.constant.CONFIG;
-import com.sparrow.utility.Config;
-import com.sparrow.utility.FileUtility;
-import com.sparrow.utility.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wltea.analyzer.lucene.IKAnalyzer;
+
+import java.io.StringReader;
+import java.util.*;
 
 /**
  * @author harry
  */
 public class KeyAnalyzer {
-    Logger logger = LoggerFactory.getLogger(KeyAnalyzer.class);
-    private static KeyAnalyzer keyAnalyzer = new KeyAnalyzer();
+    private Logger logger = LoggerFactory.getLogger(KeyAnalyzer.class);
+
+    private Analyzer analyzer;
+
+    public void setAnalyzer(Analyzer analyzer) {
+        this.analyzer = analyzer;
+    }
 
     private String lucenceEnableKeywordsPath = null;
     private String lucenceDisableKeywordsPath = null;
@@ -50,10 +54,6 @@ public class KeyAnalyzer {
         lucenceIdfKeywordsPath = Config.getValue(CONFIG.LUCENCE_IDF_KEYWORDS_PATH);
         lucenceEnableKeywordsPath = Config.getValue(CONFIG.LUCENCE_ENABLE_KEYWORDS_PATH);
         lucenceDisableKeywordsPath = Config.getValue(CONFIG.LUCENCE_DISABLE_KEYWORDS_PATH);
-    }
-
-    public static KeyAnalyzer getInstance() {
-        return keyAnalyzer;
     }
 
     //某一特定词语的IDF，可以由总文件数目除以包含该词语之文件的数目，再将得到的商取对数得到
@@ -105,7 +105,6 @@ public class KeyAnalyzer {
      * @return
      */
     public String getKeys(String text) {
-        Analyzer analyzer = new IKAnalyzer(true);
         List<String> tagList = new ArrayList<String>();
         try {
             TokenStream tokens = analyzer.reusableTokenStream("",

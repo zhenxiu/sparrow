@@ -17,39 +17,36 @@
 
 package com.sparrow.support.lucence;
 
-import java.io.File;
-import java.io.IOException;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.index.LogByteSizeMergePolicy;
-import org.apache.lucene.index.LogMergePolicy;
+import org.apache.lucene.index.*;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
-import org.wltea.analyzer.lucene.IKAnalyzer;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author harry
  */
 public class IndexManager {
-    private static IndexManager indexManager = new IndexManager();
+    /**
+     * 创建一个分词器
+     * Analyzer analyzer = new IKAnalyzer(true);
+     */
+    private Analyzer analyzer;
 
-    private IndexManager() {
-    }
-
-    public static IndexManager getInstance() {
-        return indexManager;
+    public void setAnalyzer(Analyzer analyzer) {
+        this.analyzer = analyzer;
     }
 
     /**
      * 注意点 在window系统中我们通常使用simpleFSDirectory，
-     *
+     * <p>
      * 而其他操作系统则使用NIOFSDirectory
-     *
+     * <p>
      * NIOFSDirectory uses java.nio's FileChannel's positional io when reading to avoid synchronization when reading
      * from the same file. Unfortunately, due to a Windows-only Sun JRE bug this is a poor choice for Windows, but on
      * all other platforms this is the preferred choice.
@@ -70,11 +67,10 @@ public class IndexManager {
         if (IndexWriter.isLocked(directory)) {
             IndexWriter.unlock(directory);
         }
-        // 创建一个分词器
-        Analyzer analyzer = new IKAnalyzer(true);
+
         // 创建索引配置器
         IndexWriterConfig indexWriterConfig = new IndexWriterConfig(
-            Version.LUCENE_36, analyzer);
+                Version.LUCENE_36, analyzer);
         LogMergePolicy mergePolicy = new LogByteSizeMergePolicy();
         // 设置segment添加文档(Document)时的合并频率
         // 值较小,建立索引的速度就较慢
