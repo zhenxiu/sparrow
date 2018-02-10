@@ -40,4 +40,12 @@ public interface CacheMonitor {
      * @param key
      */
     void monitor(Long startTime, Long endTime, KEY key);
+
+    /**
+     * 穿透监控
+     *
+     * @param key
+     * @return
+     */
+    void penetrate(KEY key);
 }

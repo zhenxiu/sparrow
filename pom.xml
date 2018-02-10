@@ -31,10 +31,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.wltea.ik-analyzer</groupId>
-            <artifactId>ik-analyzer</artifactId>
-        </dependency>
-        <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
         </dependency>

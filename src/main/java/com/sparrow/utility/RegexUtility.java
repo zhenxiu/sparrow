@@ -19,9 +19,7 @@ package com.sparrow.utility;
 
 import com.sparrow.constant.CONSTANT;
 import com.sparrow.constant.REGEX;
-import com.sparrow.constant.magic.SYMBOL;
 import com.sparrow.core.Pair;
-import com.sun.org.apache.regexp.internal.RE;
 
 import java.util.ArrayList;
 import java.util.List;

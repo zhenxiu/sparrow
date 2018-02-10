@@ -23,7 +23,9 @@ import com.sparrow.constant.CONSTANT;
 import com.sparrow.support.lucence.IndexManager;
 import com.sparrow.utility.Config;
 import com.sparrow.utility.FileUtility;
+
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.TermEnum;
 
@@ -37,15 +39,25 @@ import java.util.concurrent.TimeUnit;
  * @author harry
  */
 public class IDFIndexBuilderImpl implements Runnable {
-    static IndexManager indexManager = IndexManager.getInstance();
-    static IndexReader indexReader = null;
+    private IndexManager indexManager;
+    private IndexReader indexReader;
+
+    public void setIndexManager(IndexManager indexManager) {
+        this.indexManager = indexManager;
+    }
+
+    public void setIndexReader(IndexReader indexReader) {
+        this.indexReader = indexReader;
+    }
+
     static String idfIndexPath = null;
     static String idfWordPath = null;
+
 
     static {
         //可以设置为本地lucence索引
         idfIndexPath = Config
-            .getValue(CONFIG.LUCENCE_INDEX_PATH_FOR_SEARCH);
+                .getValue(CONFIG.LUCENCE_INDEX_PATH_FOR_SEARCH);
         idfWordPath = Config.getValue(CONFIG.LUCENCE_IDF_KEYWORDS_PATH);
     }
 
@@ -60,7 +72,7 @@ public class IDFIndexBuilderImpl implements Runnable {
         calendar.set(Calendar.SECOND, 0);
         long delay = calendar.getTimeInMillis() - currentTime;
         ScheduledExecutorService scheduledExecutorService = new ScheduledThreadPoolExecutor(1,
-            new SparrowThreadFactory.Builder().namingPattern("idf-index-builder-%d").daemon(true).build());
+                new SparrowThreadFactory.Builder().namingPattern("idf-index-builder-%d").daemon(true).build());
 
         scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
             @Override
