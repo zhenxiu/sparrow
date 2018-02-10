@@ -17,10 +17,8 @@
 
 package com.sparrow.core.spi;
 
-import com.sparrow.container.Container;
 import com.sparrow.json.Json;
 
-import javax.json.JsonException;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
@@ -51,11 +49,8 @@ public class JsonFactory {
                 Class<?> jsonClazz = Class.forName(DEFAULT_PROVIDER);
                 json = (Json) jsonClazz.newInstance();
                 return json;
-            } catch (ClassNotFoundException x) {
-                throw new JsonException(
-                    "Provider " + DEFAULT_PROVIDER + " not found", x);
-            } catch (Exception x) {
-                throw new JsonException(
+            }catch (Exception x) {
+                throw new RuntimeException(
                     "Provider " + DEFAULT_PROVIDER + " could not be instantiated: " + x,
                     x);
             }

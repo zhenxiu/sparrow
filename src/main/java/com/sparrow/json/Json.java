@@ -20,8 +20,6 @@ package com.sparrow.json;
 import com.sparrow.support.Entity;
 import java.util.List;
 import java.util.Map;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 
 /**
  * @author harry
