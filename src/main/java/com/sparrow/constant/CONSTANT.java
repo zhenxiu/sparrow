@@ -38,6 +38,7 @@ public class CONSTANT {
     public static final String WORKSPACE = "workspace";
     public static final String NULL_JSON = "''";
     public static final String ENTER_TEXT = "\r\n";
+    public static final String ENTER_TEXT_N="\n";
     public static final String ERROR_CSS_CLASS = "error";
     public static final String VALIDATE_CODE = "validate_code";
 
