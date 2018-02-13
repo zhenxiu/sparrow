@@ -69,7 +69,18 @@ public class HtmlUtility {
     }
 
     public static String filterHTML(String sourceHTML) {
-        return filterHTML(sourceHTML, "</p><p>");
+        String result= filterHTML(sourceHTML, "</p><p>");
+        result = result.replaceAll("(<p>)+", "<p>");
+        result = result.replaceAll("(<\\/p>)+", "</p>");
+        result = result.replaceAll("(<p><\\/p>)*", "");
+        result = result.replaceAll("(<\\/p><p>)+", "</p><p>");
+        if (result.startsWith("</p><p>")) {
+            result = result.substring("</p><p>".length());
+        }
+        if (result.endsWith("</p><p>")) {
+            result = result.substring(0, result.length() - "</p><p>".length());
+        }
+        return result;
     }
 
     /**
@@ -98,7 +109,6 @@ public class HtmlUtility {
         // 当前字符
         char currentChar;
         // 段落标记
-        String p = splitTag;
         while (index < chars.length) {
             currentChar = chars[index++];
             // HTML标签开始
@@ -126,7 +136,7 @@ public class HtmlUtility {
                     for (String tag : tagQueue) {
                         // 是否为块标签
                         if (isBlockTag(tag)) {
-                            desc.append(p);
+                            desc.append(splitTag);
                             break;
                         }
                     }
@@ -140,18 +150,8 @@ public class HtmlUtility {
                 }
             }
         }
-        String result = desc.toString().trim();
-        result = result.replaceAll("(<p>)+", "<p>");
-        result = result.replaceAll("(<\\/p>)+", "</p>");
-        result = result.replaceAll("(<p><\\/p>)*", "");
-        result = result.replaceAll("(<\\/p><p>)+", "</p><p>");
-        if (result.startsWith("</p><p>")) {
-            result = result.substring("</p><p>".length());
-        }
-        if (result.endsWith("</p><p>")) {
-            result = result.substring(0, result.length() - "</p><p>".length());
-        }
-        return result;
+
+        return desc.toString();
     }
 
     /**
