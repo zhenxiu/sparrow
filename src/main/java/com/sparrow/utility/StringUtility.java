@@ -818,12 +818,21 @@ public class StringUtility {
         return str.toLowerCase().indexOf(subStr.toLowerCase());
     }
 
-    public static String getDigit(String str,int start){
+    public static String getDigit(String str, int start) {
         char c;
-        StringBuilder digit=new StringBuilder(10);
-        while (Character.isDigit(c=str.charAt(start++))){
+        StringBuilder digit = new StringBuilder(10);
+        while (Character.isDigit(c = str.charAt(start++))) {
             digit.append(c);
         }
         return digit.toString();
+    }
+
+    public static int getPrefixCount(String str, String prefix) {
+        int count = 0;
+        StringBuilder prefixBuilder = new StringBuilder();
+        while (str.startsWith(prefixBuilder.append(prefix).toString())) {
+            count++;
+        }
+        return count;
     }
 }
