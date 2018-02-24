@@ -821,7 +821,7 @@ public class StringUtility {
     public static String getDigit(String str, int start) {
         char c;
         StringBuilder digit = new StringBuilder(10);
-        while (Character.isDigit(c = str.charAt(start++))) {
+        while (start<str.length()&&Character.isDigit(c = str.charAt(start++))) {
             digit.append(c);
         }
         return digit.toString();
