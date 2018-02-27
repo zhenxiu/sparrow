@@ -23,7 +23,9 @@ import com.sparrow.exception.CacheConnectionException;
 import java.util.Map;
 
 /**
- * Created by harry on 2018/1/26.
+ *
+ * @author harry
+ * @date 2018/1/26
  */
 public interface CacheSortedSet {
 

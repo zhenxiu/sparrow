@@ -20,7 +20,9 @@ package com.sparrow.cache;
 import com.sparrow.constant.cache.KEY;
 
 /**
- * Created by harry on 2018/1/25.
+ *
+ * @author harry
+ * @date 2018/1/25
  */
 public interface CacheMonitor {
     /**
