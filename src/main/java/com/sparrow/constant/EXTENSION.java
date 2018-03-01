@@ -35,6 +35,9 @@ public class EXTENSION {
     public static final String JSP = ".jsp";
     public static final String HTML = ".html";
     public static final String ZIP=".zip";
+    public static final String JAR=".jar";
+    public static final String WAR=".war";
+    public static final String CLASS=".class";
 
 
     public static final String EXCEL2003_WITHOUT_DOT = "xls";
