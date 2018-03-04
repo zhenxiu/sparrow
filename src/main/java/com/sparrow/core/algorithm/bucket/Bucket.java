@@ -26,6 +26,8 @@ public class Bucket<T> {
     private List<T> bucket;
     private Integer size;
 
+    private Integer count=0;
+
     public Bucket() {
         this(128);
     }
@@ -40,6 +42,7 @@ public class Bucket<T> {
         if (bucket.size() == this.size) {
             List<T> returnList = new ArrayList<T>(this.bucket);
             this.bucket.clear();
+            this.count++;
             return returnList;
         }
         return null;
@@ -55,5 +58,14 @@ public class Bucket<T> {
 
     public void clear() {
         this.bucket.clear();
+        this.count=0;
+    }
+
+    public boolean isEmpty(){
+        return this.bucket.size()==0;
+    }
+
+    public Integer getCount() {
+        return count+(this.bucket.size()>0?1:0);
     }
 }
