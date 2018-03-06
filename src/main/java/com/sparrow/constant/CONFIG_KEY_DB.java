@@ -27,7 +27,7 @@ public class CONFIG_KEY_DB {
     /**
      * 每页记录数
      */
-    public static final String PAGESIZE = "PAGESIZE";
+    public static final String PAGE_SIZE = "PAGE-SIZE";
 
     public static final String PAGESIZE_THREAD = "PAGESIZE-THREAD";
 
