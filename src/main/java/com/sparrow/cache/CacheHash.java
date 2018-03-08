@@ -20,6 +20,8 @@ package com.sparrow.cache;
 import com.sparrow.constant.cache.KEY;
 import com.sparrow.exception.CacheConnectionException;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,6 +39,10 @@ public interface CacheHash {
     Long getSize(KEY key) throws CacheConnectionException;
 
     String get(KEY key, String field) throws CacheConnectionException;
+
+    Map<String,String>  get(KEY key, Collection<String> fieldList) throws CacheConnectionException;
+
+    <T> Map<String,T> get(KEY key, Collection<String> fieldList, Class valueType) throws CacheConnectionException;
 
     <T> T get(KEY key, String field, Class clazz) throws CacheConnectionException;
 

@@ -122,7 +122,6 @@ public class CONFIG {
     public static final String FORUM_CODE_INDEX_PIC = "forum_code_index_pic";
     public static final String FORUM_CODE_CMS_ONLINE_TALK = "forum_code_cms_online_talk";
 
-    public static final String TAG_DISABLE_CALL_BACK_BEAN = "tag_disable_call_back_bean";
     public static final String TAG_LINK_FORMAT = "tag_link_format";
     public static final String COMPILER_OPTION_ENCODING = "compiler_option_encoding";
 
