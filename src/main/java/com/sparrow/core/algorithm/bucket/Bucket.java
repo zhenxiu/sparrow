@@ -28,14 +28,23 @@ public class Bucket<T> {
 
     private Integer count=0;
 
+    private Overflow<T> overflow;
+
     public Bucket() {
         this(128);
     }
 
-    public Bucket(Integer size) {
+    public Bucket(Integer size){
+        this(size,null);
+    }
+
+    public Bucket(Integer size,Overflow<T> overflow) {
         this.bucket = new ArrayList<T>(size);
         this.size = size;
+        this.overflow=overflow;
     }
+
+
 
     public List<T> fill(T item) {
         bucket.add(item);
@@ -43,6 +52,9 @@ public class Bucket<T> {
             List<T> returnList = new ArrayList<T>(this.bucket);
             this.bucket.clear();
             this.count++;
+            if(overflow!=null){
+                this.overflow.hook(returnList);
+            }
             return returnList;
         }
         return null;
