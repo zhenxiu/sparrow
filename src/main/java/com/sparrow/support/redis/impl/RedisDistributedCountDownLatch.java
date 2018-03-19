@@ -26,7 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by harry on 2018/1/11.
+ * @author harry
  */
 public class RedisDistributedCountDownLatch implements DistributedCountDownLatch {
     private static Logger logger = LoggerFactory.getLogger(RedisDistributedCountDownLatch.class);
@@ -59,8 +59,10 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
         }
         while (true) {
             try {
-                cacheClient.set().remove(monitor, key);
-                return;
+                //the key maybe not exit when remove
+                if (cacheClient.set().remove(monitor, key)) {
+                    return;
+                }
             } catch (CacheConnectionException e) {
                 logger.error("monitor consume connection break ", e);
             }
