@@ -27,5 +27,6 @@ import com.sparrow.container.ContainerAware;
  */
 public interface MQPublisher extends ContainerAware{
     void publish(MQEvent event,KEY productKey,KEY consumerKey) throws Throwable;
+
     void publish(MQEvent event) throws Throwable;
 }
