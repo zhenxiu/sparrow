@@ -495,6 +495,11 @@ public class FileUtility {
         }
     }
 
+    public boolean existLine(String fileName,String line){
+        List<String> lineList=this.readLines(fileName);
+        return StringUtility.existInArray(lineList.toArray(),line);
+    }
+
     /**
      * 删除文件
      */

@@ -126,7 +126,8 @@ public class EnvironmentSupport {
     }
 
     /**
-     * 文件相对路径 path 不以’/'开头时默认是从此类所在的包下取资源， 以’/'开头则是从ClassPath根下获取。其只是通过path构造一个绝对路径，最终还是由ClassLoader获取资源。
+     * 文件相对路径 path 不以’/'开头时默认是从此类所在的包下取资源，
+     * 以’/'开头则是从ClassPath根下获取。其只是通过path构造一个绝对路径，最终还是由ClassLoader获取资源。
      * <p/>
      * <p/>
      * tomcat exception :org.apache.catalina.loader.WebappClassLoader findResourceInternal INFO: Illegal access: this
@@ -134,7 +135,8 @@ public class EnvironmentSupport {
      * stack trace is caused by an error thrown for debugging purposes as well as to attempt to terminate the thread
      * which caused the illegal access, and has no functional impact. java.lang.NullPointerException at
      * org.apache.catalina.loader.WebappClassLoader.getResource(WebappClassLoader.java:1604) at
-     * java.lang.Class.getResource(Class.java:2076) at com.sparrow.support.EnvironmentSupport.getFileInputStream(EnvironmentSupport.java:123)
+     * java.lang.Class.getResource(Class.java:2076)
+     * at com.sparrow.support.EnvironmentSupport.getFileInputStream(EnvironmentSupport.java:123)
      * <p/>
      * resolve solution :reloadable="false"
      * <p/>
