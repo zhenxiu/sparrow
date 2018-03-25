@@ -24,53 +24,55 @@ import com.sparrow.constant.cache.KEY;
  */
 public interface DistributedCountDownLatch {
     /**
-     * msg key是否存在
-     *
-     * @param monitor
-     * @param key
-     * @return
-     */
-    boolean exist(KEY monitor, String key);
-
-    /**
      * KEY消费
      *
-     * @param monitor monitor ey
-     * @param key consume msg key
+     * @param consumerKey monitor ey
+     * @param key         consume msg key
      */
-    void consume(KEY monitor, String key);
+    void consume(KEY consumerKey, String key);
+
+    /**
+     * 消费幂等
+     *
+     * @param consumeKey
+     * @return
+     */
+    boolean consumable(KEY consumeKey, String key);
 
     /**
      * KEY生产
      *
-     * @param monitor monitor key
-     * @param key product msg key
+     * @param productKey productKey
+     * @param key        product msg key
      */
-    void product(KEY monitor, String key);
+    void product(KEY productKey, String key);
 
     /**
      * 是否结束
      *
-     * @param monitor monitor key
+     * @param productKey  productKey
+     * @param consumerKey consumerKey
      * @return
      */
-    boolean isFinish(KEY monitor);
+    boolean isFinish(KEY productKey, KEY consumerKey);
 
     /**
      * monitor
      *
-     * @param monitor monitor key
+     * @param productKey     product key
+     * @param consumerKey    consumer key
      * @param secondInterval 探测时间间隔
      * @return
      */
-    boolean monitor(KEY monitor, int secondInterval);
+    boolean monitor(KEY productKey, KEY consumerKey, int secondInterval);
 
     /**
      * 默认2秒控测一次
      *
-     * @param monitor monitor key
+     * @param productKey  productKey
+     * @param consumerKey consumer key
      * @return
      */
-    boolean monitor(KEY monitor);
+    boolean monitor(KEY productKey, KEY consumerKey);
 
 }

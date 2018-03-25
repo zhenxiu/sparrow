@@ -43,26 +43,18 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
         this.cacheClient = cacheClient;
     }
 
-    @Override public boolean exist(KEY monitor, String key) {
-        try {
-            return cacheClient.set().exist(monitor, key);
-        } catch (CacheConnectionException e) {
-            logger.error("keys is exist connection exception " + key, e);
-            return false;
-        }
-    }
+
+
 
     @Override
-    public void consume(KEY monitor, final String key) {
-        if (monitor == null) {
+    public void consume(KEY consumerKey, final String key) {
+        if (consumerKey == null) {
             throw new UnsupportedOperationException("product key is null");
         }
         while (true) {
             try {
-                //the key maybe not exit when remove
-                if (cacheClient.set().remove(monitor, key)) {
-                    return;
-                }
+                cacheClient.set().add(consumerKey, key);
+                return;
             } catch (CacheConnectionException e) {
                 logger.error("monitor consume connection break ", e);
             }
@@ -70,29 +62,39 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
     }
 
     @Override
-    public void product(KEY monitor, final String key) {
-        if (monitor == null) {
+    public boolean consumable(KEY consumeKey,String keys) {
+        try {
+            return !cacheClient.set().exist(consumeKey,keys);
+        } catch (CacheConnectionException e) {
+            return true;
+        }
+    }
+
+    @Override
+    public void product(KEY productKey, final String key) {
+        if (productKey == null) {
             throw new UnsupportedOperationException("product key is null");
         }
         while (true) {
             try {
-                cacheClient.set().add(monitor, key);
+                cacheClient.set().add(productKey, key);
                 return;
             } catch (CacheConnectionException e) {
-                logger.error("monitor product connection break ", e);
+                logger.error("productKey product connection break ", e);
             }
         }
     }
 
     @Override
-    public boolean isFinish(KEY monitor) {
-        if (StringUtility.isNullOrEmpty(monitor)) {
+    public boolean isFinish(KEY productKey,KEY consumerKey) {
+        if (StringUtility.isNullOrEmpty(productKey)) {
             throw new UnsupportedOperationException("product key is null");
         }
         try {
-            Long productCount = cacheClient.set().getSize(monitor);
-            Boolean match = productCount == 0;
-            logger.info("product key {}:count {},match {}", monitor.key(),
+            Long productCount = cacheClient.set().getSize(productKey);
+            Long consumerCount=cacheClient.set().getSize(consumerKey);
+            Boolean match = productCount.equals(consumerCount);
+            logger.info("product key {}:count {},match {}", productKey.key(),
                 productCount,
                 match);
             if (!match) {
@@ -103,7 +105,8 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
         }
         while (true) {
             try {
-                cacheClient.key().delete(monitor);
+                cacheClient.key().delete(productKey);
+                cacheClient.key().delete(consumerKey);
                 return true;
             } catch (CacheConnectionException ignore) {
                 logger.error("monitor error", ignore);
@@ -112,9 +115,9 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
     }
 
     @Override
-    public boolean monitor(KEY monitor, int secondInterval) {
+    public boolean monitor(KEY productKey,KEY consumerKey, int secondInterval) {
         while (true) {
-            if (isFinish(monitor)) {
+            if (isFinish(productKey,consumerKey)) {
                 return true;
             }
             try {
@@ -125,8 +128,7 @@ public class RedisDistributedCountDownLatch implements DistributedCountDownLatch
     }
 
     @Override
-    public boolean monitor(KEY monitor) {
-        return this.monitor(monitor, 2);
+    public boolean monitor(KEY productKey,KEY consumerKey) {
+        return this.monitor(productKey,consumerKey, 2);
     }
-
 }
