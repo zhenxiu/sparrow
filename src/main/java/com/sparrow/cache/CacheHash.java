@@ -43,4 +43,6 @@ public interface CacheHash {
     Long put(KEY key, String field, Object value) throws CacheConnectionException;
 
     <K,T> Integer put(KEY key, Map<K, T> map) throws CacheConnectionException;
+
+    Long incrBy(KEY key, String field, long count) throws CacheConnectionException;
 }

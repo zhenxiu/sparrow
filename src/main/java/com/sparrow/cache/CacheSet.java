@@ -48,4 +48,6 @@ public interface CacheSet {
     Set<String> list(KEY key, CacheDataNotFound<Set<String>> hook);
 
     <T> Set<T> list(KEY key, Class clazz, CacheDataNotFound<Set<T>> hook);
+
+    String pop(KEY key) throws CacheConnectionException;
 }
